@@ -13,6 +13,7 @@
   "scripts": {
     "start": "node Dist/App.js",
     "dev": "nodemon App.js",
+    "build":"tsc"
     
   }
 }
