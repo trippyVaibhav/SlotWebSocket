@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "http": "^0.0.1-security",
+    "nodemon": "^3.1.0",
+    "uuid": "^9.0.1",
+    "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.7",
+    "tsc-watch": "^6.2.0"
+  },
+  "scripts": {
+    "start": "tsc-watch --onSuccess \"node ./Dist/App.js\"",
+    "dev": "nodemon App.js"
+  }
+}
