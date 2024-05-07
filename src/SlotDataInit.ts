@@ -1,22 +1,32 @@
 // import { sendMessageToClient } from "./App";
 import { sendMessageToClient } from "./App";
-import { gameSettings} from "./Global";
+import { UiInitData, gameSettings, makePayLines} from "./Global";
 import { linesApiData } from "./testData";
 import { convertData, generateMatrix } from "./utils";
 
 
 export function sendInitdata(clientID : string)
 {
+    makePayLines();
     const matrix = generateMatrix(gameSettings.matrix.x, 18);
-    
+
+    for(let i = 0; i < 3; i++)
+    {
+        const strng = "Player has the right to start the slot machine without using their funds for a certain number of times. The size of the bet is determined by the";
+        UiInitData.spclSymbolTxt.push(strng)
+    }
+
     const dataToSend = {
-        "Reel" :matrix,
-        "Lines": linesApiData,
-        "Bets": [1, 5, 10, 15, 20],
-        "canSwitchLines": false,
-        "LinesCount": [1, 5, 10, 15, 20],
-        "autoSpin": [1, 5, 10, 20]
-    };
+       "GameData" : {
+           "Reel" :matrix,
+           "Lines": linesApiData,
+           "Bets": [1, 5, 10, 15, 20],
+           "canSwitchLines": false,
+           "LinesCount": [1, 5, 10, 15, 20],
+           "autoSpin": [1, 5, 10, 20]
+        },
+        "UIData":  UiInitData,
+        };
     sendMessageToClient(clientID,"InitData",dataToSend)
 }
 

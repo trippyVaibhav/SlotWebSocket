@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setWild = exports.setJackpotSettings = exports.addScatterPay = exports.makePayLines = exports.removeDuplicateArrays = exports.addPayLineSymbols = exports.gameWining = exports.gameSettings = void 0;
+exports.setWild = exports.setJackpotSettings = exports.addScatterPay = exports.makePayLines = exports.removeDuplicateArrays = exports.addPayLineSymbols = exports.UiInitData = exports.gameWining = exports.gameSettings = void 0;
 ;
 exports.gameSettings = {
     matrix: { x: 5, y: 3 },
@@ -30,6 +30,16 @@ exports.gameWining = {
     freeSpins: 0,
     currentBet: 0,
 };
+exports.UiInitData = {
+    paylines: [],
+    spclSymbolTxt: [],
+    AbtLogo: {
+        logoSprite: "https://freeimage.host/i/JrMCqPf ",
+        link: "https://dingding-game.vercel.app/login",
+    },
+    ToULink: "https://dingding-game.vercel.app/login",
+    PopLink: "https://dingding-game.vercel.app/login",
+};
 function addPayLineSymbols(symbol, repetition, pay, freeSpins) {
     var line = Array(repetition).fill(symbol); // Create an array with 'repetition' number of 'symbol'
     if (line.length != exports.gameSettings.matrix.x) {
@@ -42,6 +52,9 @@ function addPayLineSymbols(symbol, repetition, pay, freeSpins) {
         pay: pay,
         freeSpins: freeSpins
     });
+    if (!exports.UiInitData.paylines[parseInt(symbol)])
+        exports.UiInitData.paylines[parseInt(symbol)] = [];
+    exports.UiInitData.paylines[parseInt(symbol)].push(pay.toString());
     // console.log(gameSettings.payLine);
 }
 exports.addPayLineSymbols = addPayLineSymbols;

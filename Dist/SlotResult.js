@@ -10,7 +10,6 @@ var CheckResult = /** @class */ (function () {
     function CheckResult(clientID) {
         this.clientID = clientID;
         Global_1.gameSettings.lineData = testData_1.linesApiData;
-        (0, Global_1.makePayLines)();
         this.scatter = 'scatter';
         this.useScatter = (Global_1.gameSettings.useScatter && this.scatter !== null);
         this.jackpot = Global_1.gameSettings.jackpot;

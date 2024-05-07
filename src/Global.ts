@@ -85,6 +85,16 @@ export let gameWining: winning = {
     freeSpins: 0,
     currentBet : 0,
 }
+export const UiInitData = {
+    paylines :  [] ,
+    spclSymbolTxt : [],
+    AbtLogo : {
+        logoSprite : "https://freeimage.host/i/JrMCqPf ",
+        link : "https://dingding-game.vercel.app/login",
+    },
+    ToULink : "https://dingding-game.vercel.app/login",
+    PopLink : "https://dingding-game.vercel.app/login",
+}
 
 export function addPayLineSymbols(symbol: string, repetition: number, pay: number, freeSpins: number): void {
     const line: string[] = Array(repetition).fill(symbol); // Create an array with 'repetition' number of 'symbol'
@@ -100,8 +110,11 @@ export function addPayLineSymbols(symbol: string, repetition: number, pay: numbe
         pay: pay,
         freeSpins: freeSpins
     });
-    // console.log(gameSettings.payLine);
 
+        
+    if(!UiInitData.paylines[parseInt(symbol)]) UiInitData.paylines[parseInt(symbol)]= []
+    UiInitData.paylines[parseInt(symbol)].push(pay.toString());
+    // console.log(gameSettings.payLine);
 }
 
 

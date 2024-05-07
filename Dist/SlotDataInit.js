@@ -7,14 +7,22 @@ var Global_1 = require("./Global");
 var testData_1 = require("./testData");
 var utils_1 = require("./utils");
 function sendInitdata(clientID) {
+    (0, Global_1.makePayLines)();
     var matrix = (0, utils_1.generateMatrix)(Global_1.gameSettings.matrix.x, 18);
+    for (var i = 0; i < 3; i++) {
+        var strng = "Player has the right to start the slot machine without using their funds for a certain number of times. The size of the bet is determined by the";
+        Global_1.UiInitData.spclSymbolTxt.push(strng);
+    }
     var dataToSend = {
-        "Reel": matrix,
-        "Lines": testData_1.linesApiData,
-        "Bets": [1, 5, 10, 15, 20],
-        "canSwitchLines": false,
-        "LinesCount": [1, 5, 10, 15, 20],
-        "autoSpin": [1, 5, 10, 20]
+        "GameData": {
+            "Reel": matrix,
+            "Lines": testData_1.linesApiData,
+            "Bets": [1, 5, 10, 15, 20],
+            "canSwitchLines": false,
+            "LinesCount": [1, 5, 10, 15, 20],
+            "autoSpin": [1, 5, 10, 20]
+        },
+        "UIData": Global_1.UiInitData,
     };
     (0, App_1.sendMessageToClient)(clientID, "InitData", dataToSend);
 }

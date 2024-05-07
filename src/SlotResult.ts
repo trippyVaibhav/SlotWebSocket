@@ -1,6 +1,6 @@
 // import { sendMessageToClient } from "./App";
 import { sendMessageToClient } from "./App";
-import { ScatterPayEntry, gameSettings, makePayLines, gameWining, removeDuplicateArrays } from "./Global";
+import { ScatterPayEntry, gameSettings, gameWining, removeDuplicateArrays } from "./Global";
 import { RandomResultGenerator } from "./SlotDataInit";
 import { linesApiData, Symbols } from "./testData";
 import { convertData } from "./utils";
@@ -23,7 +23,6 @@ export class CheckResult {
     constructor(clientID: string) {
         this.clientID = clientID;
         gameSettings.lineData = linesApiData;
-        makePayLines();
 
         this.scatter = 'scatter';
         this.useScatter = (gameSettings.useScatter && this.scatter !== null);
