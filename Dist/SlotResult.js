@@ -6,7 +6,6 @@ var App_1 = require("./App");
 var Global_1 = require("./Global");
 var SlotDataInit_1 = require("./SlotDataInit");
 var testData_1 = require("./testData");
-var utils_1 = require("./utils");
 var CheckResult = /** @class */ (function () {
     function CheckResult(clientID) {
         this.clientID = clientID;
@@ -162,9 +161,8 @@ var CheckResult = /** @class */ (function () {
         return foundArray;
     };
     CheckResult.prototype.makeResultJson = function () {
-        var resultMatrix = (0, utils_1.convertData)(Global_1.gameSettings.resultSymbolMatrix);
         var ResultData = {
-            ResultReel: resultMatrix,
+            ResultReel: Global_1.gameSettings.resultSymbolMatrix,
             linesToEmit: Global_1.gameWining.WinningLines,
             symbolsToEmit: Global_1.gameWining.winningSymbols,
             WinAmout: Global_1.gameWining.TotalWinningAmount,

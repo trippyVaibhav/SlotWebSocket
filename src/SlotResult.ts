@@ -193,9 +193,8 @@ export class CheckResult {
     }
 
     makeResultJson() {
-        const resultMatrix = convertData(gameSettings.resultSymbolMatrix);
         const ResultData = {
-            ResultReel: resultMatrix,
+            ResultReel: gameSettings.resultSymbolMatrix,
             linesToEmit: gameWining.WinningLines,
             symbolsToEmit: gameWining.winningSymbols,
             WinAmout: gameWining.TotalWinningAmount,

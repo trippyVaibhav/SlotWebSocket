@@ -8,9 +8,8 @@ var testData_1 = require("./testData");
 var utils_1 = require("./utils");
 function sendInitdata(clientID) {
     var matrix = (0, utils_1.generateMatrix)(Global_1.gameSettings.matrix.x, 18);
-    var sendMatrix = (0, utils_1.convertData)(matrix);
     var dataToSend = {
-        "Reel": sendMatrix,
+        "Reel": matrix,
         "Lines": testData_1.linesApiData,
         "Bets": [1, 5, 10, 15, 20],
         "canSwitchLines": false,

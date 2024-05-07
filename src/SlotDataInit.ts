@@ -8,10 +8,9 @@ import { convertData, generateMatrix } from "./utils";
 export function sendInitdata(clientID : string)
 {
     const matrix = generateMatrix(gameSettings.matrix.x, 18);
-    const sendMatrix = convertData(matrix);
     
     const dataToSend = {
-        "Reel" :sendMatrix,
+        "Reel" :matrix,
         "Lines": linesApiData,
         "Bets": [1, 5, 10, 15, 20],
         "canSwitchLines": false,
