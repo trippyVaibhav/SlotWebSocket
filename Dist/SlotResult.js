@@ -164,7 +164,7 @@ var CheckResult = /** @class */ (function () {
     CheckResult.prototype.makeResultJson = function () {
         var resultMatrix = (0, utils_1.convertData)(Global_1.gameSettings.resultSymbolMatrix);
         var ResultData = {
-            Reel: resultMatrix,
+            ResultReel: resultMatrix,
             linesToEmit: Global_1.gameWining.WinningLines,
             symbolsToEmit: Global_1.gameWining.winningSymbols,
             WinAmout: Global_1.gameWining.TotalWinningAmount,

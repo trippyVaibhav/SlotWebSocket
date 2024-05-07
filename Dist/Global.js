@@ -27,8 +27,8 @@ exports.gameWining = {
     WinningLines: undefined,
     TotalWinningAmount: 0,
     shouldFreeSpin: undefined,
-    freeSpins: null,
-    currentBet: null,
+    freeSpins: 0,
+    currentBet: 0,
 };
 function addPayLineSymbols(symbol, repetition, pay, freeSpins) {
     var line = Array(repetition).fill(symbol); // Create an array with 'repetition' number of 'symbol'
