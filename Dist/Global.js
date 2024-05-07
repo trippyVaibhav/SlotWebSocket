@@ -10,7 +10,7 @@ exports.gameSettings = {
     useWild: true,
     wildSymbol: {},
     Symbols: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
-    Weights: [5, 5, 5, 5, 0.5, 0.5, 0.5, 0.5, 0.01, 0.01],
+    Weights: [0.1, 0.1, 0.05, 0.05, 0.01, 0.1, 0.1, 0.1, 0.01, 0.01],
     resultSymbolMatrix: [],
     lineData: [],
     fullPayTable: [],
@@ -59,11 +59,36 @@ function removeDuplicateArrays(arrayOfArrays) {
 }
 exports.removeDuplicateArrays = removeDuplicateArrays;
 function makePayLines() {
-    for (var i = 0; i < 10; i++) {
-        for (var rep = 5; rep >= 3; rep--) {
-            addPayLineSymbols(i.toString(), rep, 5, 0);
-        }
-    }
+    addPayLineSymbols("0", 5, 0.1, 0);
+    addPayLineSymbols("0", 4, 0.3, 0);
+    addPayLineSymbols("0", 3, 0.5, 0);
+    addPayLineSymbols("1", 5, 0.1, 0);
+    addPayLineSymbols("1", 4, 0.3, 0);
+    addPayLineSymbols("1", 3, 0.5, 0);
+    addPayLineSymbols("2", 5, 0.1, 0);
+    addPayLineSymbols("2", 4, 0.3, 0);
+    addPayLineSymbols("2", 3, 0.5, 0);
+    addPayLineSymbols("3", 5, 0.1, 0);
+    addPayLineSymbols("3", 4, 0.3, 0);
+    addPayLineSymbols("3", 3, 0.5, 0);
+    addPayLineSymbols("4", 5, 0.1, 0);
+    addPayLineSymbols("4", 4, 0.3, 0);
+    addPayLineSymbols("4", 3, 0.5, 0);
+    addPayLineSymbols("5", 5, 0.1, 0);
+    addPayLineSymbols("5", 4, 0.3, 0);
+    addPayLineSymbols("5", 3, 0.5, 0);
+    addPayLineSymbols("6", 5, 0.1, 0);
+    addPayLineSymbols("6", 4, 0.3, 0);
+    addPayLineSymbols("6", 3, 0.5, 0);
+    addPayLineSymbols("7", 5, 0.1, 0);
+    addPayLineSymbols("7", 4, 0.3, 0);
+    addPayLineSymbols("7", 3, 0.5, 0);
+    addPayLineSymbols("8", 5, 0.1, 0);
+    addPayLineSymbols("8", 4, 0.3, 0);
+    addPayLineSymbols("8", 3, 0.5, 0);
+    addPayLineSymbols("9", 5, 0.1, 0);
+    addPayLineSymbols("9", 4, 0.3, 0);
+    addPayLineSymbols("9", 3, 0.5, 0);
     setWild("Wild", 10);
     addScatterPay(5, 11, 5, 0);
     setJackpotSettings("Jackpot", 12, 50, 5);
