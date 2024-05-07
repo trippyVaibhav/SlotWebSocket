@@ -82,8 +82,8 @@ export let gameWining: winning = {
     WinningLines: undefined,
     TotalWinningAmount: 0,
     shouldFreeSpin: undefined,
-    freeSpins: null,
-    currentBet : null,
+    freeSpins: 0,
+    currentBet : 0,
 }
 
 export function addPayLineSymbols(symbol: string, repetition: number, pay: number, freeSpins: number): void {
