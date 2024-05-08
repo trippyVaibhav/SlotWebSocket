@@ -140,7 +140,7 @@ var CheckResult = /** @class */ (function () {
     CheckResult.prototype.getIndexForResult = function (index) {
         var symbolsOnGrid = [];
         for (var i = 0; i < Global_1.gameSettings.matrix.y; i++) {
-            var symbolIndex = i.toString() + ',' + index.toString();
+            var symbolIndex = index.toString() + ',' + i.toString();
             return symbolIndex;
         }
     };
