@@ -206,3 +206,30 @@ export function setWild(symbolName: string, symbol: number) {
 // addPayLine('Wick', 5, 3, 0); // 'Wick' symbol repeated 5 times
 // addScatterPay(5, 0, 5);
 // setJackpotSettings('MyJackpot', 6, 1000, 1);
+
+// interface symbolMultiplier {
+//     "5x": string;
+//     "4x": string;
+//     "3x": number;
+//     "2x": number;
+//     "1x": number;
+
+//   }
+//   interface symbolPayLineData {
+//     symbolPayline: symbolMultiplier[];
+//   }
+//   function generatePayline(symbol: string[]): symbolPayLineData {
+//     const classes: symbolMultiplier[] = [];
+  
+//     for (let i = 0; i < symbol.length; i++) {
+//       const classInfo: symbolMultiplier = {
+//         "5x": symbol[i],
+//         "4x": symbol[i],
+//         "3x": symbol[i]
+//       };
+//       classes.push(classInfo);
+//     }
+  
+//     return { classes };
+//   }
+  
