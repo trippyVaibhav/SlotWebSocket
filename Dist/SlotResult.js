@@ -48,7 +48,7 @@ var CheckResult = /** @class */ (function () {
         Global_1.gameWining.winningSymbols = [];
         Global_1.gameWining.WinningLines = [];
         Global_1.gameWining.TotalWinningAmount = 0;
-        Global_1.gameSettings.lineData.forEach(function (lb) {
+        Global_1.gameSettings.lineData.forEach(function (lb, index) {
             var win = null;
             Global_1.gameSettings.fullPayTable.forEach(function (Payline) {
                 //  find max win (or win with max symbols count)
@@ -63,8 +63,8 @@ var CheckResult = /** @class */ (function () {
                 }
             });
             if (win != null) {
-                Global_1.gameWining.WinningLines.push(lb);
-                console.log(lb + ' - line win: ' + win);
+                Global_1.gameWining.WinningLines.push(index);
+                console.log("Line Index : ".concat(index) + lb + ' - line win: ' + win);
             }
         });
         // search scatters

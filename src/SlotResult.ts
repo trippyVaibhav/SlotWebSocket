@@ -68,7 +68,7 @@ export class CheckResult {
         gameWining.winningSymbols = [];
         gameWining.WinningLines = [];
         gameWining.TotalWinningAmount = 0;
-        gameSettings.lineData.forEach((lb) => {
+        gameSettings.lineData.forEach((lb,index) => {
 
             let win = null;
             gameSettings.fullPayTable.forEach((Payline: PayLines) => {
@@ -86,8 +86,8 @@ export class CheckResult {
             })
 
             if (win != null) {
-                gameWining.WinningLines.push(lb);
-                console.log(lb + ' - line win: ' + win);
+                gameWining.WinningLines.push(index);
+                console.log(`Line Index : ${index}` + lb + ' - line win: ' + win);
             }
         });
 
