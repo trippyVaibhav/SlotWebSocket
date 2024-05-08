@@ -11,8 +11,8 @@
     "tsc-watch": "^6.2.0"
   },
   "scripts": {
-    "start": "node Dist/App.js",
-    "dev": "nodemon App.js",
+    "start": " tsc --watch && node dist/App.js",
+    "dev": " tsc  && nodemon ./dist/App.js",
     "build":"tsc"
     
   }

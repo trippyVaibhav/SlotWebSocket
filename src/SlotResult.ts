@@ -82,13 +82,10 @@ export class CheckResult {
                         if (win.Pay < winTemp.pay || win.FreeSpins < winTemp.freeSpins) 
                         win = winTemp;
                     }
+                    gameWining.WinningLines.push(index);
+                    console.log(`Line Index : ${index} : ` + lb + ' - line win: ' + win);
                 }
             })
-
-            if (win != null) {
-                gameWining.WinningLines.push(index);
-                console.log(`Line Index : ${index}` + lb + ' - line win: ' + win);
-            }
         });
 
         // search scatters
@@ -133,23 +130,25 @@ export class CheckResult {
         
         console.log("TOTAL WINING : " + gameWining.TotalWinningAmount);
         console.log(gameWining.WinningLines);
-        gameWining.winningSymbols = removeDuplicateArrays(gameWining.winningSymbols);
+        // gameWining.winningSymbols = removeDuplicateArrays(gameWining.winningSymbols);
         console.log(gameWining.winningSymbols);
         console.log("_____________RESULT_END________________");
     }
 
     getPayLineWin(payLine: PayLines, lineData: any) {
-
         if (payLine == null) return null;
         let winSymbols = [];
-        for (var i = 0; i < lineData.length; i++) {
+        for (let i = 0; i < lineData.length; i++) {
+            
             const symbol = this.getSymbolOnMatrix(i);
             const s = symbol[lineData[i]];
+            
             if (payLine.line[i] !== 'any' && s !== payLine.line[i]) {
                 return;
             }
             else if (payLine.line[i] !== 'any' && s === payLine.line[i]) {
-                winSymbols.push(this.getIndexForResult(i));
+                const symbolIndex =  i.toString() + ',' + lineData[i].toString() ;
+                winSymbols.push(symbolIndex);
             }
         }
         return new WinData(winSymbols, payLine.freeSpins, payLine.pay);
@@ -166,7 +165,6 @@ export class CheckResult {
     }
 
     getIndexForResult(index: number) {
-        let symbolsOnGrid = [];
         for (let i = 0; i < gameSettings.matrix.y; i++) {
             let symbolIndex = index.toString() + ',' + i.toString() ;
             return symbolIndex;

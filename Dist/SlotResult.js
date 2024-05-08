@@ -60,12 +60,10 @@ var CheckResult = /** @class */ (function () {
                         if (win.Pay < winTemp.pay || win.FreeSpins < winTemp.freeSpins)
                             win = winTemp;
                     }
+                    Global_1.gameWining.WinningLines.push(index);
+                    console.log("Line Index : ".concat(index, " : ") + lb + ' - line win: ' + win);
                 }
             });
-            if (win != null) {
-                Global_1.gameWining.WinningLines.push(index);
-                console.log("Line Index : ".concat(index) + lb + ' - line win: ' + win);
-            }
         });
         // search scatters
         this.scatterWinSymbols = [];
@@ -109,7 +107,7 @@ var CheckResult = /** @class */ (function () {
         this.makeResultJson();
         console.log("TOTAL WINING : " + Global_1.gameWining.TotalWinningAmount);
         console.log(Global_1.gameWining.WinningLines);
-        Global_1.gameWining.winningSymbols = (0, Global_1.removeDuplicateArrays)(Global_1.gameWining.winningSymbols);
+        // gameWining.winningSymbols = removeDuplicateArrays(gameWining.winningSymbols);
         console.log(Global_1.gameWining.winningSymbols);
         console.log("_____________RESULT_END________________");
     };
@@ -124,7 +122,8 @@ var CheckResult = /** @class */ (function () {
                 return;
             }
             else if (payLine.line[i] !== 'any' && s === payLine.line[i]) {
-                winSymbols.push(this.getIndexForResult(i));
+                var symbolIndex = i.toString() + ',' + lineData[i].toString();
+                winSymbols.push(symbolIndex);
             }
         }
         return new WinData(winSymbols, payLine.freeSpins, payLine.pay);
@@ -138,7 +137,6 @@ var CheckResult = /** @class */ (function () {
         return symbolsOnGrid;
     };
     CheckResult.prototype.getIndexForResult = function (index) {
-        var symbolsOnGrid = [];
         for (var i = 0; i < Global_1.gameSettings.matrix.y; i++) {
             var symbolIndex = index.toString() + ',' + i.toString();
             return symbolIndex;
