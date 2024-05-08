@@ -168,7 +168,7 @@ export class CheckResult {
     getIndexForResult(index: number) {
         let symbolsOnGrid = [];
         for (let i = 0; i < gameSettings.matrix.y; i++) {
-            let symbolIndex = i.toString() + ',' + index.toString();
+            let symbolIndex = index.toString() + ',' + i.toString() ;
             return symbolIndex;
         }
     }
