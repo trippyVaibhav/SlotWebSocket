@@ -7,7 +7,9 @@ export interface SymbolData {
     multiplier : number[],
     freespins : number
 }
-
+export interface PlayerData {
+    Balance : number,
+}
 // Define interfaces for pay lines and scatter pay table entries
 export interface PayLine {
     line: string[];

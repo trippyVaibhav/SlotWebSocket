@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.makePayLines = exports.addPayLineSymbols = exports.gameWining = exports.UiInitData = exports.gameSettings = void 0;
+exports.makePayLines = exports.addPayLineSymbols = exports.gameWining = exports.UiInitData = exports.playerData = exports.gameSettings = void 0;
 var testData_1 = require("./testData");
 var utils_1 = require("./utils");
 exports.gameSettings = {
@@ -10,8 +10,8 @@ exports.gameSettings = {
     useScatter: false,
     useWild: true,
     wildSymbol: {},
-    Symbols: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
-    Weights: [0.1, 0.1, 0.05, 0.05, 0.01, 0.1, 0.1, 0.1, 0.01, 0.01],
+    Symbols: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', "10", "11", "12"],
+    Weights: [0.1, 0.1, 0.05, 0.05, 0.01, 0.1, 0.1, 0.1, 0.01, 0.01, 0.1, 0.01, 0.01],
     resultSymbolMatrix: [],
     lineData: [],
     fullPayTable: [],
@@ -21,6 +21,9 @@ exports.gameSettings = {
         defaultAmount: 1000,
         increaseValue: 1
     }
+};
+exports.playerData = {
+    Balance: 1000,
 };
 exports.UiInitData = {
     paylines: (0, utils_1.convertSymbols)(testData_1.Symbols),
@@ -85,11 +88,11 @@ function makePayLines() {
     addPayLineSymbols("8", 5, 0.1, 0);
     addPayLineSymbols("8", 4, 0.3, 0);
     addPayLineSymbols("8", 3, 0.5, 0);
-    addPayLineSymbols("9", 5, 0.1, 0);
-    addPayLineSymbols("9", 4, 0.3, 0);
-    addPayLineSymbols("9", 3, 0.5, 0);
+    addPayLineSymbols("9", 5, 0.1, 10);
+    addPayLineSymbols("9", 4, 0.3, 5);
+    addPayLineSymbols("9", 3, 0.5, 3);
     (0, utils_1.setWild)("Wild", 10);
     (0, utils_1.addScatterPay)(5, 11, 5, 0);
-    (0, utils_1.setJackpotSettings)("Jackpot", 12, 50, 5);
+    (0, utils_1.setJackpotSettings)("Jackpot", 12, 50000, 5);
 }
 exports.makePayLines = makePayLines;

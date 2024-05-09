@@ -23,6 +23,9 @@ var CheckResult = /** @class */ (function () {
         this.scatterWinSymbols = [];
         this.jackpotWinSymbols = [];
         this.winSeq = null;
+        if (Global_1.playerData.Balance > 0) {
+            Global_1.playerData.Balance -= Global_1.gameWining.currentBet;
+        }
         var rng = new SlotDataInit_1.RandomResultGenerator();
         this.makeFullPayTable();
         this.searchWinSymbols();
@@ -145,7 +148,7 @@ var CheckResult = /** @class */ (function () {
         var foundArray = [];
         testData_1.Symbols.forEach(function (element) {
             if (SymbolName == element.Name)
-                symbolId = element.ID;
+                symbolId = element.Id;
         });
         for (var i = 0; i < Global_1.gameSettings.matrix.y; i++) {
             for (var j = 0; j < Global_1.gameSettings.matrix.x; j++) {
@@ -157,11 +160,14 @@ var CheckResult = /** @class */ (function () {
     };
     CheckResult.prototype.makeResultJson = function () {
         var ResultData = {
-            ResultReel: Global_1.gameSettings.resultSymbolMatrix,
-            linesToEmit: Global_1.gameWining.WinningLines,
-            symbolsToEmit: Global_1.gameWining.winningSymbols,
-            WinAmout: Global_1.gameWining.TotalWinningAmount,
-            freeSpins: Global_1.gameWining.freeSpins,
+            "GameData": {
+                ResultReel: Global_1.gameSettings.resultSymbolMatrix,
+                linesToEmit: Global_1.gameWining.WinningLines,
+                symbolsToEmit: Global_1.gameWining.winningSymbols,
+                WinAmout: Global_1.gameWining.TotalWinningAmount,
+                freeSpins: Global_1.gameWining.freeSpins,
+            },
+            "PlayerData": Global_1.playerData,
         };
         (0, App_1.sendMessageToClient)(this.clientID, "ResultData", ResultData);
     };
@@ -260,7 +266,7 @@ var PayLines = /** @class */ (function () {
         var counter = 0;
         var symbolsDict = [];
         testData_1.Symbols.forEach(function (name) {
-            var data = { name: name.Name, Id: name.ID, useWildSub: name.useWildSub };
+            var data = { name: name.Name, Id: name.Id, useWildSub: name.useWildSub };
             symbolsDict.push(data);
         });
         for (var i = 0; i < this.line.length; i++) {
@@ -323,7 +329,9 @@ var WinData = /** @class */ (function () {
         return ss;
     };
     WinData.prototype.toString = function () {
+        console.log("pay : ".concat(this.pay, "  current Bet : ").concat(Global_1.gameWining.currentBet));
         Global_1.gameWining.TotalWinningAmount += this.pay;
+        Global_1.playerData.Balance += this.pay;
         Global_1.gameWining.freeSpins = this.freeSpins;
         return this.symbolsToString() + '\n' + 'Pay: ' + this.pay + '; FreeSpin: ' + this.freeSpins;
     };

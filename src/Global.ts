@@ -1,5 +1,5 @@
 import { Symbols } from "./testData";
-import { GameSettings, WildSymbol, addScatterPay, convertSymbols, setJackpotSettings, setWild, winning } from "./utils";
+import { GameSettings, PlayerData, WildSymbol, addScatterPay, convertSymbols, setJackpotSettings, setWild, winning } from "./utils";
 
 export const gameSettings: GameSettings = {
     matrix: { x: 5, y: 3 },
@@ -8,8 +8,8 @@ export const gameSettings: GameSettings = {
     useScatter: false,
     useWild: true,
     wildSymbol: {} as WildSymbol,
-    Symbols: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
-    Weights: [0.1, 0.1, 0.05, 0.05, 0.01, 0.1, 0.1, 0.1, 0.01, 0.01],
+    Symbols: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',"10","11","12"],
+    Weights: [0.1, 0.1, 0.05, 0.05, 0.01, 0.1, 0.1, 0.1, 0.01, 0.01, 0.1, 0.01, 0.01],
     resultSymbolMatrix: [],
     lineData: [],
     fullPayTable: [],
@@ -20,6 +20,10 @@ export const gameSettings: GameSettings = {
         increaseValue: 1
     }
 };
+
+export const playerData : PlayerData = {
+    Balance :1000,
+}
 
 export const UiInitData = {
     paylines : convertSymbols(Symbols) ,
@@ -100,11 +104,11 @@ export function makePayLines() {
     addPayLineSymbols("8", 4, 0.3, 0);
     addPayLineSymbols("8", 3, 0.5, 0);
 
-    addPayLineSymbols("9", 5, 0.1, 0);
-    addPayLineSymbols("9", 4, 0.3, 0);
-    addPayLineSymbols("9", 3, 0.5, 0);
+    addPayLineSymbols("9", 5, 0.1, 10);
+    addPayLineSymbols("9", 4, 0.3, 5);
+    addPayLineSymbols("9", 3, 0.5, 3);
 
     setWild("Wild", 10);
     addScatterPay(5, 11, 5, 0);
-    setJackpotSettings("Jackpot", 12, 50, 5);
+    setJackpotSettings("Jackpot", 12, 50000, 5);
 }

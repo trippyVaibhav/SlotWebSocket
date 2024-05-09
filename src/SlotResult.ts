@@ -1,5 +1,5 @@
 import { sendMessageToClient } from "./App";
-import {  gameSettings, gameWining } from "./Global";
+import {  gameSettings, gameWining, playerData } from "./Global";
 import { RandomResultGenerator } from "./SlotDataInit";
 import { linesApiData, Symbols } from "./testData";
 import { ScatterPayEntry} from "./utils";
@@ -39,10 +39,16 @@ export class CheckResult {
         this.jackpotWinSymbols = [];
         this.winSeq = null;
 
+        if(playerData.Balance > 0)
+        {
+            playerData.Balance -= gameWining.currentBet;
+        }
+
         const rng = new RandomResultGenerator();
 
         this.makeFullPayTable();
         this.searchWinSymbols();
+
     }
 
     makeFullPayTable() {
@@ -175,7 +181,7 @@ export class CheckResult {
 
         Symbols.forEach(element => {
             if (SymbolName == element.Name)
-                symbolId = element.ID;
+                symbolId = element.Id;
         });
 
         for (let i = 0; i < gameSettings.matrix.y; i++) {
@@ -189,11 +195,14 @@ export class CheckResult {
 
     makeResultJson() {
         const ResultData = {
-            ResultReel: gameSettings.resultSymbolMatrix,
-            linesToEmit: gameWining.WinningLines,
-            symbolsToEmit: gameWining.winningSymbols,
-            WinAmout: gameWining.TotalWinningAmount,
-            freeSpins: gameWining.freeSpins,
+            "GameData":{
+                ResultReel: gameSettings.resultSymbolMatrix,
+                linesToEmit: gameWining.WinningLines,
+                symbolsToEmit: gameWining.winningSymbols,
+                WinAmout: gameWining.TotalWinningAmount,
+                freeSpins: gameWining.freeSpins,
+            },
+            "PlayerData" : playerData,
         }
         sendMessageToClient(this.clientID, "ResultData", ResultData);
     }
@@ -310,7 +319,7 @@ export class PayLines {
         let counter = 0;
         let symbolsDict: any[] = [];
         Symbols.forEach((name) => {
-            const data = { name: name.Name, Id: name.ID, useWildSub: name.useWildSub }
+            const data = { name: name.Name, Id: name.Id, useWildSub: name.useWildSub }
             symbolsDict.push(data)
         });
 
@@ -371,7 +380,10 @@ export class WinData {
     }
 
     toString(): string {
+        console.log(`pay : ${this.pay}  current Bet : ${gameWining.currentBet}`);
+        
         gameWining.TotalWinningAmount += this.pay;
+        playerData.Balance += this.pay;
         gameWining.freeSpins = this.freeSpins;
         return this.symbolsToString() + '\n' + 'Pay: ' + this.pay + '; FreeSpin: ' + this.freeSpins;
     }

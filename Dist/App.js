@@ -44,7 +44,7 @@ function handleConnection(ws) {
         var messageData = JSON.parse(message);
         console.log(messageData);
         if (messageData.id == "Spin") {
-            Global_1.gameWining.currentBet = messageData.Data.currentBet;
+            Global_1.gameWining.currentBet = messageData.Data.CurrentBet;
             var result = new SlotResult_1.CheckResult(clientId);
         }
     });
