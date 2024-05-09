@@ -1,9 +1,8 @@
-// import { sendMessageToClient } from "./App";
 import { sendMessageToClient } from "./App";
-import { ScatterPayEntry, gameSettings, gameWining, removeDuplicateArrays } from "./Global";
+import {  gameSettings, gameWining } from "./Global";
 import { RandomResultGenerator } from "./SlotDataInit";
 import { linesApiData, Symbols } from "./testData";
-import { convertData } from "./utils";
+import { ScatterPayEntry} from "./utils";
 
 export class CheckResult {
     clientID: string;
@@ -130,7 +129,6 @@ export class CheckResult {
         
         console.log("TOTAL WINING : " + gameWining.TotalWinningAmount);
         console.log(gameWining.WinningLines);
-        // gameWining.winningSymbols = removeDuplicateArrays(gameWining.winningSymbols);
         console.log(gameWining.winningSymbols);
         console.log("_____________RESULT_END________________");
     }

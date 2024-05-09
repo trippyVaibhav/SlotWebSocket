@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setWild = exports.setJackpotSettings = exports.addScatterPay = exports.makePayLines = exports.removeDuplicateArrays = exports.addPayLineSymbols = exports.UiInitData = exports.gameWining = exports.gameSettings = void 0;
-;
+exports.makePayLines = exports.addPayLineSymbols = exports.gameWining = exports.UiInitData = exports.gameSettings = void 0;
+var testData_1 = require("./testData");
+var utils_1 = require("./utils");
 exports.gameSettings = {
     matrix: { x: 5, y: 3 },
     payLine: [],
@@ -21,7 +22,16 @@ exports.gameSettings = {
         increaseValue: 1
     }
 };
-;
+exports.UiInitData = {
+    paylines: (0, utils_1.convertSymbols)(testData_1.Symbols),
+    spclSymbolTxt: [],
+    AbtLogo: {
+        logoSprite: "https://iili.io/JrMCqPf.png",
+        link: "https://dingding-game.vercel.app/login",
+    },
+    ToULink: "https://dingding-game.vercel.app/login",
+    PopLink: "https://dingding-game.vercel.app/login",
+};
 exports.gameWining = {
     winningSymbols: undefined,
     WinningLines: undefined,
@@ -29,16 +39,6 @@ exports.gameWining = {
     shouldFreeSpin: undefined,
     freeSpins: 0,
     currentBet: 0,
-};
-exports.UiInitData = {
-    paylines: [],
-    spclSymbolTxt: [],
-    AbtLogo: {
-        logoSprite: "https://freeimage.host/i/JrMCqPf ",
-        link: "https://dingding-game.vercel.app/login",
-    },
-    ToULink: "https://dingding-game.vercel.app/login",
-    PopLink: "https://dingding-game.vercel.app/login",
 };
 function addPayLineSymbols(symbol, repetition, pay, freeSpins) {
     var line = Array(repetition).fill(symbol); // Create an array with 'repetition' number of 'symbol'
@@ -52,25 +52,11 @@ function addPayLineSymbols(symbol, repetition, pay, freeSpins) {
         pay: pay,
         freeSpins: freeSpins
     });
-    if (!exports.UiInitData.paylines[parseInt(symbol)])
-        exports.UiInitData.paylines[parseInt(symbol)] = [];
-    exports.UiInitData.paylines[parseInt(symbol)].push(pay.toString());
+    // if(!UiInitData.paylines[parseInt(symbol)]) UiInitData.paylines[parseInt(symbol)]= []
+    // UiInitData.paylines[parseInt(symbol)].push(pay.toString());
     // console.log(gameSettings.payLine);
 }
 exports.addPayLineSymbols = addPayLineSymbols;
-function removeDuplicateArrays(arrayOfArrays) {
-    var uniqueArrays = [];
-    var seen = new Set();
-    arrayOfArrays.forEach(function (subArray) {
-        var subArrayString = JSON.stringify(subArray); // Convert sub-array to string for comparison
-        if (!seen.has(subArrayString)) {
-            uniqueArrays.push(subArray);
-            seen.add(subArrayString);
-        }
-    });
-    return uniqueArrays;
-}
-exports.removeDuplicateArrays = removeDuplicateArrays;
 function makePayLines() {
     addPayLineSymbols("0", 5, 0.1, 0);
     addPayLineSymbols("0", 4, 0.3, 0);
@@ -102,36 +88,8 @@ function makePayLines() {
     addPayLineSymbols("9", 5, 0.1, 0);
     addPayLineSymbols("9", 4, 0.3, 0);
     addPayLineSymbols("9", 3, 0.5, 0);
-    setWild("Wild", 10);
-    addScatterPay(5, 11, 5, 0);
-    setJackpotSettings("Jackpot", 12, 50, 5);
+    (0, utils_1.setWild)("Wild", 10);
+    (0, utils_1.addScatterPay)(5, 11, 5, 0);
+    (0, utils_1.setJackpotSettings)("Jackpot", 12, 50, 5);
 }
 exports.makePayLines = makePayLines;
-// Function to add a scatter pay table entry to the game settings
-function addScatterPay(symbolName, symbolID, pay, freeSpins) {
-    exports.gameSettings.scatterPayTable.push({
-        symbolCount: symbolName,
-        symbolID: symbolID,
-        pay: pay,
-        freeSpins: freeSpins
-    });
-}
-exports.addScatterPay = addScatterPay;
-// Function to set the jackpot settings
-function setJackpotSettings(symbolName, symbolID, defaultAmount, increaseValue) {
-    exports.gameSettings.jackpot.symbolName = symbolName;
-    exports.gameSettings.jackpot.symbolsCount = symbolID;
-    exports.gameSettings.jackpot.defaultAmount = defaultAmount;
-    exports.gameSettings.jackpot.increaseValue = increaseValue;
-}
-exports.setJackpotSettings = setJackpotSettings;
-// Function to set the Wild Symbol
-function setWild(symbolName, symbol) {
-    exports.gameSettings.wildSymbol.SymbolName = symbolName;
-    exports.gameSettings.wildSymbol.SymbolID = symbol;
-}
-exports.setWild = setWild;
-// // Example usage:
-// addPayLine('Wick', 5, 3, 0); // 'Wick' symbol repeated 5 times
-// addScatterPay(5, 0, 5);
-// setJackpotSettings('MyJackpot', 6, 1000, 1);

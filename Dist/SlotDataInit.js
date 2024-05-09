@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RandomResultGenerator = exports.sendInitdata = void 0;
-// import { sendMessageToClient } from "./App";
 var App_1 = require("./App");
 var Global_1 = require("./Global");
 var testData_1 = require("./testData");

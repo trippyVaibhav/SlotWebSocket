@@ -1,53 +1,5 @@
-export interface SymbolData {
-    symbolName: string
-    symbolID: number,
-    useWildSub: boolean,
-}
-
-// Define interfaces for pay lines and scatter pay table entries
-interface PayLine {
-    line: string[];
-    pay: number;
-    freeSpins: number;
-}
-
-export interface ScatterPayEntry {
-    symbolCount: number,
-    symbolID: number,
-
-    pay: number;
-    freeSpins: number;
-}
-
-export interface WildSymbol {
-    SymbolName: string,
-    SymbolID: number,
-}
-
-export interface WeightedItem<T> {
-    item: T;
-    index: number;
-}
-
-export interface GameSettings {
-    matrix: { x: number, y: number }
-    payLine: PayLine[];
-    scatterPayTable: ScatterPayEntry[];
-    useScatter: boolean,
-    useWild: boolean
-    Symbols: string[],
-    Weights: number[],
-    wildSymbol: WildSymbol,
-    resultSymbolMatrix: string[][] | undefined,
-    lineData: number[][],
-    fullPayTable: PayLine[],
-    jackpot: {
-        symbolName: string;
-        symbolsCount: number;
-        defaultAmount: number;
-        increaseValue: number;
-    };
-};
+import { Symbols } from "./testData";
+import { GameSettings, WildSymbol, addScatterPay, convertSymbols, setJackpotSettings, setWild, winning } from "./utils";
 
 export const gameSettings: GameSettings = {
     matrix: { x: 5, y: 3 },
@@ -68,14 +20,17 @@ export const gameSettings: GameSettings = {
         increaseValue: 1
     }
 };
-interface winning {
-    winningSymbols: any[],
-    WinningLines: any[],
-    TotalWinningAmount: number,
-    shouldFreeSpin: boolean,
-    freeSpins: number,
-    currentBet : number
-};
+
+export const UiInitData = {
+    paylines : convertSymbols(Symbols) ,
+    spclSymbolTxt : [],
+    AbtLogo : {
+        logoSprite : "https://iili.io/JrMCqPf.png",
+        link : "https://dingding-game.vercel.app/login",
+    },
+    ToULink : "https://dingding-game.vercel.app/login",
+    PopLink : "https://dingding-game.vercel.app/login",
+}
 
 export let gameWining: winning = {
     winningSymbols: undefined,
@@ -85,20 +40,10 @@ export let gameWining: winning = {
     freeSpins: 0,
     currentBet : 0,
 }
-export const UiInitData = {
-    paylines :  [] ,
-    spclSymbolTxt : [],
-    AbtLogo : {
-        logoSprite : "https://freeimage.host/i/JrMCqPf ",
-        link : "https://dingding-game.vercel.app/login",
-    },
-    ToULink : "https://dingding-game.vercel.app/login",
-    PopLink : "https://dingding-game.vercel.app/login",
-}
 
 export function addPayLineSymbols(symbol: string, repetition: number, pay: number, freeSpins: number): void {
     const line: string[] = Array(repetition).fill(symbol); // Create an array with 'repetition' number of 'symbol'
-
+    
     if (line.length != gameSettings.matrix.x) {
         let lengthToAdd = gameSettings.matrix.x - line.length;
         for (let i = 0; i < lengthToAdd; i++)
@@ -110,29 +55,15 @@ export function addPayLineSymbols(symbol: string, repetition: number, pay: numbe
         pay: pay,
         freeSpins: freeSpins
     });
-
         
-    if(!UiInitData.paylines[parseInt(symbol)]) UiInitData.paylines[parseInt(symbol)]= []
-    UiInitData.paylines[parseInt(symbol)].push(pay.toString());
+    // if(!UiInitData.paylines[parseInt(symbol)]) UiInitData.paylines[parseInt(symbol)]= []
+    // UiInitData.paylines[parseInt(symbol)].push(pay.toString());
     // console.log(gameSettings.payLine);
 }
 
 
-export function removeDuplicateArrays(arrayOfArrays: string[][]): string[][] {
-    let uniqueArrays: string[][] = [];
-    let seen: Set<string> = new Set();
-  
-    arrayOfArrays.forEach(subArray => {
-      let subArrayString = JSON.stringify(subArray); // Convert sub-array to string for comparison
-      if (!seen.has(subArrayString)) {
-        uniqueArrays.push(subArray);
-        seen.add(subArrayString);
-      }
-    });
-  
-    return uniqueArrays;
-  }
 export function makePayLines() {
+
     addPayLineSymbols("0", 5, 0.1, 0);
     addPayLineSymbols("0", 4, 0.3, 0);
     addPayLineSymbols("0", 3, 0.5, 0);
@@ -177,59 +108,3 @@ export function makePayLines() {
     addScatterPay(5, 11, 5, 0);
     setJackpotSettings("Jackpot", 12, 50, 5);
 }
-
-// Function to add a scatter pay table entry to the game settings
-export function addScatterPay(symbolName: number, symbolID: number, pay: number, freeSpins: number): void {
-    gameSettings.scatterPayTable.push({
-        symbolCount: symbolName,
-        symbolID: symbolID,
-        pay: pay,
-        freeSpins: freeSpins
-    });
-}
-
-// Function to set the jackpot settings
-export function setJackpotSettings(symbolName: string, symbolID: number, defaultAmount: number, increaseValue: number): void {
-    gameSettings.jackpot.symbolName = symbolName;
-    gameSettings.jackpot.symbolsCount = symbolID;
-    gameSettings.jackpot.defaultAmount = defaultAmount;
-    gameSettings.jackpot.increaseValue = increaseValue;
-}
-
-// Function to set the Wild Symbol
-export function setWild(symbolName: string, symbol: number) {
-    gameSettings.wildSymbol.SymbolName = symbolName;
-    gameSettings.wildSymbol.SymbolID = symbol;
-}
-
-// // Example usage:
-// addPayLine('Wick', 5, 3, 0); // 'Wick' symbol repeated 5 times
-// addScatterPay(5, 0, 5);
-// setJackpotSettings('MyJackpot', 6, 1000, 1);
-
-// interface symbolMultiplier {
-//     "5x": string;
-//     "4x": string;
-//     "3x": number;
-//     "2x": number;
-//     "1x": number;
-
-//   }
-//   interface symbolPayLineData {
-//     symbolPayline: symbolMultiplier[];
-//   }
-//   function generatePayline(symbol: string[]): symbolPayLineData {
-//     const classes: symbolMultiplier[] = [];
-  
-//     for (let i = 0; i < symbol.length; i++) {
-//       const classInfo: symbolMultiplier = {
-//         "5x": symbol[i],
-//         "4x": symbol[i],
-//         "3x": symbol[i]
-//       };
-//       classes.push(classInfo);
-//     }
-  
-//     return { classes };
-//   }
-  

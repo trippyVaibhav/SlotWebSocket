@@ -1,6 +1,65 @@
-import { WeightedItem, gameSettings } from "./Global";
+import { gameSettings } from "./Global";
 
+export interface SymbolData {
+    symbolName: string
+    symbolID: number,
+    useWildSub: boolean,
+    multiplier : number[],
+    freespins : number
+}
 
+// Define interfaces for pay lines and scatter pay table entries
+export interface PayLine {
+    line: string[];
+    pay: number;
+    freeSpins: number;
+}
+
+export interface ScatterPayEntry {
+    symbolCount: number,
+    symbolID: number,
+
+    pay: number;
+    freeSpins: number;
+}
+
+export interface WildSymbol {
+    SymbolName: string,
+    SymbolID: number,
+}
+
+export interface WeightedItem<T> {
+    item: T;
+    index: number;
+}
+export interface winning {
+    winningSymbols: any[],
+    WinningLines: any[],
+    TotalWinningAmount: number,
+    shouldFreeSpin: boolean,
+    freeSpins: number,
+    currentBet : number
+};
+
+export interface GameSettings {
+    matrix: { x: number, y: number }
+    payLine: PayLine[];
+    scatterPayTable: ScatterPayEntry[];
+    useScatter: boolean,
+    useWild: boolean
+    Symbols: string[],
+    Weights: number[],
+    wildSymbol: WildSymbol,
+    resultSymbolMatrix: string[][] | undefined,
+    lineData: number[][],
+    fullPayTable: PayLine[],
+    jackpot: {
+        symbolName: string;
+        symbolsCount: number;
+        defaultAmount: number;
+        increaseValue: number;
+    };
+};
 
 export function weightedRandom<T>(items: T[], weights: number[]): WeightedItem<T> {
     if (items.length !== weights.length) {
@@ -57,3 +116,47 @@ export function convertData(data: string[][]): string[] {
     }
     return result;
 }
+
+// Function to add a scatter pay table entry to the game settings
+export function addScatterPay(symbolName: number, symbolID: number, pay: number, freeSpins: number): void {
+    gameSettings.scatterPayTable.push({
+    symbolCount: symbolName,
+    symbolID: symbolID,
+    pay: pay,
+    freeSpins: freeSpins
+    });
+}
+
+// Function to set the jackpot settings
+export function setJackpotSettings(symbolName: string, symbolID: number, defaultAmount: number, increaseValue: number): void {
+    gameSettings.jackpot.symbolName = symbolName;
+    gameSettings.jackpot.symbolsCount = symbolID;
+    gameSettings.jackpot.defaultAmount = defaultAmount;
+    gameSettings.jackpot.increaseValue = increaseValue;
+}
+
+// Function to set the Wild Symbol
+export function setWild(symbolName: string, symbol: number) {
+    gameSettings.wildSymbol.SymbolName = symbolName;
+    gameSettings.wildSymbol.SymbolID = symbol;
+}
+
+export function convertSymbols(data) {
+    const convertedData = data.map(symbol => {
+      if (symbol.multiplier) {
+        const multiplierObject = {};
+        multiplierObject['5x'] = symbol.multiplier[0];
+        multiplierObject['4x'] = symbol.multiplier[1];
+        multiplierObject['3x'] = symbol.multiplier[2];
+        
+        return {
+          ID: symbol.ID,
+          multiplier: multiplierObject
+        };
+      } else {
+        return null; // Exclude symbols without multipliers
+      }
+    }).filter(symbol => symbol !== null); // Remove null values
+    
+    return { symbols: convertedData };
+  }

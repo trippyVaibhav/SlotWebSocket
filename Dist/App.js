@@ -44,7 +44,6 @@ function handleConnection(ws) {
         var messageData = JSON.parse(message);
         console.log(messageData);
         if (messageData.id == "Spin") {
-            console.log("Called SPin");
             Global_1.gameWining.currentBet = messageData.Data.currentBet;
             var result = new SlotResult_1.CheckResult(clientId);
         }
@@ -63,11 +62,9 @@ var wss = new WebSocket.Server({ port: 3030 });
 wss.on('connection', handleConnection);
 function sendMessageToClient(clientId, id, message) {
     var ws = clients.get(clientId);
-    if (ws && ws.readyState === WebSocket.OPEN) {
+    if (ws && ws.readyState === WebSocket.OPEN)
         ws.send(JSON.stringify({ id: id, message: message }));
-    }
-    else {
+    else
         console.log("Client ".concat(clientId, " not found or not connected."));
-    }
 }
 exports.sendMessageToClient = sendMessageToClient;

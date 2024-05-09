@@ -1,8 +1,7 @@
-// import { sendMessageToClient } from "./App";
 import { sendMessageToClient } from "./App";
 import { UiInitData, gameSettings, makePayLines} from "./Global";
 import { linesApiData } from "./testData";
-import { convertData, generateMatrix } from "./utils";
+import { generateMatrix } from "./utils";
 
 
 export function sendInitdata(clientID : string)
@@ -32,7 +31,6 @@ export function sendInitdata(clientID : string)
 
 
 export class RandomResultGenerator {
-
     constructor()
     {
         // Generating a 3x5 matrix of random numbers based on weights

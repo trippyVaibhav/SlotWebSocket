@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WinData = exports.PayLines = exports.ComboCounter = exports.CheckResult = void 0;
-// import { sendMessageToClient } from "./App";
 var App_1 = require("./App");
 var Global_1 = require("./Global");
 var SlotDataInit_1 = require("./SlotDataInit");
@@ -107,7 +106,6 @@ var CheckResult = /** @class */ (function () {
         this.makeResultJson();
         console.log("TOTAL WINING : " + Global_1.gameWining.TotalWinningAmount);
         console.log(Global_1.gameWining.WinningLines);
-        // gameWining.winningSymbols = removeDuplicateArrays(gameWining.winningSymbols);
         console.log(Global_1.gameWining.winningSymbols);
         console.log("_____________RESULT_END________________");
     };
