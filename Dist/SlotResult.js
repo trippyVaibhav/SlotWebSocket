@@ -25,6 +25,7 @@ var CheckResult = /** @class */ (function () {
         this.winSeq = null;
         if (Global_1.playerData.Balance > 0) {
             Global_1.playerData.Balance -= Global_1.gameWining.currentBet;
+            // playerData.haveWon -= gameWining.currentBet;
         }
         var rng = new SlotDataInit_1.RandomResultGenerator();
         this.makeFullPayTable();
@@ -332,6 +333,7 @@ var WinData = /** @class */ (function () {
         console.log("pay : ".concat(this.pay, "  current Bet : ").concat(Global_1.gameWining.currentBet));
         Global_1.gameWining.TotalWinningAmount += this.pay;
         Global_1.playerData.Balance += this.pay;
+        Global_1.playerData.haveWon += this.pay;
         Global_1.gameWining.freeSpins = this.freeSpins;
         return this.symbolsToString() + '\n' + 'Pay: ' + this.pay + '; FreeSpin: ' + this.freeSpins;
     };

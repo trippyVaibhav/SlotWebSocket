@@ -24,6 +24,7 @@ exports.gameSettings = {
 };
 exports.playerData = {
     Balance: 1000,
+    haveWon: 100,
 };
 exports.UiInitData = {
     paylines: (0, utils_1.convertSymbols)(testData_1.Symbols),

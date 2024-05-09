@@ -1,5 +1,5 @@
 import { sendMessageToClient } from "./App";
-import { UiInitData, gameSettings, makePayLines} from "./Global";
+import { UiInitData, gameSettings, makePayLines, playerData} from "./Global";
 import { linesApiData } from "./testData";
 import { generateMatrix } from "./utils";
 
@@ -25,6 +25,7 @@ export function sendInitdata(clientID : string)
            "autoSpin": [1, 5, 10, 20]
         },
         "UIData":  UiInitData,
+        "PlayerData" : playerData,
         };
     sendMessageToClient(clientID,"InitData",dataToSend)
 }

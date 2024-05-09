@@ -20,9 +20,9 @@ export const gameSettings: GameSettings = {
         increaseValue: 1
     }
 };
-
 export const playerData : PlayerData = {
     Balance :1000,
+    haveWon :100,
 }
 
 export const UiInitData = {

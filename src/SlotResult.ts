@@ -42,6 +42,7 @@ export class CheckResult {
         if(playerData.Balance > 0)
         {
             playerData.Balance -= gameWining.currentBet;
+            // playerData.haveWon -= gameWining.currentBet;
         }
 
         const rng = new RandomResultGenerator();
@@ -384,6 +385,7 @@ export class WinData {
         
         gameWining.TotalWinningAmount += this.pay;
         playerData.Balance += this.pay;
+        playerData.haveWon += this.pay;
         gameWining.freeSpins = this.freeSpins;
         return this.symbolsToString() + '\n' + 'Pay: ' + this.pay + '; FreeSpin: ' + this.freeSpins;
     }

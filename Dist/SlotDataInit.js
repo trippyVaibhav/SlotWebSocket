@@ -22,6 +22,7 @@ function sendInitdata(clientID) {
             "autoSpin": [1, 5, 10, 20]
         },
         "UIData": Global_1.UiInitData,
+        "PlayerData": Global_1.playerData,
     };
     (0, App_1.sendMessageToClient)(clientID, "InitData", dataToSend);
 }
