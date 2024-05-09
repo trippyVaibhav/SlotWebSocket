@@ -156,6 +156,7 @@ export class CheckResult {
                 winSymbols.push(symbolIndex);
             }
         }
+        if(!payLine.pay)payLine.pay = 0;
         return new WinData(winSymbols, payLine.freeSpins, payLine.pay);
     }
 

@@ -128,6 +128,8 @@ var CheckResult = /** @class */ (function () {
                 winSymbols.push(symbolIndex);
             }
         }
+        if (!payLine.pay)
+            payLine.pay = 0;
         return new WinData(winSymbols, payLine.freeSpins, payLine.pay);
     };
     CheckResult.prototype.getSymbolOnMatrix = function (index) {
