@@ -94,7 +94,7 @@ var CheckResult = /** @class */ (function () {
                 this.scatterWinSymbols = [];
         }
         this.jackpotWinSymbols = [];
-        this.jackpotWin = null;
+        this.jackpotWin = [];
         console.log('use Jackpot: ' + this.useJackpot);
         if (this.useJackpot) {
             this.reels.forEach(function (reel) {
@@ -107,14 +107,18 @@ var CheckResult = /** @class */ (function () {
             if (this.jackpot.symbolsCount > 0 && this.jackpot.symbolsCount == this.jackpotWinSymbols.length) {
                 this.jackpotWin = new WinData(this.jackpotWinSymbols, 0, Global_1.gameSettings.jackpot.defaultAmount);
             }
-            if (this.jackpotWin == null)
-                this.jackpotWinSymbols = [];
+            if (this.jackpotWin.length != 0)
+                this.jackpotWin.updateBalance();
         }
         console.log(Global_1.gameSettings.resultSymbolMatrix);
         if (Global_1.gameWining.freeSpins > 0)
             Global_1.gameWining.shouldFreeSpin = true;
         else
             Global_1.gameWining.shouldFreeSpin = false;
+        // if(this.jackpotWin.length != 0)
+        // {
+        // }
+        // console.log("JACKPOT : " + this.jackpotWin);
         this.makeResultJson();
         console.log("TOTAL WINING : " + Global_1.gameWining.TotalWinningAmount);
         console.log(Global_1.gameWining.WinningLines);
@@ -177,6 +181,7 @@ var CheckResult = /** @class */ (function () {
                 symbolsToEmit: Global_1.gameWining.winningSymbols,
                 WinAmout: Global_1.gameWining.TotalWinningAmount,
                 freeSpins: Global_1.gameWining.freeSpins,
+                jackpot: this.jackpotWin
             },
             "PlayerData": Global_1.playerData,
         };
@@ -342,11 +347,14 @@ var WinData = /** @class */ (function () {
     };
     WinData.prototype.toString = function () {
         console.log("pay : ".concat(this.pay, "  current Bet : ").concat(Global_1.gameWining.currentBet));
+        this.updateBalance();
+        return this.symbolsToString() + '\n' + 'Pay: ' + this.pay + '; FreeSpin: ' + this.freeSpins;
+    };
+    WinData.prototype.updateBalance = function () {
         Global_1.gameWining.TotalWinningAmount += this.pay;
         Global_1.playerData.Balance += this.pay;
         Global_1.playerData.haveWon += this.pay;
         Global_1.gameWining.freeSpins = this.freeSpins;
-        return this.symbolsToString() + '\n' + 'Pay: ' + this.pay + '; FreeSpin: ' + this.freeSpins;
     };
     return WinData;
 }());

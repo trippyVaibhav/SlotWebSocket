@@ -125,7 +125,7 @@ export class CheckResult {
             
         }
         this.jackpotWinSymbols = [];
-        this.jackpotWin = null;
+        this.jackpotWin = [];
 
         console.log('use Jackpot: ' + this.useJackpot);
         if (this.useJackpot) {
@@ -137,16 +137,23 @@ export class CheckResult {
             if (this.jackpot.symbolsCount > 0 && this.jackpot.symbolsCount == this.jackpotWinSymbols.length) {
                 this.jackpotWin = new WinData(this.jackpotWinSymbols, 0, gameSettings.jackpot.defaultAmount);
             }
-
-            if (this.jackpotWin == null) this.jackpotWinSymbols = [];
+            
+            if (this.jackpotWin.length != 0) this.jackpotWin.updateBalance();
         }
         console.log(gameSettings.resultSymbolMatrix);
         if (gameWining.freeSpins > 0)
             gameWining.shouldFreeSpin = true;
         else
             gameWining.shouldFreeSpin = false;
-
+            
+        // if(this.jackpotWin.length != 0)
+        // {
+            
+        // }
+        // console.log("JACKPOT : " + this.jackpotWin);
+                
         this.makeResultJson();
+
         
         console.log("TOTAL WINING : " + gameWining.TotalWinningAmount);
         console.log(gameWining.WinningLines);
@@ -217,6 +224,7 @@ export class CheckResult {
                 symbolsToEmit: gameWining.winningSymbols,
                 WinAmout: gameWining.TotalWinningAmount,
                 freeSpins: gameWining.freeSpins,
+                jackpot : this.jackpotWin
             },
             "PlayerData" : playerData,
         }
@@ -397,11 +405,14 @@ export class WinData {
 
     toString(): string {
         console.log(`pay : ${this.pay}  current Bet : ${gameWining.currentBet}`);
-            
+        this.updateBalance();
+        return this.symbolsToString() + '\n' + 'Pay: ' + this.pay + '; FreeSpin: ' + this.freeSpins;
+    }
+    updateBalance()
+    {
         gameWining.TotalWinningAmount += this.pay;
         playerData.Balance += this.pay;
         playerData.haveWon += this.pay;
         gameWining.freeSpins = this.freeSpins;
-        return this.symbolsToString() + '\n' + 'Pay: ' + this.pay + '; FreeSpin: ' + this.freeSpins;
     }
 }
