@@ -62,9 +62,9 @@ function convertData(data) {
 }
 exports.convertData = convertData;
 // Function to add a scatter pay table entry to the game settings
-function addScatterPay(symbolName, symbolID, pay, freeSpins) {
+function addScatterPay(symbolCount, symbolID, pay, freeSpins) {
     Global_1.gameSettings.scatterPayTable.push({
-        symbolCount: symbolName,
+        symbolCount: symbolCount,
         symbolID: symbolID,
         pay: pay,
         freeSpins: freeSpins

@@ -1,14 +1,24 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WinData = exports.PayLines = exports.ComboCounter = exports.CheckResult = void 0;
+var Alerts_1 = require("./Alerts");
 var App_1 = require("./App");
 var Global_1 = require("./Global");
 var SlotDataInit_1 = require("./SlotDataInit");
 var testData_1 = require("./testData");
 var CheckResult = /** @class */ (function () {
     function CheckResult(clientID) {
+        if (Global_1.playerData.Balance < Global_1.gameWining.currentBet) {
+            (0, Alerts_1.Alerts)(clientID, "Low Balance");
+            return;
+        }
+        console.log("CurrentBet : " + Global_1.gameWining.currentBet);
+        Global_1.playerData.Balance -= Global_1.gameWining.currentBet;
+        //playerData.haveWon -= gameWining.currentBet;
         this.clientID = clientID;
         Global_1.gameSettings.lineData = testData_1.linesApiData;
+        var rng = new SlotDataInit_1.RandomResultGenerator();
+        this.makeFullPayTable();
         this.scatter = 'scatter';
         this.useScatter = (Global_1.gameSettings.useScatter && this.scatter !== null);
         this.jackpot = Global_1.gameSettings.jackpot;
@@ -23,12 +33,6 @@ var CheckResult = /** @class */ (function () {
         this.scatterWinSymbols = [];
         this.jackpotWinSymbols = [];
         this.winSeq = null;
-        if (Global_1.playerData.Balance > 0) {
-            Global_1.playerData.Balance -= Global_1.gameWining.currentBet;
-            // playerData.haveWon -= gameWining.currentBet;
-        }
-        var rng = new SlotDataInit_1.RandomResultGenerator();
-        this.makeFullPayTable();
         this.searchWinSymbols();
     }
     CheckResult.prototype.makeFullPayTable = function () {
@@ -72,16 +76,20 @@ var CheckResult = /** @class */ (function () {
         this.scatterWinSymbols = [];
         this.scatterWin = null;
         if (this.useScatter) {
+            // console.log("USED SCATTER");
             this.reels.forEach(function (reel) {
                 var _a;
                 var temp = _this.findSymbol(_this.scatter);
+                // console.log("SCATTER TEMP " + temp);
                 if (temp.length > 0)
                     (_a = _this.scatterWinSymbols).push.apply(_a, temp);
             });
             this.scatterPayTable.forEach(function (sPL) {
+                console.log(sPL);
                 if (sPL.symbolCount > 0 && sPL.symbolCount == _this.scatterWinSymbols.length)
                     _this.scatterWin = new WinData(_this.scatterWinSymbols, sPL.freeSpins, sPL.pay);
             });
+            // console.log(`SCATTER SYMBOL :  ${this.scatterWinSymbols}`);
             if (this.scatterWin == null)
                 this.scatterWinSymbols = [];
         }
@@ -319,6 +327,7 @@ var PayLines = /** @class */ (function () {
 exports.PayLines = PayLines;
 var WinData = /** @class */ (function () {
     function WinData(symbols, freeSpins, pay) {
+        this.pay = 0;
         this.symbols = symbols;
         this.freeSpins = freeSpins;
         this.pay = pay;

@@ -121,9 +121,9 @@ export function convertData(data: string[][]): string[] {
 }
 
 // Function to add a scatter pay table entry to the game settings
-export function addScatterPay(symbolName: number, symbolID: number, pay: number, freeSpins: number): void {
+export function addScatterPay(symbolCount: number, symbolID: number, pay: number, freeSpins: number): void {
     gameSettings.scatterPayTable.push({
-    symbolCount: symbolName,
+    symbolCount: symbolCount,
     symbolID: symbolID,
     pay: pay,
     freeSpins: freeSpins

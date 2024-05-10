@@ -1,3 +1,5 @@
+import { log } from "console";
+import { Alerts } from "./Alerts";
 import { sendMessageToClient } from "./App";
 import {  gameSettings, gameWining, playerData } from "./Global";
 import { RandomResultGenerator } from "./SlotDataInit";
@@ -20,8 +22,21 @@ export class CheckResult {
     winSeq: any;
 
     constructor(clientID: string) {
+        
+        if(playerData.Balance < gameWining.currentBet)
+        {
+            Alerts(clientID,"Low Balance");
+            return;
+        }
+        console.log("CurrentBet : " +gameWining.currentBet);
+        
+        playerData.Balance -= gameWining.currentBet;
+        //playerData.haveWon -= gameWining.currentBet;
+        
         this.clientID = clientID;
         gameSettings.lineData = linesApiData;
+        const rng = new RandomResultGenerator();
+        this.makeFullPayTable();
 
         this.scatter = 'scatter';
         this.useScatter = (gameSettings.useScatter && this.scatter !== null);
@@ -38,18 +53,8 @@ export class CheckResult {
         this.scatterWinSymbols = [];
         this.jackpotWinSymbols = [];
         this.winSeq = null;
-
-        if(playerData.Balance > 0)
-        {
-            playerData.Balance -= gameWining.currentBet;
-            // playerData.haveWon -= gameWining.currentBet;
-        }
-
-        const rng = new RandomResultGenerator();
-
-        this.makeFullPayTable();
+  
         this.searchWinSymbols();
-
     }
 
     makeFullPayTable() {
@@ -99,16 +104,25 @@ export class CheckResult {
         this.scatterWin = null;
 
         if (this.useScatter) {
+            // console.log("USED SCATTER");
+            
             this.reels.forEach((reel) => {
                 let temp = this.findSymbol(this.scatter);
+                // console.log("SCATTER TEMP " + temp);
+                
                 if (temp.length > 0) this.scatterWinSymbols.push(...temp);
+
+
             });
 
             this.scatterPayTable.forEach((sPL) => {
+                console.log(sPL);
                 if (sPL.symbolCount > 0 && sPL.symbolCount == this.scatterWinSymbols.length) 
                 this.scatterWin = new WinData(this.scatterWinSymbols, sPL.freeSpins, sPL.pay);
             });
+            // console.log(`SCATTER SYMBOL :  ${this.scatterWinSymbols}`);
             if (this.scatterWin == null) this.scatterWinSymbols = [];
+            
         }
         this.jackpotWinSymbols = [];
         this.jackpotWin = null;
@@ -365,7 +379,7 @@ export class PayLines {
 export class WinData {
     symbols: any[];
     freeSpins: number;
-    pay: number;
+    pay: number = 0;
 
     constructor(symbols: any[], freeSpins: number, pay: number) {
         this.symbols = symbols;
@@ -383,7 +397,7 @@ export class WinData {
 
     toString(): string {
         console.log(`pay : ${this.pay}  current Bet : ${gameWining.currentBet}`);
-        
+            
         gameWining.TotalWinningAmount += this.pay;
         playerData.Balance += this.pay;
         playerData.haveWon += this.pay;
