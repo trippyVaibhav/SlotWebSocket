@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WinData = exports.PayLines = exports.ComboCounter = exports.CheckResult = void 0;
+exports.CheckResult = void 0;
 var App_1 = require("./App");
 var Global_1 = require("./Global");
 var SlotDataInit_1 = require("./SlotDataInit");
@@ -95,14 +95,14 @@ var CheckResult = /** @class */ (function () {
                 if (temp.length > 0)
                     (_a = _this.jackpotWinSymbols).push.apply(_a, temp);
             });
-            console.log('find Jackpot symbols: ' + this.jackpotWinSymbols.length);
+            console.log('find Jackpot symbols: ' + this.jackpotWinSymbols);
             if (this.jackpot.symbolsCount > 0 && this.jackpot.symbolsCount == this.jackpotWinSymbols.length) {
                 this.jackpotWin = new WinData(this.jackpotWinSymbols, 0, Global_1.gameSettings.jackpot.defaultAmount);
             }
             if (this.jackpotWin == null)
                 this.jackpotWinSymbols = [];
         }
-        console.log(Global_1.gameSettings.resultSymbolMatrix);
+        console.log("result :", Global_1.gameSettings.resultSymbolMatrix);
         if (Global_1.gameWining.freeSpins > 0)
             Global_1.gameWining.shouldFreeSpin = true;
         else
@@ -194,11 +194,13 @@ var ComboCounter = /** @class */ (function () {
         this.firstCombo = true;
     }
     ComboCounter.prototype.nextCombo = function () {
+        console.log("__________________combo countter strart _______________");
         if (this.firstCombo) {
             this.firstCombo = false;
             return true;
         }
         for (var i = this.maxCounterValues.length - 1; i >= 0; i--) {
+            console.log("combo :", this.combo);
             if (this.combo[i] < this.maxCounterValues[i]) {
                 this.combo[i]++;
                 if (i != this.maxCounterValues.length - 1) // reset low "bits"
@@ -210,6 +212,7 @@ var ComboCounter = /** @class */ (function () {
                 return true;
             }
         }
+        console.log("________________combo countter end _________________");
         return false;
     };
     ComboCounter.prototype.sum = function () {
@@ -226,7 +229,6 @@ var ComboCounter = /** @class */ (function () {
     };
     return ComboCounter;
 }());
-exports.ComboCounter = ComboCounter;
 var PayLines = /** @class */ (function () {
     function PayLines(line, pay, freeSpins, wild) {
         this.line = line;
@@ -314,7 +316,6 @@ var PayLines = /** @class */ (function () {
     };
     return PayLines;
 }());
-exports.PayLines = PayLines;
 var WinData = /** @class */ (function () {
     function WinData(symbols, freeSpins, pay) {
         this.symbols = symbols;
@@ -339,4 +340,3 @@ var WinData = /** @class */ (function () {
     };
     return WinData;
 }());
-exports.WinData = WinData;

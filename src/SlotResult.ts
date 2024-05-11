@@ -78,7 +78,6 @@ export class CheckResult {
 
             let win = null;
             gameSettings.fullPayTable.forEach((Payline: PayLines) => {
-
                 //  find max win (or win with max symbols count)
                 const winTemp = this.getPayLineWin(Payline, lb);
                 if (winTemp != null) {
@@ -119,14 +118,14 @@ export class CheckResult {
                 var temp = this.findSymbol(gameSettings.jackpot.symbolName);
                 if (temp.length > 0) this.jackpotWinSymbols.push(...temp);
             });
-            console.log('find Jackpot symbols: ' + this.jackpotWinSymbols.length);
+            console.log('find Jackpot symbols: ' + this.jackpotWinSymbols);
             if (this.jackpot.symbolsCount > 0 && this.jackpot.symbolsCount == this.jackpotWinSymbols.length) {
                 this.jackpotWin = new WinData(this.jackpotWinSymbols, 0, gameSettings.jackpot.defaultAmount);
             }
 
             if (this.jackpotWin == null) this.jackpotWinSymbols = [];
         }
-        console.log(gameSettings.resultSymbolMatrix);
+        console.log("result :",gameSettings.resultSymbolMatrix);
         if (gameWining.freeSpins > 0)
             gameWining.shouldFreeSpin = true;
         else
@@ -220,7 +219,7 @@ export class CheckResult {
 }
 
 // Helper class to make combinations
-export class ComboCounter {
+class ComboCounter {
     maxCounterValues: any;
     combo: any[];
     firstCombo: boolean;
@@ -233,11 +232,13 @@ export class ComboCounter {
     }
 
     nextCombo() {
+        console.log("__________________combo countter strart _______________")
         if (this.firstCombo) {
             this.firstCombo = false;
             return true;
         }
         for (let i = this.maxCounterValues.length - 1; i >= 0; i--) {
+            console.log("combo :", this.combo);
             if (this.combo[i] < this.maxCounterValues[i]) {
                 this.combo[i]++;
                 if (i != this.maxCounterValues.length - 1) // reset low "bits"
@@ -249,6 +250,7 @@ export class ComboCounter {
                 return true;
             }
         }
+        console.log("________________combo countter end _________________")
         return false;
     }
 
@@ -267,7 +269,7 @@ export class ComboCounter {
 }
 
 
-export class PayLines {
+class PayLines {
     wild: any;
     useWildInFirstPosition: boolean;
     useWild: any;
@@ -361,7 +363,7 @@ export class PayLines {
     }
 }
 
-export class WinData {
+class WinData {
     symbols: any[];
     freeSpins: number;
     pay: number;
