@@ -15,8 +15,8 @@ var CheckResult = /** @class */ (function () {
         this.useJackpot = (this.jackpot !== null);
         this.scatterPayTable = Global_1.gameSettings.scatterPayTable;
         this.reels = Global_1.gameSettings.resultSymbolMatrix;
-        this.scatterWin = null;
-        this.jackpotWin = null;
+        this.scatterWin = [];
+        this.jackpotWin = [];
         Global_1.gameWining.WinningLines = [];
         Global_1.gameWining.winningSymbols = [];
         Global_1.gameWining.TotalWinningAmount = 0;
@@ -87,7 +87,7 @@ var CheckResult = /** @class */ (function () {
                 this.scatterWinSymbols = [];
         }
         this.jackpotWinSymbols = [];
-        this.jackpotWin = null;
+        this.jackpotWin = [];
         console.log('use Jackpot: ' + this.useJackpot);
         if (this.useJackpot) {
             this.reels.forEach(function (reel) {
@@ -99,6 +99,7 @@ var CheckResult = /** @class */ (function () {
             console.log('find Jackpot symbols: ' + this.jackpotWinSymbols);
             if (this.jackpot.symbolsCount > 0 && this.jackpot.symbolsCount == this.jackpotWinSymbols.length) {
                 this.jackpotWin = new WinData(this.jackpotWinSymbols, 0, Global_1.gameSettings.jackpot.defaultAmount);
+                Global_1.playerData.Balance += this.jackpotWin.pay;
             }
             if (this.jackpotWin == null)
                 this.jackpotWinSymbols = [];
@@ -169,6 +170,7 @@ var CheckResult = /** @class */ (function () {
                 WinAmout: Global_1.gameWining.TotalWinningAmount,
                 freeSpins: Global_1.gameWining.freeSpins,
                 bonusStart: Global_1.gameSettings.bonus.start,
+                Jackpot: this.jackpotWin,
                 bonusStopIndex: Global_1.gameSettings.bonus.stopIndex
             },
             "PlayerData": Global_1.playerData,

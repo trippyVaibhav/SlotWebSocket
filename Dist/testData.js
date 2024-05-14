@@ -103,7 +103,7 @@ exports.Symbols = [
     {
         Name: "Jackpot",
         Id: 12,
-        weightedRandomness: 0.05,
+        weightedRandomness: 0.3,
         useWildSub: false,
         multiplier: []
     }

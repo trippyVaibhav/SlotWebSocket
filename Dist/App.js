@@ -16,7 +16,6 @@ function handleConnection(ws) {
     // Store the WebSocket connection with its associated client ID
     clients.set(clientId, ws);
     console.log("Client connected: ".concat(clientId));
-    (0, SlotDataInit_1.sendInitdata)(clientId);
     // Function to handle pong messages
     function heartbeat() {
         isAlive = true;
@@ -40,9 +39,12 @@ function handleConnection(ws) {
     ws.on('pong', heartbeat);
     // Event listener for messages from the client
     ws.on('message', function incoming(message) {
-        console.log("Received message from ".concat(clientId, ": ").concat(message.id));
         var messageData = JSON.parse(message);
-        console.log(messageData);
+        console.log("Received message from ".concat(clientId, ": ").concat(messageData.id));
+        if (messageData.id == "Auth") {
+            console.log("GameID : ".concat(messageData.Data.GameID));
+            (0, SlotDataInit_1.sendInitdata)(clientId);
+        }
         if (messageData.id == "Spin") {
             Global_1.gameWining.currentBet = messageData.Data.CurrentBet;
             var result = new SlotResult_1.CheckResult(clientId);

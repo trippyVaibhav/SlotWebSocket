@@ -30,8 +30,8 @@ export class CheckResult {
         this.useJackpot = (this.jackpot !== null);
         this.scatterPayTable = gameSettings.scatterPayTable;
         this.reels = gameSettings.resultSymbolMatrix;
-        this.scatterWin = null;
-        this.jackpotWin = null;
+        this.scatterWin = [];
+        this.jackpotWin = [];
         gameWining.WinningLines = [];
         gameWining.winningSymbols = [];
         gameWining.TotalWinningAmount = 0;
@@ -111,7 +111,7 @@ export class CheckResult {
             if (this.scatterWin == null) this.scatterWinSymbols = [];
         }
         this.jackpotWinSymbols = [];
-        this.jackpotWin = null;
+        this.jackpotWin = [];
 
         console.log('use Jackpot: ' + this.useJackpot);
         if (this.useJackpot) {
@@ -122,6 +122,7 @@ export class CheckResult {
             console.log('find Jackpot symbols: ' + this.jackpotWinSymbols);
             if (this.jackpot.symbolsCount > 0 && this.jackpot.symbolsCount == this.jackpotWinSymbols.length) {
                 this.jackpotWin = new WinData(this.jackpotWinSymbols, 0, gameSettings.jackpot.defaultAmount);
+                playerData.Balance += this.jackpotWin.pay;
             }
 
             if (this.jackpotWin == null) this.jackpotWinSymbols = [];
@@ -204,6 +205,7 @@ export class CheckResult {
                 WinAmout: gameWining.TotalWinningAmount,
                 freeSpins: gameWining.freeSpins,
                 bonusStart: gameSettings.bonus.start,
+                Jackpot : this.jackpotWin,
                 bonusStopIndex: gameSettings.bonus.stopIndex
             },
             "PlayerData" : playerData,
