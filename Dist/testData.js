@@ -92,7 +92,6 @@ exports.Symbols = [
         Id: 9,
         weightedRandomness: 0.05,
         useWildSub: false,
-        multiplier1: [0.5, 0.3, 0.1],
         multiplier: [{ reps: 5, value: 0.5, freeSpin: 10 }, { reps: 4, value: 0.3, freeSpin: 5 }, { reps: 5, value: 0.1, freeSpin: 3 }]
     },
     {
