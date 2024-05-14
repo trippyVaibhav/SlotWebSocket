@@ -5,7 +5,7 @@ import {  gameSettings, gameWining, playerData } from "./Global";
 import { RandomResultGenerator } from "./SlotDataInit";
 import { linesApiData, Symbols } from "./testData";
 import { ScatterPayEntry} from "./utils";
-
+import { bonusGame } from "./BonusResults";
 export class CheckResult {
     clientID: string;
     scatter: string;
@@ -20,6 +20,7 @@ export class CheckResult {
     scatterWinSymbols: any[];
     jackpotWinSymbols: any[];
     winSeq: any;
+    bonus:boolean;
 
     constructor(clientID: string) {
         
@@ -44,11 +45,10 @@ export class CheckResult {
         this.useJackpot = (this.jackpot !== null);
         this.scatterPayTable = gameSettings.scatterPayTable;
         this.reels = gameSettings.resultSymbolMatrix;
-        this.scatterWin = null;
-        this.jackpotWin = null;
+        this.scatterWin = [];
+        this.jackpotWin = [];
         gameWining.WinningLines = [];
         gameWining.winningSymbols = [];
-
         gameWining.TotalWinningAmount = 0;
         this.scatterWinSymbols = [];
         this.jackpotWinSymbols = [];
@@ -83,7 +83,6 @@ export class CheckResult {
 
             let win = null;
             gameSettings.fullPayTable.forEach((Payline: PayLines) => {
-
                 //  find max win (or win with max symbols count)
                 const winTemp = this.getPayLineWin(Payline, lb);
                 if (winTemp != null) {
@@ -133,14 +132,15 @@ export class CheckResult {
                 var temp = this.findSymbol(gameSettings.jackpot.symbolName);
                 if (temp.length > 0) this.jackpotWinSymbols.push(...temp);
             });
-            console.log('find Jackpot symbols: ' + this.jackpotWinSymbols.length);
+            console.log('find Jackpot symbols: ' + this.jackpotWinSymbols);
             if (this.jackpot.symbolsCount > 0 && this.jackpot.symbolsCount == this.jackpotWinSymbols.length) {
                 this.jackpotWin = new WinData(this.jackpotWinSymbols, 0, gameSettings.jackpot.defaultAmount);
+                playerData.Balance += this.jackpotWin.pay;
             }
             
             if (this.jackpotWin.length != 0) this.jackpotWin.updateBalance();
         }
-        console.log(gameSettings.resultSymbolMatrix);
+        console.log("result :",gameSettings.resultSymbolMatrix);
         if (gameWining.freeSpins > 0)
             gameWining.shouldFreeSpin = true;
         else
@@ -217,6 +217,7 @@ export class CheckResult {
     }
 
     makeResultJson() {
+
         const ResultData = {
             "GameData":{
                 ResultReel: gameSettings.resultSymbolMatrix,
@@ -224,7 +225,10 @@ export class CheckResult {
                 symbolsToEmit: gameWining.winningSymbols,
                 WinAmout: gameWining.TotalWinningAmount,
                 freeSpins: gameWining.freeSpins,
-                jackpot : this.jackpotWin
+                jackpot : this.jackpotWin,
+                isBonus : gameSettings.bonus.start,
+                BonusStopIndex : gameSettings.bonus.stopIndex,
+
             },
             "PlayerData" : playerData,
         }
@@ -243,7 +247,7 @@ export class CheckResult {
 }
 
 // Helper class to make combinations
-export class ComboCounter {
+class ComboCounter {
     maxCounterValues: any;
     combo: any[];
     firstCombo: boolean;
@@ -290,7 +294,7 @@ export class ComboCounter {
 }
 
 
-export class PayLines {
+class PayLines {
     wild: any;
     useWildInFirstPosition: boolean;
     useWild: any;
@@ -384,7 +388,7 @@ export class PayLines {
     }
 }
 
-export class WinData {
+class WinData {
     symbols: any[];
     freeSpins: number;
     pay: number = 0;

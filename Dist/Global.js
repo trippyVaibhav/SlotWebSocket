@@ -10,9 +10,10 @@ exports.gameSettings = {
     useScatter: false,
     useWild: true,
     wildSymbol: {},
-    Symbols: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', "10", "11", "12"],
-    Weights: [0.1, 0.1, 0.05, 0.05, 0.01, 0.1, 0.1, 0.1, 0.01, 0.01, 0.1, 0.01, 0.1],
+    // Symbols: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',"10","11","12"],
     // Weights: [0.1, 0.1, 0.05, 0.05, 0.01, 0.1, 0.1, 0.1, 0.01, 0.01, 0.1, 0.01, 0.01],
+    Symbols: initSymbols(),
+    Weights: initWeigts(),
     resultSymbolMatrix: [],
     lineData: [],
     fullPayTable: [],
@@ -21,8 +22,27 @@ exports.gameSettings = {
         symbolsCount: 6,
         defaultAmount: 1000,
         increaseValue: 1
+    },
+    bonus: {
+        type: "spin",
+        start: false,
+        stopIndex: -1
     }
 };
+function initSymbols() {
+    var symbols = [];
+    for (var i = 0; i < testData_1.Symbols.length; i++) {
+        symbols.push(testData_1.Symbols[i].Id.toString());
+    }
+    return symbols;
+}
+function initWeigts() {
+    var weights = [];
+    for (var i = 0; i < testData_1.Symbols.length; i++) {
+        weights.push(testData_1.Symbols[i].weightedRandomness);
+    }
+    return weights;
+}
 exports.playerData = {
     Balance: 1000,
     haveWon: 100,
@@ -63,36 +83,44 @@ function addPayLineSymbols(symbol, repetition, pay, freeSpins) {
 }
 exports.addPayLineSymbols = addPayLineSymbols;
 function makePayLines() {
-    addPayLineSymbols("0", 5, 0.1, 0);
-    addPayLineSymbols("0", 4, 0.3, 0);
-    addPayLineSymbols("0", 3, 0.5, 0);
-    addPayLineSymbols("1", 5, 0.1, 0);
-    addPayLineSymbols("1", 4, 0.3, 0);
-    addPayLineSymbols("1", 3, 0.5, 0);
-    addPayLineSymbols("2", 5, 0.1, 0);
-    addPayLineSymbols("2", 4, 0.3, 0);
-    addPayLineSymbols("2", 3, 0.5, 0);
-    addPayLineSymbols("3", 5, 0.1, 0);
-    addPayLineSymbols("3", 4, 0.3, 0);
-    addPayLineSymbols("3", 3, 0.5, 0);
-    addPayLineSymbols("4", 5, 0.1, 0);
-    addPayLineSymbols("4", 4, 0.3, 0);
-    addPayLineSymbols("4", 3, 0.5, 0);
-    addPayLineSymbols("5", 5, 0.1, 0);
-    addPayLineSymbols("5", 4, 0.3, 0);
-    addPayLineSymbols("5", 3, 0.5, 0);
-    addPayLineSymbols("6", 5, 0.1, 0);
-    addPayLineSymbols("6", 4, 0.3, 0);
-    addPayLineSymbols("6", 3, 0.5, 0);
-    addPayLineSymbols("7", 5, 0.1, 0);
-    addPayLineSymbols("7", 4, 0.3, 0);
-    addPayLineSymbols("7", 3, 0.5, 0);
-    addPayLineSymbols("8", 5, 0.1, 0);
-    addPayLineSymbols("8", 4, 0.3, 0);
-    addPayLineSymbols("8", 3, 0.5, 0);
-    addPayLineSymbols("9", 5, 0.1, 10);
-    addPayLineSymbols("9", 4, 0.3, 5);
-    addPayLineSymbols("9", 3, 0.5, 3);
+    testData_1.Symbols.forEach(function (element) {
+        var _a;
+        if (element.multiplier != null && element.multiplier.length > 0) {
+            (_a = element.multiplier) === null || _a === void 0 ? void 0 : _a.forEach(function (item) {
+                addPayLineSymbols(element.Id.toString(), item.reps, item.value, item.freeSpin);
+            });
+        }
+    });
+    // addPayLineSymbols("0", 5, 0.1, 0);
+    // addPayLineSymbols("0", 4, 0.3, 0);
+    // addPayLineSymbols("0", 3, 0.5, 0);
+    // addPayLineSymbols("1", 5, 0.1, 0);
+    // addPayLineSymbols("1", 4, 0.3, 0);
+    // addPayLineSymbols("1", 3, 0.5, 0);
+    // addPayLineSymbols("2", 5, 0.1, 0);
+    // addPayLineSymbols("2", 4, 0.3, 0);
+    // addPayLineSymbols("2", 3, 0.5, 0);
+    // addPayLineSymbols("3", 5, 0.1, 0);
+    // addPayLineSymbols("3", 4, 0.3, 0);
+    // addPayLineSymbols("3", 3, 0.5, 0);
+    // addPayLineSymbols("4", 5, 0.1, 0);
+    // addPayLineSymbols("4", 4, 0.3, 0);
+    // addPayLineSymbols("4", 3, 0.5, 0);
+    // addPayLineSymbols("5", 5, 0.1, 0);
+    // addPayLineSymbols("5", 4, 0.3, 0);
+    // addPayLineSymbols("5", 3, 0.5, 0);
+    // addPayLineSymbols("6", 5, 0.1, 0);
+    // addPayLineSymbols("6", 4, 0.3, 0);
+    // addPayLineSymbols("6", 3, 0.5, 0);
+    // addPayLineSymbols("7", 5, 0.1, 0);
+    // addPayLineSymbols("7", 4, 0.3, 0);
+    // addPayLineSymbols("7", 3, 0.5, 0);
+    // addPayLineSymbols("8", 5, 0.1, 0);
+    // addPayLineSymbols("8", 4, 0.3, 0);
+    // addPayLineSymbols("8", 3, 0.5, 0);
+    // addPayLineSymbols("9", 5, 0.1, 10);
+    // addPayLineSymbols("9", 4, 0.3, 5);
+    // addPayLineSymbols("9", 3, 0.5, 3);
     (0, utils_1.setWild)("Wild", 10);
     (0, utils_1.addScatterPay)(5, 11, 5, 0);
     (0, utils_1.setJackpotSettings)("Jackpot", 12, 50000, 5);

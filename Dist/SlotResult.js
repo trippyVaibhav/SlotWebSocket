@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WinData = exports.PayLines = exports.ComboCounter = exports.CheckResult = void 0;
+exports.CheckResult = void 0;
 var Alerts_1 = require("./Alerts");
 var App_1 = require("./App");
 var Global_1 = require("./Global");
@@ -25,8 +25,8 @@ var CheckResult = /** @class */ (function () {
         this.useJackpot = (this.jackpot !== null);
         this.scatterPayTable = Global_1.gameSettings.scatterPayTable;
         this.reels = Global_1.gameSettings.resultSymbolMatrix;
-        this.scatterWin = null;
-        this.jackpotWin = null;
+        this.scatterWin = [];
+        this.jackpotWin = [];
         Global_1.gameWining.WinningLines = [];
         Global_1.gameWining.winningSymbols = [];
         Global_1.gameWining.TotalWinningAmount = 0;
@@ -103,14 +103,15 @@ var CheckResult = /** @class */ (function () {
                 if (temp.length > 0)
                     (_a = _this.jackpotWinSymbols).push.apply(_a, temp);
             });
-            console.log('find Jackpot symbols: ' + this.jackpotWinSymbols.length);
+            console.log('find Jackpot symbols: ' + this.jackpotWinSymbols);
             if (this.jackpot.symbolsCount > 0 && this.jackpot.symbolsCount == this.jackpotWinSymbols.length) {
                 this.jackpotWin = new WinData(this.jackpotWinSymbols, 0, Global_1.gameSettings.jackpot.defaultAmount);
+                Global_1.playerData.Balance += this.jackpotWin.pay;
             }
             if (this.jackpotWin.length != 0)
                 this.jackpotWin.updateBalance();
         }
-        console.log(Global_1.gameSettings.resultSymbolMatrix);
+        console.log("result :", Global_1.gameSettings.resultSymbolMatrix);
         if (Global_1.gameWining.freeSpins > 0)
             Global_1.gameWining.shouldFreeSpin = true;
         else
@@ -181,7 +182,9 @@ var CheckResult = /** @class */ (function () {
                 symbolsToEmit: Global_1.gameWining.winningSymbols,
                 WinAmout: Global_1.gameWining.TotalWinningAmount,
                 freeSpins: Global_1.gameWining.freeSpins,
-                jackpot: this.jackpotWin
+                jackpot: this.jackpotWin,
+                isBonus: Global_1.gameSettings.bonus.start,
+                BonusStopIndex: Global_1.gameSettings.bonus.stopIndex,
             },
             "PlayerData": Global_1.playerData,
         };
@@ -241,7 +244,6 @@ var ComboCounter = /** @class */ (function () {
     };
     return ComboCounter;
 }());
-exports.ComboCounter = ComboCounter;
 var PayLines = /** @class */ (function () {
     function PayLines(line, pay, freeSpins, wild) {
         this.line = line;
@@ -329,7 +331,6 @@ var PayLines = /** @class */ (function () {
     };
     return PayLines;
 }());
-exports.PayLines = PayLines;
 var WinData = /** @class */ (function () {
     function WinData(symbols, freeSpins, pay) {
         this.pay = 0;
@@ -358,4 +359,3 @@ var WinData = /** @class */ (function () {
     };
     return WinData;
 }());
-exports.WinData = WinData;

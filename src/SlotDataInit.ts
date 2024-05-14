@@ -1,13 +1,14 @@
 import { sendMessageToClient } from "./App";
+import { bonusGame } from "./BonusResults";
 import { UiInitData, gameSettings, makePayLines, playerData} from "./Global";
 import { linesApiData } from "./testData";
 import { generateMatrix } from "./utils";
-
 
 export function sendInitdata(clientID : string)
 {
     makePayLines();
     const matrix = generateMatrix(gameSettings.matrix.x, 18);
+    let bonus=new bonusGame(5,1000,50);
 
     for(let i = 0; i < 3; i++)
     {
@@ -22,8 +23,9 @@ export function sendInitdata(clientID : string)
            "Bets": [1, 5, 10, 15, 20],
            "canSwitchLines": false,
            "LinesCount": [1, 5, 10, 15, 20],
-           "autoSpin": [1, 5, 10, 20]
+           "autoSpin": [1, 5, 10, 20],
         },
+        "BonusData": bonus.generateData(),
         "UIData":  UiInitData,
         "PlayerData" : playerData,
         };
