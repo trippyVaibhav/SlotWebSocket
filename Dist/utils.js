@@ -87,11 +87,11 @@ function setWild(symbolName, symbol) {
 exports.setWild = setWild;
 function convertSymbols(data) {
     var convertedData = data.map(function (symbol) {
-        if (symbol.multiplier) {
+        if (symbol.multiplier1) {
             var multiplierObject = {};
-            multiplierObject['5x'] = symbol.multiplier[0];
-            multiplierObject['4x'] = symbol.multiplier[1];
-            multiplierObject['3x'] = symbol.multiplier[2];
+            multiplierObject['5x'] = symbol.multiplier1[0];
+            multiplierObject['4x'] = symbol.multiplier1[1];
+            multiplierObject['3x'] = symbol.multiplier1[2];
             return {
                 ID: symbol.ID,
                 multiplier: multiplierObject

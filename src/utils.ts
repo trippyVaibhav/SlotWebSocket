@@ -152,11 +152,11 @@ export function setWild(symbolName: string, symbol: number) {
 
 export function convertSymbols(data) {
     const convertedData = data.map(symbol => {
-      if (symbol.multiplier) {
+      if (symbol.multiplier1) {
         const multiplierObject = {};
-        multiplierObject['5x'] = symbol.multiplier[0];
-        multiplierObject['4x'] = symbol.multiplier[1];
-        multiplierObject['3x'] = symbol.multiplier[2];
+        multiplierObject['5x'] = symbol.multiplier1[0];
+        multiplierObject['4x'] = symbol.multiplier1[1];
+        multiplierObject['3x'] = symbol.multiplier1[2];
         
         return {
           ID: symbol.ID,
