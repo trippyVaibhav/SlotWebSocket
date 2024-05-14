@@ -93,7 +93,7 @@ export class bonusGame{
         gameSettings.bonus.start= true;
 
         if(gameSettings.bonus.type=="spin" && gameSettings.bonus.start)
-            gameSettings.bonus.stopIndex=Math.round(Math.random()*this.noOfItems);
+        gameSettings.bonus.stopIndex=Math.round(Math.random()*this.noOfItems);
 
         return this.result;
         

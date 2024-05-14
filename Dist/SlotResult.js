@@ -107,19 +107,10 @@ var CheckResult = /** @class */ (function () {
             if (this.jackpot.symbolsCount > 0 && this.jackpot.symbolsCount == this.jackpotWinSymbols.length) {
                 this.jackpotWin = new WinData(this.jackpotWinSymbols, 0, Global_1.gameSettings.jackpot.defaultAmount);
                 Global_1.playerData.Balance += this.jackpotWin.pay;
+                Global_1.playerData.haveWon += this.jackpotWin.pay;
             }
-            if (this.jackpotWin.length != 0)
-                this.jackpotWin.updateBalance();
         }
         console.log("result :", Global_1.gameSettings.resultSymbolMatrix);
-        if (Global_1.gameWining.freeSpins > 0)
-            Global_1.gameWining.shouldFreeSpin = true;
-        else
-            Global_1.gameWining.shouldFreeSpin = false;
-        // if(this.jackpotWin.length != 0)
-        // {
-        // }
-        // console.log("JACKPOT : " + this.jackpotWin);
         this.makeResultJson();
         console.log("TOTAL WINING : " + Global_1.gameWining.TotalWinningAmount);
         console.log(Global_1.gameWining.WinningLines);
@@ -182,7 +173,7 @@ var CheckResult = /** @class */ (function () {
                 symbolsToEmit: Global_1.gameWining.winningSymbols,
                 WinAmout: Global_1.gameWining.TotalWinningAmount,
                 freeSpins: Global_1.gameWining.freeSpins,
-                jackpot: this.jackpotWin,
+                jackpot: this.jackpotWin.pay,
                 isBonus: Global_1.gameSettings.bonus.start,
                 BonusStopIndex: Global_1.gameSettings.bonus.stopIndex,
             },
@@ -338,6 +329,10 @@ var WinData = /** @class */ (function () {
         this.freeSpins = freeSpins;
         this.pay = pay;
         Global_1.gameWining.winningSymbols.push(symbols);
+        if (freeSpins > 0)
+            Global_1.gameWining.shouldFreeSpin = true;
+        else
+            Global_1.gameWining.shouldFreeSpin = false;
     }
     WinData.prototype.symbolsToString = function () {
         if (this.symbols == null)

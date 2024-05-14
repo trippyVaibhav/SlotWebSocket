@@ -147,6 +147,10 @@ export function makePayLines() {
     // addPayLineSymbols("9", 3, 0.5, 3);
 
     setWild("Wild", 10);
-    addScatterPay(5, 11, 5, 0);
-    setJackpotSettings("Jackpot", 12, 50000, 5);
+    addScatterPay(5, 11, 50, 20);
+    addScatterPay(4, 11, 25, 10);
+    addScatterPay(3, 11, 15, 5);
+
+
+    setJackpotSettings("Jackpot", 12, 50000, 5000);
 }

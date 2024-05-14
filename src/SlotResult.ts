@@ -136,22 +136,11 @@ export class CheckResult {
             if (this.jackpot.symbolsCount > 0 && this.jackpot.symbolsCount == this.jackpotWinSymbols.length) {
                 this.jackpotWin = new WinData(this.jackpotWinSymbols, 0, gameSettings.jackpot.defaultAmount);
                 playerData.Balance += this.jackpotWin.pay;
+                playerData.haveWon += this.jackpotWin.pay;
             }
             
-            if (this.jackpotWin.length != 0) this.jackpotWin.updateBalance();
         }
         console.log("result :",gameSettings.resultSymbolMatrix);
-        if (gameWining.freeSpins > 0)
-            gameWining.shouldFreeSpin = true;
-        else
-            gameWining.shouldFreeSpin = false;
-            
-        // if(this.jackpotWin.length != 0)
-        // {
-            
-        // }
-        // console.log("JACKPOT : " + this.jackpotWin);
-                
         this.makeResultJson();
 
         
@@ -225,7 +214,7 @@ export class CheckResult {
                 symbolsToEmit: gameWining.winningSymbols,
                 WinAmout: gameWining.TotalWinningAmount,
                 freeSpins: gameWining.freeSpins,
-                jackpot : this.jackpotWin,
+                jackpot : this.jackpotWin.pay,
                 isBonus : gameSettings.bonus.start,
                 BonusStopIndex : gameSettings.bonus.stopIndex,
 
@@ -398,6 +387,11 @@ class WinData {
         this.freeSpins = freeSpins;
         this.pay = pay;
         gameWining.winningSymbols.push(symbols);
+
+        if (freeSpins > 0)
+        gameWining.shouldFreeSpin = true;
+        else
+        gameWining.shouldFreeSpin = false;
     }
 
     symbolsToString(): string {

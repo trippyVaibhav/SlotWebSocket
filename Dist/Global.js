@@ -122,7 +122,9 @@ function makePayLines() {
     // addPayLineSymbols("9", 4, 0.3, 5);
     // addPayLineSymbols("9", 3, 0.5, 3);
     (0, utils_1.setWild)("Wild", 10);
-    (0, utils_1.addScatterPay)(5, 11, 5, 0);
-    (0, utils_1.setJackpotSettings)("Jackpot", 12, 50000, 5);
+    (0, utils_1.addScatterPay)(5, 11, 50, 20);
+    (0, utils_1.addScatterPay)(4, 11, 25, 10);
+    (0, utils_1.addScatterPay)(3, 11, 15, 5);
+    (0, utils_1.setJackpotSettings)("Jackpot", 12, 50000, 5000);
 }
 exports.makePayLines = makePayLines;
