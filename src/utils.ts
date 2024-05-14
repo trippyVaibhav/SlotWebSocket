@@ -61,7 +61,13 @@ export interface GameSettings {
         symbolsCount: number;
         defaultAmount: number;
         increaseValue: number;
-    };
+    },
+    bonus:{
+        type:string,
+        start:boolean,
+        stopIndex:number
+    },
+
 };
 
 export function weightedRandom<T>(items: T[], weights: number[]): WeightedItem<T> {

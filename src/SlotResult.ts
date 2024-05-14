@@ -3,7 +3,7 @@ import {  gameSettings, gameWining, playerData } from "./Global";
 import { RandomResultGenerator } from "./SlotDataInit";
 import { linesApiData, Symbols } from "./testData";
 import { ScatterPayEntry} from "./utils";
-
+import { bonusGame } from "./BonusResults";
 export class CheckResult {
     clientID: string;
     scatter: string;
@@ -18,6 +18,7 @@ export class CheckResult {
     scatterWinSymbols: any[];
     jackpotWinSymbols: any[];
     winSeq: any;
+    bonus:boolean;
 
     constructor(clientID: string) {
         this.clientID = clientID;
@@ -33,11 +34,11 @@ export class CheckResult {
         this.jackpotWin = null;
         gameWining.WinningLines = [];
         gameWining.winningSymbols = [];
-
         gameWining.TotalWinningAmount = 0;
         this.scatterWinSymbols = [];
         this.jackpotWinSymbols = [];
         this.winSeq = null;
+        this.bonus=false;
 
         if(playerData.Balance > 0)
         {
@@ -194,6 +195,7 @@ export class CheckResult {
     }
 
     makeResultJson() {
+
         const ResultData = {
             "GameData":{
                 ResultReel: gameSettings.resultSymbolMatrix,
@@ -201,6 +203,8 @@ export class CheckResult {
                 symbolsToEmit: gameWining.winningSymbols,
                 WinAmout: gameWining.TotalWinningAmount,
                 freeSpins: gameWining.freeSpins,
+                bonusStart: gameSettings.bonus.start,
+                bonusStopIndex: gameSettings.bonus.stopIndex
             },
             "PlayerData" : playerData,
         }
@@ -232,13 +236,11 @@ class ComboCounter {
     }
 
     nextCombo() {
-        console.log("__________________combo countter strart _______________")
         if (this.firstCombo) {
             this.firstCombo = false;
             return true;
         }
         for (let i = this.maxCounterValues.length - 1; i >= 0; i--) {
-            console.log("combo :", this.combo);
             if (this.combo[i] < this.maxCounterValues[i]) {
                 this.combo[i]++;
                 if (i != this.maxCounterValues.length - 1) // reset low "bits"
@@ -250,7 +252,6 @@ class ComboCounter {
                 return true;
             }
         }
-        console.log("________________combo countter end _________________")
         return false;
     }
 

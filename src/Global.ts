@@ -20,6 +20,11 @@ export const gameSettings: GameSettings = {
         symbolsCount: 6,
         defaultAmount: 1000,
         increaseValue: 1
+    },
+    bonus:{
+        type:"spin",
+        start:false,
+        stopIndex:-1
     }
 };
 

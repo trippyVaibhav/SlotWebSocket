@@ -23,6 +23,7 @@ var CheckResult = /** @class */ (function () {
         this.scatterWinSymbols = [];
         this.jackpotWinSymbols = [];
         this.winSeq = null;
+        this.bonus = false;
         if (Global_1.playerData.Balance > 0) {
             Global_1.playerData.Balance -= Global_1.gameWining.currentBet;
             // playerData.haveWon -= gameWining.currentBet;
@@ -167,6 +168,8 @@ var CheckResult = /** @class */ (function () {
                 symbolsToEmit: Global_1.gameWining.winningSymbols,
                 WinAmout: Global_1.gameWining.TotalWinningAmount,
                 freeSpins: Global_1.gameWining.freeSpins,
+                bonusStart: Global_1.gameSettings.bonus.start,
+                bonusStopIndex: Global_1.gameSettings.bonus.stopIndex
             },
             "PlayerData": Global_1.playerData,
         };
@@ -194,13 +197,11 @@ var ComboCounter = /** @class */ (function () {
         this.firstCombo = true;
     }
     ComboCounter.prototype.nextCombo = function () {
-        console.log("__________________combo countter strart _______________");
         if (this.firstCombo) {
             this.firstCombo = false;
             return true;
         }
         for (var i = this.maxCounterValues.length - 1; i >= 0; i--) {
-            console.log("combo :", this.combo);
             if (this.combo[i] < this.maxCounterValues[i]) {
                 this.combo[i]++;
                 if (i != this.maxCounterValues.length - 1) // reset low "bits"
@@ -212,7 +213,6 @@ var ComboCounter = /** @class */ (function () {
                 return true;
             }
         }
-        console.log("________________combo countter end _________________");
         return false;
     };
     ComboCounter.prototype.sum = function () {
