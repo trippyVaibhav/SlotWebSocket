@@ -75,7 +75,7 @@ export class CheckResult {
 
     searchWinSymbols() {
         console.log('search win symbols');
-
+        gameWining.freeSpins = 0;
         gameWining.winningSymbols = [];
         gameWining.WinningLines = [];
         gameWining.TotalWinningAmount = 0;
@@ -141,7 +141,6 @@ export class CheckResult {
             
         }
         console.log("result :",gameSettings.resultSymbolMatrix);
-        if(gameWining.freeSpins > 0)gameWining.freeSpins -=1;
         this.makeResultJson();
 
         

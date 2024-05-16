@@ -52,6 +52,7 @@ var CheckResult = /** @class */ (function () {
     CheckResult.prototype.searchWinSymbols = function () {
         var _this = this;
         console.log('search win symbols');
+        Global_1.gameWining.freeSpins = 0;
         Global_1.gameWining.winningSymbols = [];
         Global_1.gameWining.WinningLines = [];
         Global_1.gameWining.TotalWinningAmount = 0;
@@ -111,8 +112,6 @@ var CheckResult = /** @class */ (function () {
             }
         }
         console.log("result :", Global_1.gameSettings.resultSymbolMatrix);
-        if (Global_1.gameWining.freeSpins > 0)
-            Global_1.gameWining.freeSpins -= 1;
         this.makeResultJson();
         console.log("TOTAL WINING : " + Global_1.gameWining.TotalWinningAmount);
         console.log(Global_1.gameWining.WinningLines);
