@@ -74,7 +74,7 @@ var bonusGame = /** @class */ (function () {
         for (var i = 0; i < res.length; i++) {
             this.result.push(res[i].toString());
         }
-        Global_1.gameSettings.bonus.start = true;
+        Global_1.gameSettings.bonus.start = false;
         if (Global_1.gameSettings.bonus.type == "spin" && Global_1.gameSettings.bonus.start)
             Global_1.gameSettings.bonus.stopIndex = Math.round(Math.random() * this.noOfItems);
         return this.result;

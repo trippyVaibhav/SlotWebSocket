@@ -111,6 +111,8 @@ var CheckResult = /** @class */ (function () {
             }
         }
         console.log("result :", Global_1.gameSettings.resultSymbolMatrix);
+        if (Global_1.gameWining.freeSpins > 0)
+            Global_1.gameWining.freeSpins -= 1;
         this.makeResultJson();
         console.log("TOTAL WINING : " + Global_1.gameWining.TotalWinningAmount);
         console.log(Global_1.gameWining.WinningLines);
@@ -350,7 +352,7 @@ var WinData = /** @class */ (function () {
         Global_1.gameWining.TotalWinningAmount += this.pay;
         Global_1.playerData.Balance += this.pay;
         Global_1.playerData.haveWon += this.pay;
-        Global_1.gameWining.freeSpins = this.freeSpins;
+        Global_1.gameWining.freeSpins = Global_1.gameWining.freeSpins + this.freeSpins;
     };
     return WinData;
 }());
