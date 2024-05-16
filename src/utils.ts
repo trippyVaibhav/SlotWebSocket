@@ -1,3 +1,4 @@
+import { bonusGame } from "./BonusResults";
 import { gameSettings } from "./Global";
 
 export interface SymbolData {
@@ -26,6 +27,13 @@ export interface ScatterPayEntry {
     freeSpins: number;
 }
 
+export interface BonusPayEntry {
+    symbolCount: number,
+    symbolID: number,
+    pay: number,
+    highestPayMultiplier: number;
+}
+
 export interface WildSymbol {
     SymbolName: string,
     SymbolID: number,
@@ -48,6 +56,7 @@ export interface GameSettings {
     matrix: { x: number, y: number }
     payLine: PayLine[];
     scatterPayTable: ScatterPayEntry[];
+    bonusPayTable: BonusPayEntry[]
     useScatter: boolean,
     useWild: boolean
     Symbols: string[],
@@ -63,9 +72,11 @@ export interface GameSettings {
         increaseValue: number;
     },
     bonus:{
+        game: bonusGame,
         type:string,
         start:boolean,
         stopIndex:number
+        // maxPay: number
     },
 
 };
@@ -152,11 +163,11 @@ export function setWild(symbolName: string, symbol: number) {
 
 export function convertSymbols(data) {
     const convertedData = data.map(symbol => {
-      if (symbol.multiplier1) {
+      if (symbol.multiplier?.length>2) {
         const multiplierObject = {};
-        multiplierObject['5x'] = symbol.multiplier1[0];
-        multiplierObject['4x'] = symbol.multiplier1[1];
-        multiplierObject['3x'] = symbol.multiplier1[2];
+        multiplierObject['5x'] = symbol.multiplier[0][0];
+        multiplierObject['4x'] = symbol.multiplier[1][0];
+        multiplierObject['3x'] = symbol.multiplier[2][0];
         
         return {
           ID: symbol.ID,

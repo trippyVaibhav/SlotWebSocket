@@ -1,4 +1,4 @@
-import { gameSettings } from "./Global";
+import { gameSettings,playerData  } from "./Global";
 
 export class bonusGame{
     type:String;
@@ -7,14 +7,13 @@ export class bonusGame{
     result:string[];
     noise:number;
     minPay:number;
+    maxPay:number;
 
-    constructor(nosOfItem:number, totalPay:number, minPercent:number) {
+    constructor(nosOfItem:number) {
         this.noOfItems=nosOfItem;
         this.type="default";
-        this.totalPay=totalPay;
         this.result=[];
-        this.minPay=Math.floor(minPercent*this.totalPay);
-        this.noise=minPercent;
+        // this.noise=noise;
     }
     // generateData(){
     //     let tempSum=0;
@@ -45,58 +44,50 @@ export class bonusGame{
     //     };
     // }
     
-    generateData():string[] {
+    generateData(totalPay:number ):string[] {
+        this.result=[];
         let res=[];
         let sum = 0;
-        
-        let part=Math.floor(this.totalPay/(this.noOfItems-1));
+        this.totalPay=totalPay;
 
-        // this.noise=Math.abs(part/2);
-        // if(part<this.minPay){
-        //     for (let i = 0; i < this.noOfItems-3; i++) {
-        //         if(i==this.noOfItems-4){
-        //             res.push(part-this.noise);
-        //         }
-
-        //         res.push(part);
-        //         sum+=part;
-        //     }
-
-        //     res.push(this.minPay);
-        // }else{
-        //     for (let i = 0; i < this.noOfItems-2; i++) {
-        //         res.push(part);
-        //         sum+=part;
-        //     }
-        // }
-
-            for (let i = 0; i < this.noOfItems-1; i++) {
+        this.maxPay=Math.floor(totalPay*0.5);
+        let part=Math.floor((this.totalPay-this.maxPay)/(this.noOfItems-2));
+        this.noise=Math.floor(part/(this.noOfItems-2));
+        for (let i = 0; i < this.noOfItems-2; i++) {
                 res.push(part);
                 sum+=part;
-            }
+        }
 
         for (let i = 0; i < res.length; i++) {
-            let j = Math.floor(Math.random() * (i+1));
-            let deviation=Math.floor(Math.random()*this.noise*(i+1));
+            let min=this.noise*i >0? this.noise*i: this.noise;
+            let max=this.noise*(i+1);
+            let j = res.length-1-i;
+            let deviation=Math.floor(  Math.random()*(max -min) +min );
             res[i]-=deviation;
             res[j]+=deviation;
             
         }
-        res.push((this.totalPay - sum));
+
+        let diff=this.totalPay-this.maxPay-sum;
+        res[Math.floor(Math.random()*res.length)]+=diff;
         res.push("-1");
+        res.push(this.maxPay);
         this.shuffle(res);
 
         for (let i = 0; i < res.length; i++) {
             this.result.push(res[i].toString());
         }
-
-        gameSettings.bonus.start= false;
-
-        if(gameSettings.bonus.type=="spin" && gameSettings.bonus.start)
-        gameSettings.bonus.stopIndex=Math.round(Math.random()*this.noOfItems);
-
         return this.result;
-        
+    }
+
+    setRandomStopIndex(){
+        if(gameSettings.bonus.type=="spin" && gameSettings.bonus.start)
+            gameSettings.bonus.stopIndex=Math.round(Math.random()*this.noOfItems);
+
+        playerData.Balance +=parseInt(this.result[gameSettings.bonus.stopIndex]);
+        playerData.haveWon += parseInt(this.result[gameSettings.bonus.stopIndex]);
+
+
     }
 
     shuffle(array:string[]) {

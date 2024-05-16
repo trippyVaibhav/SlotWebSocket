@@ -1,11 +1,13 @@
-import { Symbols } from "./testData";
+import { bonusGame } from "./BonusResults";
+import { Symbols, linesApiData } from "./testData";
 import { GameSettings, PlayerData, WildSymbol, addScatterPay, convertSymbols, setJackpotSettings, setWild, winning } from "./utils";
 
 export const gameSettings: GameSettings = {
     matrix: { x: 5, y: 3 },
     payLine: [],
     scatterPayTable: [],
-    useScatter: false,
+    bonusPayTable: [],
+    useScatter: true,
     useWild: true,
     wildSymbol: {} as WildSymbol,
     // Symbols: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',"10","11","12"],
@@ -21,48 +23,49 @@ export const gameSettings: GameSettings = {
         defaultAmount: 1000,
         increaseValue: 1
     },
-    bonus:{
-        type:"spin",
-        start:false,
-        stopIndex:-1
+    bonus: {
+        type: "spin",
+        start: false,
+        stopIndex: -1,
+        game: new bonusGame(5),
     }
 };
 
-function initSymbols():string[]{
-    let symbols:string[]=[];
+function initSymbols(): string[] {
+    let symbols: string[] = [];
 
     for (let i = 0; i < Symbols.length; i++) {
         symbols.push(Symbols[i].Id.toString());
-        
+
     }
     return symbols;
 }
 
-function initWeigts():number[]{
-    let weights:number[]=[];
+function initWeigts(): number[] {
+    let weights: number[] = [];
 
     for (let i = 0; i < Symbols.length; i++) {
-       weights.push(Symbols[i].weightedRandomness);
-        
+        weights.push(Symbols[i].weightedRandomness);
+
     }
 
     return weights;
 }
 
-export const playerData : PlayerData = {
-    Balance :1000,
-    haveWon :100,
+export const playerData: PlayerData = {
+    Balance: 1000,
+    haveWon: 100,
 }
 
 export const UiInitData = {
-    paylines : convertSymbols(Symbols) ,
-    spclSymbolTxt : [],
-    AbtLogo : {
-        logoSprite : "https://iili.io/JrMCqPf.png",
-        link : "https://dingding-game.vercel.app/login",
+    paylines: convertSymbols(Symbols),
+    spclSymbolTxt: [],
+    AbtLogo: {
+        logoSprite: "https://iili.io/JrMCqPf.png",
+        link: "https://dingding-game.vercel.app/login",
     },
-    ToULink : "https://dingding-game.vercel.app/login",
-    PopLink : "https://dingding-game.vercel.app/login",
+    ToULink: "https://dingding-game.vercel.app/login",
+    PopLink: "https://dingding-game.vercel.app/login",
 }
 
 export let gameWining: winning = {
@@ -71,12 +74,12 @@ export let gameWining: winning = {
     TotalWinningAmount: 0,
     shouldFreeSpin: undefined,
     freeSpins: 0,
-    currentBet : 0,
+    currentBet: 0,
 }
 
 export function addPayLineSymbols(symbol: string, repetition: number, pay: number, freeSpins: number): void {
     const line: string[] = Array(repetition).fill(symbol); // Create an array with 'repetition' number of 'symbol'
-    
+
     if (line.length != gameSettings.matrix.x) {
         let lengthToAdd = gameSettings.matrix.x - line.length;
         for (let i = 0; i < lengthToAdd; i++)
@@ -88,7 +91,7 @@ export function addPayLineSymbols(symbol: string, repetition: number, pay: numbe
         pay: pay,
         freeSpins: freeSpins
     });
-        
+
     // if(!UiInitData.paylines[parseInt(symbol)]) UiInitData.paylines[parseInt(symbol)]= []
     // UiInitData.paylines[parseInt(symbol)].push(pay.toString());
     // console.log(gameSettings.payLine);
@@ -97,13 +100,15 @@ export function addPayLineSymbols(symbol: string, repetition: number, pay: numbe
 
 export function makePayLines() {
 
-    Symbols.forEach((element)=>{
-        if(element.multiplier!=null && element.multiplier.length>0){
+    Symbols.forEach((element) => {
+        if (element.Id < 10 && element.multiplier?.length > 0) {
 
-            element.multiplier?.forEach((item)=>{
-                addPayLineSymbols(element.Id.toString(),item.reps, item.value,item.freeSpin);
-
+            element.multiplier?.forEach((item, index) => {
+                addPayLineSymbols(element.Id.toString(), 5 - index, item[0], item[1]);
             })
+        } else {
+            handleSpecialSymbols(element);
+            // addPayLineSymbols(element.Id.toString(),3, 0,0);
         }
     })
     // addPayLineSymbols("0", 5, 0.1, 0);
@@ -146,11 +151,65 @@ export function makePayLines() {
     // addPayLineSymbols("9", 4, 0.3, 5);
     // addPayLineSymbols("9", 3, 0.5, 3);
 
-    setWild("Wild", 10);
-    addScatterPay(5, 11, 50, 20);
-    addScatterPay(4, 11, 25, 10);
-    addScatterPay(3, 11, 15, 5);
-
-
-    setJackpotSettings("Jackpot", 12, 50000, 5000);
+    // setWild("Wild", 10);
+    // addScatterPay(5, 11, 5, 0);
+    // setJackpotSettings("Jackpot", 12, 50000, 5);
 }
+
+
+function handleSpecialSymbols(symbol) {
+
+    switch (symbol.Name) {
+        case "Jackpot":
+            gameSettings.jackpot.symbolName = symbol.Name;
+            gameSettings.jackpot.symbolsCount = symbol.Id;
+            gameSettings.jackpot.defaultAmount = symbol.defaultAmount;
+            gameSettings.jackpot.increaseValue = symbol.increaseValue;
+            break;
+        case "Wild":
+            gameSettings.wildSymbol.SymbolName = symbol.Name;
+            gameSettings.wildSymbol.SymbolID = symbol.Id;
+            break
+        case "Scatter":
+            gameSettings.scatterPayTable.push({
+                symbolCount: symbol.count,
+                symbolID: symbol.Id,
+                pay: symbol.pay,
+                freeSpins: symbol.freeSpin
+            });
+            break;
+        case "Bonus":
+            gameSettings.bonusPayTable.push({
+                    symbolCount: symbol.symbolCount,
+                    symbolID: symbol.Id,
+                    pay: symbol.pay,
+                    highestPayMultiplier: symbol.highestMultiplier
+                })
+            break;
+        default:
+            break;
+    }
+
+}
+
+// export function setJackpotSettings(symbolName: string, symbolID: number, defaultAmount: number, increaseValue: number): void {
+//     gameSettings.jackpot.symbolName = symbolName;
+//     gameSettings.jackpot.symbolsCount = symbolID;
+//     gameSettings.jackpot.defaultAmount = defaultAmount;
+//     gameSettings.jackpot.increaseValue = increaseValue;
+// }
+
+// // Function to set the Wild Symbol
+// export function setWild(symbolName: string, symbol: number) {
+//     gameSettings.wildSymbol.SymbolName = symbolName;
+//     gameSettings.wildSymbol.SymbolID = symbol;
+// }
+
+// export function addScatterPay(symbolName: number, symbolID: number, pay: number, freeSpins: number): void {
+//     gameSettings.scatterPayTable.push({
+//     symbolCount: symbolName,
+//     symbolID: symbolID,
+//     pay: pay,
+//     freeSpins: freeSpins
+//     });
+// }

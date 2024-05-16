@@ -3,13 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.bonusGame = void 0;
 var Global_1 = require("./Global");
 var bonusGame = /** @class */ (function () {
-    function bonusGame(nosOfItem, totalPay, minPercent) {
+    function bonusGame(nosOfItem) {
         this.noOfItems = nosOfItem;
         this.type = "default";
-        this.totalPay = totalPay;
         this.result = [];
-        this.minPay = Math.floor(minPercent * this.totalPay);
-        this.noise = minPercent;
+        // this.noise=noise;
     }
     // generateData(){
     //     let tempSum=0;
@@ -38,46 +36,41 @@ var bonusGame = /** @class */ (function () {
     //         "result":this.result
     //     };
     // }
-    bonusGame.prototype.generateData = function () {
+    bonusGame.prototype.generateData = function (totalPay) {
+        this.result = [];
         var res = [];
         var sum = 0;
-        var part = Math.floor(this.totalPay / (this.noOfItems - 1));
-        // this.noise=Math.abs(part/2);
-        // if(part<this.minPay){
-        //     for (let i = 0; i < this.noOfItems-3; i++) {
-        //         if(i==this.noOfItems-4){
-        //             res.push(part-this.noise);
-        //         }
-        //         res.push(part);
-        //         sum+=part;
-        //     }
-        //     res.push(this.minPay);
-        // }else{
-        //     for (let i = 0; i < this.noOfItems-2; i++) {
-        //         res.push(part);
-        //         sum+=part;
-        //     }
-        // }
-        for (var i = 0; i < this.noOfItems - 1; i++) {
+        this.totalPay = totalPay;
+        this.maxPay = Math.floor(totalPay * 0.5);
+        var part = Math.floor((this.totalPay - this.maxPay) / (this.noOfItems - 2));
+        this.noise = Math.floor(part / (this.noOfItems - 2));
+        for (var i = 0; i < this.noOfItems - 2; i++) {
             res.push(part);
             sum += part;
         }
         for (var i = 0; i < res.length; i++) {
-            var j = Math.floor(Math.random() * (i + 1));
-            var deviation = Math.floor(Math.random() * this.noise * (i + 1));
+            var min = this.noise * i > 0 ? this.noise * i : this.noise;
+            var max = this.noise * (i + 1);
+            var j = res.length - 1 - i;
+            var deviation = Math.floor(Math.random() * (max - min) + min);
             res[i] -= deviation;
             res[j] += deviation;
         }
-        res.push((this.totalPay - sum));
+        var diff = this.totalPay - this.maxPay - sum;
+        res[Math.floor(Math.random() * res.length)] += diff;
         res.push("-1");
+        res.push(this.maxPay);
         this.shuffle(res);
         for (var i = 0; i < res.length; i++) {
             this.result.push(res[i].toString());
         }
-        Global_1.gameSettings.bonus.start = false;
+        return this.result;
+    };
+    bonusGame.prototype.setRandomStopIndex = function () {
         if (Global_1.gameSettings.bonus.type == "spin" && Global_1.gameSettings.bonus.start)
             Global_1.gameSettings.bonus.stopIndex = Math.round(Math.random() * this.noOfItems);
-        return this.result;
+        Global_1.playerData.Balance += parseInt(this.result[Global_1.gameSettings.bonus.stopIndex]);
+        Global_1.playerData.haveWon += parseInt(this.result[Global_1.gameSettings.bonus.stopIndex]);
     };
     bonusGame.prototype.shuffle = function (array) {
         for (var i = array.length - 1; i > 0; i--) {

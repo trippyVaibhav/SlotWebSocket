@@ -18,6 +18,7 @@ function handleConnection(ws: WebSocket) {
   clients.set(clientId, ws);
 
   console.log(`Client connected: ${clientId}`);
+  sendInitdata(clientId);
 
   // Function to handle pong messages
   function heartbeat() {
@@ -44,14 +45,10 @@ function handleConnection(ws: WebSocket) {
 
   // Event listener for messages from the client
   ws.on('message', function incoming(message: any) {
+    console.log(`Received message from ${clientId}: ${message.id}`);
     const messageData = JSON.parse(message);
-    console.log(`Received message from ${clientId}: ${messageData.id}`);
+    console.log(messageData);
 
-    if(messageData.id == "Auth")
-    {
-      console.log(`GameID : ${messageData.Data.GameID}`);
-      sendInitdata(clientId);
-    }
     if (messageData.id == "Spin") {
       gameWining.currentBet = messageData.Data.CurrentBet;
       const result = new CheckResult(clientId);

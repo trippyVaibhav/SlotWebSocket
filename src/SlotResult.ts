@@ -4,26 +4,31 @@ import { sendMessageToClient } from "./App";
 import {  gameSettings, gameWining, playerData } from "./Global";
 import { RandomResultGenerator } from "./SlotDataInit";
 import { linesApiData, Symbols } from "./testData";
-import { ScatterPayEntry} from "./utils";
+import { ScatterPayEntry, BonusPayEntry} from "./utils";
 import { bonusGame } from "./BonusResults";
+
 export class CheckResult {
     clientID: string;
     scatter: string;
+    bonus: string;
     useScatter: boolean;
     jackpot: any;
     useJackpot: boolean;
     payTable: PayLines[];
     scatterPayTable: ScatterPayEntry[];
+    bonusPaytable: BonusPayEntry[];
     reels: string[][];
     scatterWin: any;
     jackpotWin: any;
+    bonusWin: any;
     scatterWinSymbols: any[];
     jackpotWinSymbols: any[];
     winSeq: any;
-    bonus:boolean;
+
 
     constructor(clientID: string) {
         
+        console.log("scatter paytable",gameSettings.bonusPayTable);
         if(playerData.Balance < gameWining.currentBet)
         {
             Alerts(clientID,"Low Balance");
@@ -40,10 +45,12 @@ export class CheckResult {
         this.makeFullPayTable();
 
         this.scatter = 'scatter';
+        this.bonus='Bonus';
         this.useScatter = (gameSettings.useScatter && this.scatter !== null);
         this.jackpot = gameSettings.jackpot;
         this.useJackpot = (this.jackpot !== null);
         this.scatterPayTable = gameSettings.scatterPayTable;
+        this.bonusPaytable= gameSettings.bonusPayTable;
         this.reels = gameSettings.resultSymbolMatrix;
         this.scatterWin = [];
         this.jackpotWin = [];
@@ -53,7 +60,7 @@ export class CheckResult {
         this.scatterWinSymbols = [];
         this.jackpotWinSymbols = [];
         this.winSeq = null;
-  
+        
         this.searchWinSymbols();
     }
 
@@ -79,12 +86,23 @@ export class CheckResult {
         gameWining.winningSymbols = [];
         gameWining.WinningLines = [];
         gameWining.TotalWinningAmount = 0;
+        gameSettings.bonus.start=false;
+        gameSettings.bonus.stopIndex=-1;
+
+        this.bonusWin=this.checkForBonus();
+        if(this.bonusWin){
+            gameSettings.bonus.start=true;
+            gameSettings.bonus.game.setRandomStopIndex();
+        }
+
         gameSettings.lineData.forEach((lb,index) => {
 
             let win = null;
+
             gameSettings.fullPayTable.forEach((Payline: PayLines) => {
                 //  find max win (or win with max symbols count)
                 const winTemp = this.getPayLineWin(Payline, lb);
+
                 if (winTemp != null) {
                     if (win == null) 
                     win = winTemp;
@@ -103,19 +121,13 @@ export class CheckResult {
         this.scatterWin = null;
 
         if (this.useScatter) {
-            // console.log("USED SCATTER");
+            let temp = this.findSymbol(this.scatter);
             
-            this.reels.forEach((reel) => {
-                let temp = this.findSymbol(this.scatter);
-                // console.log("SCATTER TEMP " + temp);
-                
-                if (temp.length > 0) this.scatterWinSymbols.push(...temp);
-
-
-            });
+            if (temp.length > 0) this.scatterWinSymbols.push(...temp);
+            // this.reels.forEach((reel) => {
+            // });
 
             this.scatterPayTable.forEach((sPL) => {
-                console.log(sPL);
                 if (sPL.symbolCount > 0 && sPL.symbolCount == this.scatterWinSymbols.length) 
                 this.scatterWin = new WinData(this.scatterWinSymbols, sPL.freeSpins, sPL.pay);
             });
@@ -123,6 +135,8 @@ export class CheckResult {
             if (this.scatterWin == null) this.scatterWinSymbols = [];
             
         }
+
+
         this.jackpotWinSymbols = [];
         this.jackpotWin = [];
 
@@ -140,22 +154,31 @@ export class CheckResult {
             }
             
         }
+
+
+
         console.log("result :",gameSettings.resultSymbolMatrix);
         this.makeResultJson();
 
+
         
         console.log("TOTAL WINING : " + gameWining.TotalWinningAmount);
-        console.log(gameWining.WinningLines);
-        console.log(gameWining.winningSymbols);
+        // console.log(gameWining.WinningLines);
+        // console.log(gameWining.winningSymbols);
         console.log("_____________RESULT_END________________");
     }
 
     getPayLineWin(payLine: PayLines, lineData: any) {
+
         if (payLine == null) return null;
         let winSymbols = [];
+        let bonusItemCount=0;
         for (let i = 0; i < lineData.length; i++) {
             
             const symbol = this.getSymbolOnMatrix(i);
+            if(symbol.includes('13'))
+                bonusItemCount++;
+
             const s = symbol[lineData[i]];
             
             if (payLine.line[i] !== 'any' && s !== payLine.line[i]) {
@@ -166,10 +189,34 @@ export class CheckResult {
                 winSymbols.push(symbolIndex);
             }
         }
+
+        console.log("bonusItemCount",bonusItemCount);
+
         if(!payLine.pay)payLine.pay = 0;
-        return new WinData(winSymbols, payLine.freeSpins, payLine.pay);
+
+
+        const winData=new WinData(winSymbols, payLine.freeSpins, payLine.pay);
+
+
+        return winData;
     }
 
+    checkForBonus(){
+
+        let bonusSymbols=[]
+        let bonuswin=null;
+        let temp = this.findSymbol(this.bonus);
+        if (temp.length > 0) bonusSymbols.push(...temp);
+
+        this.bonusPaytable.forEach((element) => {
+            if (element.symbolCount > 0 && element.symbolCount == bonusSymbols.length) 
+                bonuswin = new WinData(bonusSymbols, 0, 0);
+        });
+        console.log("bonus count",bonusSymbols.length);
+        return bonuswin;
+        // console.log(`SCATTER SYMBOL :  ${this.scatterWinSymbols}`);
+        // if (this.scatterWin == null) this.scatterWinSymbols = [];
+    }
 
     getSymbolOnMatrix(index: number) {
         let symbolsOnGrid = [];
@@ -381,11 +428,12 @@ class WinData {
     symbols: any[];
     freeSpins: number;
     pay: number = 0;
-
-    constructor(symbols: any[], freeSpins: number, pay: number) {
+    bonus: boolean
+    constructor(symbols: any[], freeSpins: number, pay: number, bonus:boolean=false) {
         this.symbols = symbols;
         this.freeSpins = freeSpins;
         this.pay = pay;
+        this.bonus=bonus;
         gameWining.winningSymbols.push(symbols);
 
         if (freeSpins > 0)

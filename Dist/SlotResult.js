@@ -8,6 +8,7 @@ var SlotDataInit_1 = require("./SlotDataInit");
 var testData_1 = require("./testData");
 var CheckResult = /** @class */ (function () {
     function CheckResult(clientID) {
+        console.log("scatter paytable", Global_1.gameSettings.bonusPayTable);
         if (Global_1.playerData.Balance < Global_1.gameWining.currentBet) {
             (0, Alerts_1.Alerts)(clientID, "Low Balance");
             return;
@@ -20,10 +21,12 @@ var CheckResult = /** @class */ (function () {
         var rng = new SlotDataInit_1.RandomResultGenerator();
         this.makeFullPayTable();
         this.scatter = 'scatter';
+        this.bonus = 'Bonus';
         this.useScatter = (Global_1.gameSettings.useScatter && this.scatter !== null);
         this.jackpot = Global_1.gameSettings.jackpot;
         this.useJackpot = (this.jackpot !== null);
         this.scatterPayTable = Global_1.gameSettings.scatterPayTable;
+        this.bonusPaytable = Global_1.gameSettings.bonusPayTable;
         this.reels = Global_1.gameSettings.resultSymbolMatrix;
         this.scatterWin = [];
         this.jackpotWin = [];
@@ -50,12 +53,20 @@ var CheckResult = /** @class */ (function () {
         Global_1.gameSettings.fullPayTable = payTableFull;
     };
     CheckResult.prototype.searchWinSymbols = function () {
+        var _a;
         var _this = this;
         console.log('search win symbols');
         Global_1.gameWining.freeSpins = 0;
         Global_1.gameWining.winningSymbols = [];
         Global_1.gameWining.WinningLines = [];
         Global_1.gameWining.TotalWinningAmount = 0;
+        Global_1.gameSettings.bonus.start = false;
+        Global_1.gameSettings.bonus.stopIndex = -1;
+        this.bonusWin = this.checkForBonus();
+        if (this.bonusWin) {
+            Global_1.gameSettings.bonus.start = true;
+            Global_1.gameSettings.bonus.game.setRandomStopIndex();
+        }
         Global_1.gameSettings.lineData.forEach(function (lb, index) {
             var win = null;
             Global_1.gameSettings.fullPayTable.forEach(function (Payline) {
@@ -77,16 +88,12 @@ var CheckResult = /** @class */ (function () {
         this.scatterWinSymbols = [];
         this.scatterWin = null;
         if (this.useScatter) {
-            // console.log("USED SCATTER");
-            this.reels.forEach(function (reel) {
-                var _a;
-                var temp = _this.findSymbol(_this.scatter);
-                // console.log("SCATTER TEMP " + temp);
-                if (temp.length > 0)
-                    (_a = _this.scatterWinSymbols).push.apply(_a, temp);
-            });
+            var temp = this.findSymbol(this.scatter);
+            if (temp.length > 0)
+                (_a = this.scatterWinSymbols).push.apply(_a, temp);
+            // this.reels.forEach((reel) => {
+            // });
             this.scatterPayTable.forEach(function (sPL) {
-                console.log(sPL);
                 if (sPL.symbolCount > 0 && sPL.symbolCount == _this.scatterWinSymbols.length)
                     _this.scatterWin = new WinData(_this.scatterWinSymbols, sPL.freeSpins, sPL.pay);
             });
@@ -114,16 +121,19 @@ var CheckResult = /** @class */ (function () {
         console.log("result :", Global_1.gameSettings.resultSymbolMatrix);
         this.makeResultJson();
         console.log("TOTAL WINING : " + Global_1.gameWining.TotalWinningAmount);
-        console.log(Global_1.gameWining.WinningLines);
-        console.log(Global_1.gameWining.winningSymbols);
+        // console.log(gameWining.WinningLines);
+        // console.log(gameWining.winningSymbols);
         console.log("_____________RESULT_END________________");
     };
     CheckResult.prototype.getPayLineWin = function (payLine, lineData) {
         if (payLine == null)
             return null;
         var winSymbols = [];
+        var bonusItemCount = 0;
         for (var i = 0; i < lineData.length; i++) {
             var symbol = this.getSymbolOnMatrix(i);
+            if (symbol.includes('13'))
+                bonusItemCount++;
             var s = symbol[lineData[i]];
             if (payLine.line[i] !== 'any' && s !== payLine.line[i]) {
                 return;
@@ -133,9 +143,26 @@ var CheckResult = /** @class */ (function () {
                 winSymbols.push(symbolIndex);
             }
         }
+        console.log("bonusItemCount", bonusItemCount);
         if (!payLine.pay)
             payLine.pay = 0;
-        return new WinData(winSymbols, payLine.freeSpins, payLine.pay);
+        var winData = new WinData(winSymbols, payLine.freeSpins, payLine.pay);
+        return winData;
+    };
+    CheckResult.prototype.checkForBonus = function () {
+        var bonusSymbols = [];
+        var bonuswin = null;
+        var temp = this.findSymbol(this.bonus);
+        if (temp.length > 0)
+            bonusSymbols.push.apply(bonusSymbols, temp);
+        this.bonusPaytable.forEach(function (element) {
+            if (element.symbolCount > 0 && element.symbolCount == bonusSymbols.length)
+                bonuswin = new WinData(bonusSymbols, 0, 0);
+        });
+        console.log("bonus count", bonusSymbols.length);
+        return bonuswin;
+        // console.log(`SCATTER SYMBOL :  ${this.scatterWinSymbols}`);
+        // if (this.scatterWin == null) this.scatterWinSymbols = [];
     };
     CheckResult.prototype.getSymbolOnMatrix = function (index) {
         var symbolsOnGrid = [];
@@ -324,11 +351,13 @@ var PayLines = /** @class */ (function () {
     return PayLines;
 }());
 var WinData = /** @class */ (function () {
-    function WinData(symbols, freeSpins, pay) {
+    function WinData(symbols, freeSpins, pay, bonus) {
+        if (bonus === void 0) { bonus = false; }
         this.pay = 0;
         this.symbols = symbols;
         this.freeSpins = freeSpins;
         this.pay = pay;
+        this.bonus = bonus;
         Global_1.gameWining.winningSymbols.push(symbols);
         if (freeSpins > 0)
             Global_1.gameWining.shouldFreeSpin = true;

@@ -13,86 +13,79 @@ exports.Symbols = [
         Id: 0,
         weightedRandomness: 0.11,
         useWildSub: true,
-        multiplier1: [0.5, 0.3, 0.1],
-        multiplier: [{ reps: 3, value: 0.5, freeSpin: 0 }, { reps: 4, value: 0.3, freeSpin: 0 }, { reps: 5, value: 0.1, freeSpin: 0 }]
+        // multiplier : [0.5,0.3,0.1]
+        // multiplier : [[0.5,0],[0.3,0],[0.1,0]]
+        multiplier: [[0.5, 0], [0.3, 0], [0.1, 0]]
     },
     {
         Name: "1",
         Id: 1,
         weightedRandomness: 0.11,
         useWildSub: true,
-        multiplier1: [0.5, 0.3, 0.1],
         // multiplier : [0.5,0.3,0.1]
-        multiplier: [{ reps: 3, value: 0.5, freeSpin: 0 }, { reps: 4, value: 0.3, freeSpin: 0 }, { reps: 5, value: 0.1, freeSpin: 0 }]
+        multiplier: [[0.5, 0], [0.3, 0], [0.1, 0]]
     }, {
         Name: "2",
         Id: 2,
         weightedRandomness: 0.11,
         useWildSub: true,
-        multiplier1: [0.5, 0.3, 0.1],
         // multiplier : [0.5,0.3,0.1]
-        multiplier: [{ reps: 3, value: 0.5, freeSpin: 0 }, { reps: 4, value: 0.3, freeSpin: 0 }, { reps: 5, value: 0.1, freeSpin: 0 }]
+        multiplier: [[0.5, 0], [0.3, 0], [0.1, 0]]
     },
     {
         Name: "3",
         Id: 3,
         weightedRandomness: 0.11,
         useWildSub: true,
-        multiplier1: [0.5, 0.3, 0.1],
         // multiplier : [0.5,0.3,0.1]
-        multiplier: [{ reps: 3, value: 0.5, freeSpin: 0 }, { reps: 4, value: 0.3, freeSpin: 0 }, { reps: 5, value: 0.1, freeSpin: 0 }]
+        multiplier: [[0.5, 0], [0.3, 0], [0.1, 0]]
     },
     {
         Name: "4",
         Id: 4,
         weightedRandomness: 0.11,
         useWildSub: true,
-        multiplier1: [0.5, 0.3, 0.1],
         // multiplier : [0.5,0.3,0.1]
-        multiplier: [{ reps: 3, value: 0.5, freeSpin: 0 }, { reps: 4, value: 0.3, freeSpin: 0 }, { reps: 5, value: 0.1, freeSpin: 0 }]
+        multiplier: [[0.5, 0], [0.3, 0], [0.1, 0]]
     },
     {
         Name: "5",
         Id: 5,
         weightedRandomness: 0.05,
         useWildSub: true,
-        multiplier1: [0.5, 0.3, 0.1],
         // multiplier : [0.5,0.3,0.1]
-        multiplier: [{ reps: 3, value: 0.5, freeSpin: 0 }, { reps: 4, value: 0.3, freeSpin: 0 }, { reps: 5, value: 0.1, freeSpin: 0 }]
+        multiplier: [[0.5, 0], [0.3, 0], [0.1, 0]]
     },
     {
         Name: "6",
         Id: 6,
         weightedRandomness: 0.05,
         useWildSub: true,
-        multiplier1: [0.5, 0.3, 0.1],
         // multiplier : [0.5,0.3,0.1]
-        multiplier: [{ reps: 3, value: 0.5, freeSpin: 0 }, { reps: 4, value: 0.3, freeSpin: 0 }, { reps: 5, value: 0.1, freeSpin: 0 }]
+        multiplier: [[0.5, 0], [0.3, 0], [0.1, 0]]
     },
     {
         Name: "7",
         Id: 7,
         weightedRandomness: 0.05,
         useWildSub: true,
-        multiplier1: [0.5, 0.3, 0.1],
         // multiplier : [0.5,0.3,0.1]
-        multiplier: [{ reps: 3, value: 0.5, freeSpin: 0 }, { reps: 4, value: 0.3, freeSpin: 0 }, { reps: 5, value: 0.1, freeSpin: 0 }]
+        multiplier: [[0.5, 0], [0.3, 0], [0.1, 0]]
     },
     {
         Name: "8",
         Id: 8,
         weightedRandomness: 0.05,
         useWildSub: true,
-        multiplier1: [0.5, 0.3, 0.1],
         // multiplier : [0.5,0.3,0.1]
-        multiplier: [{ reps: 3, value: 0.5, freeSpin: 0 }, { reps: 4, value: 0.3, freeSpin: 0 }, { reps: 5, value: 0.1, freeSpin: 0 }]
+        multiplier: [[0.5, 0], [0.3, 0], [0.1, 0]]
     },
     {
         Name: "9",
         Id: 9,
-        weightedRandomness: 0.5,
+        weightedRandomness: 0.05,
         useWildSub: false,
-        multiplier: [{ reps: 5, value: 0.5, freeSpin: 10 }, { reps: 4, value: 0.3, freeSpin: 5 }, { reps: 5, value: 0.1, freeSpin: 3 }]
+        multiplier: [[0.5, 10], [0.3, 5], [0.1, 3]]
     },
     {
         Name: "Wild",
@@ -106,13 +99,27 @@ exports.Symbols = [
         Id: 11,
         weightedRandomness: 0.05,
         useWildSub: false,
-        multiplier: []
+        multiplier: [],
+        pay: 5,
+        freeSpin: 0,
+        count: 5
     },
     {
         Name: "Jackpot",
         Id: 12,
-        weightedRandomness: 0.2,
+        weightedRandomness: 0.05,
         useWildSub: false,
-        multiplier: []
+        multiplier: [],
+        defaultAmount: 12000,
+        increaseValue: 5
+    },
+    {
+        Name: "Bonus",
+        Id: 13,
+        weightedRandomness: 0.1,
+        useWildSub: false,
+        symbolCount: 5,
+        pay: 1000,
+        highestMultiplier: 0.5
     }
 ];

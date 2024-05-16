@@ -8,7 +8,7 @@ export function sendInitdata(clientID : string)
 {
     makePayLines();
     const matrix = generateMatrix(gameSettings.matrix.x, 18);
-    let bonus=new bonusGame(5,1000,50);
+    const bonus= gameSettings.bonus.game;
 
     for(let i = 0; i < 3; i++)
     {
@@ -25,10 +25,11 @@ export function sendInitdata(clientID : string)
            "LinesCount": [1, 5, 10, 15, 20],
            "autoSpin": [1, 5, 10, 20],
         },
-        "BonusData": bonus.generateData(),
+        "BonusData": bonus.generateData(gameSettings.bonusPayTable[0].pay),
         "UIData":  UiInitData,
         "PlayerData" : playerData,
         };
+
     sendMessageToClient(clientID,"InitData",dataToSend)
 }
 
@@ -48,6 +49,13 @@ export class RandomResultGenerator {
                 }
                 matrix.push(row);
             }
+            // matrix.pop();
+            // matrix.pop();
+            // matrix.pop();
+            // matrix.push(['10','13','9','13','7'])
+            // matrix.push(['13','10','13','9','8'])
+            // matrix.push(['0','5','3','2','10'])
+
             gameSettings.resultSymbolMatrix = matrix;
     }
     

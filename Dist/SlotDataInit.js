@@ -2,14 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RandomResultGenerator = exports.sendInitdata = void 0;
 var App_1 = require("./App");
-var BonusResults_1 = require("./BonusResults");
 var Global_1 = require("./Global");
 var testData_1 = require("./testData");
 var utils_1 = require("./utils");
 function sendInitdata(clientID) {
     (0, Global_1.makePayLines)();
     var matrix = (0, utils_1.generateMatrix)(Global_1.gameSettings.matrix.x, 18);
-    var bonus = new BonusResults_1.bonusGame(5, 1000, 50);
+    var bonus = Global_1.gameSettings.bonus.game;
     for (var i = 0; i < 3; i++) {
         var strng = "Player has the right to start the slot machine without using their funds for a certain number of times. The size of the bet is determined by the";
         Global_1.UiInitData.spclSymbolTxt.push(strng);
@@ -23,7 +22,7 @@ function sendInitdata(clientID) {
             "LinesCount": [1, 5, 10, 15, 20],
             "autoSpin": [1, 5, 10, 20],
         },
-        "BonusData": bonus.generateData(),
+        "BonusData": bonus.generateData(Global_1.gameSettings.bonusPayTable[0].pay),
         "UIData": Global_1.UiInitData,
         "PlayerData": Global_1.playerData,
     };
@@ -42,6 +41,12 @@ var RandomResultGenerator = /** @class */ (function () {
             }
             matrix.push(row);
         }
+        // matrix.pop();
+        // matrix.pop();
+        // matrix.pop();
+        // matrix.push(['10','13','9','13','7'])
+        // matrix.push(['13','10','13','9','8'])
+        // matrix.push(['0','5','3','2','10'])
         Global_1.gameSettings.resultSymbolMatrix = matrix;
     }
     // Function to generate a random number based on weights
