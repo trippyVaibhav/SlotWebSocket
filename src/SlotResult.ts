@@ -141,6 +141,7 @@ export class CheckResult {
             
         }
         console.log("result :",gameSettings.resultSymbolMatrix);
+        if(gameWining.freeSpins > 0)gameWining.freeSpins -=1;
         this.makeResultJson();
 
         
@@ -411,6 +412,6 @@ class WinData {
         gameWining.TotalWinningAmount += this.pay;
         playerData.Balance += this.pay;
         playerData.haveWon += this.pay;
-        gameWining.freeSpins = this.freeSpins;
+        gameWining.freeSpins = gameWining.freeSpins+this.freeSpins;
     }
 }
