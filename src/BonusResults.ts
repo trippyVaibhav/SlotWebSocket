@@ -83,9 +83,11 @@ export class bonusGame{
     setRandomStopIndex(){
         if(gameSettings.bonus.type=="spin" && gameSettings.bonus.start)
             gameSettings.bonus.stopIndex=Math.round(Math.random()*this.noOfItems);
-
-        playerData.Balance +=parseInt(this.result[gameSettings.bonus.stopIndex]);
-        playerData.haveWon += parseInt(this.result[gameSettings.bonus.stopIndex]);
+        let amount: number=parseFloat(this.result[gameSettings.bonus.stopIndex]);
+        if(amount<0)
+            amount=0
+        playerData.Balance += amount;
+        playerData.haveWon += amount;
 
 
     }

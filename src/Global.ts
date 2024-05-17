@@ -1,5 +1,5 @@
 import { bonusGame } from "./BonusResults";
-import { Symbols, linesApiData } from "./testData";
+import { Symbols, linesApiData, gameData } from "./testData";
 import { GameSettings, PlayerData, WildSymbol, addScatterPay, convertSymbols, setJackpotSettings, setWild, winning } from "./utils";
 
 export const gameSettings: GameSettings = {
@@ -34,8 +34,8 @@ export const gameSettings: GameSettings = {
 function initSymbols(): string[] {
     let symbols: string[] = [];
 
-    for (let i = 0; i < Symbols.length; i++) {
-        symbols.push(Symbols[i].Id.toString());
+    for (let i = 0; i < gameData.Symbols.length; i++) {
+        symbols.push(gameData.Symbols[i].Id.toString());
 
     }
     return symbols;
@@ -44,8 +44,8 @@ function initSymbols(): string[] {
 function initWeigts(): number[] {
     let weights: number[] = [];
 
-    for (let i = 0; i < Symbols.length; i++) {
-        weights.push(Symbols[i].weightedRandomness);
+    for (let i = 0; i < gameData.Symbols.length; i++) {
+        weights.push(gameData.Symbols[i].weightedRandomness);
 
     }
 
@@ -54,11 +54,12 @@ function initWeigts(): number[] {
 
 export const playerData: PlayerData = {
     Balance: 1000,
-    haveWon: 100,
+    haveWon: 0,
+    haveUsed: 0
 }
 
 export const UiInitData = {
-    paylines: convertSymbols(Symbols),
+    paylines: convertSymbols(gameData.Symbols),
     spclSymbolTxt: [],
     AbtLogo: {
         logoSprite: "https://iili.io/JrMCqPf.png",
@@ -100,7 +101,7 @@ export function addPayLineSymbols(symbol: string, repetition: number, pay: numbe
 
 export function makePayLines() {
 
-    Symbols.forEach((element) => {
+    gameData.Symbols.forEach((element) => {
         if (element.Id < 10 && element.multiplier?.length > 0) {
 
             element.multiplier?.forEach((item, index) => {

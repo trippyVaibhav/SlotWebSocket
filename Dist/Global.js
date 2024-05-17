@@ -34,24 +34,25 @@ exports.gameSettings = {
 };
 function initSymbols() {
     var symbols = [];
-    for (var i = 0; i < testData_1.Symbols.length; i++) {
-        symbols.push(testData_1.Symbols[i].Id.toString());
+    for (var i = 0; i < testData_1.gameData.Symbols.length; i++) {
+        symbols.push(testData_1.gameData.Symbols[i].Id.toString());
     }
     return symbols;
 }
 function initWeigts() {
     var weights = [];
-    for (var i = 0; i < testData_1.Symbols.length; i++) {
-        weights.push(testData_1.Symbols[i].weightedRandomness);
+    for (var i = 0; i < testData_1.gameData.Symbols.length; i++) {
+        weights.push(testData_1.gameData.Symbols[i].weightedRandomness);
     }
     return weights;
 }
 exports.playerData = {
     Balance: 1000,
-    haveWon: 100,
+    haveWon: 0,
+    haveUsed: 0
 };
 exports.UiInitData = {
-    paylines: (0, utils_1.convertSymbols)(testData_1.Symbols),
+    paylines: (0, utils_1.convertSymbols)(testData_1.gameData.Symbols),
     spclSymbolTxt: [],
     AbtLogo: {
         logoSprite: "https://iili.io/JrMCqPf.png",
@@ -86,7 +87,7 @@ function addPayLineSymbols(symbol, repetition, pay, freeSpins) {
 }
 exports.addPayLineSymbols = addPayLineSymbols;
 function makePayLines() {
-    testData_1.Symbols.forEach(function (element) {
+    testData_1.gameData.Symbols.forEach(function (element) {
         var _a, _b;
         if (element.Id < 10 && ((_a = element.multiplier) === null || _a === void 0 ? void 0 : _a.length) > 0) {
             (_b = element.multiplier) === null || _b === void 0 ? void 0 : _b.forEach(function (item, index) {

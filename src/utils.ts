@@ -11,6 +11,7 @@ export interface SymbolData {
 export interface PlayerData {
     Balance : number,
     haveWon : number,
+    haveUsed: number
 }
 // Define interfaces for pay lines and scatter pay table entries
 export interface PayLine {

@@ -69,8 +69,11 @@ var bonusGame = /** @class */ (function () {
     bonusGame.prototype.setRandomStopIndex = function () {
         if (Global_1.gameSettings.bonus.type == "spin" && Global_1.gameSettings.bonus.start)
             Global_1.gameSettings.bonus.stopIndex = Math.round(Math.random() * this.noOfItems);
-        Global_1.playerData.Balance += parseInt(this.result[Global_1.gameSettings.bonus.stopIndex]);
-        Global_1.playerData.haveWon += parseInt(this.result[Global_1.gameSettings.bonus.stopIndex]);
+        var amount = parseFloat(this.result[Global_1.gameSettings.bonus.stopIndex]);
+        if (amount < 0)
+            amount = 0;
+        Global_1.playerData.Balance += amount;
+        Global_1.playerData.haveWon += amount;
     };
     bonusGame.prototype.shuffle = function (array) {
         for (var i = array.length - 1; i > 0; i--) {
