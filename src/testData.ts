@@ -350,7 +350,7 @@ export const gameData=[{
              weightedRandomness : 0.5,
              useWildSub : false,
              symbolCount: 5,
-             pay: 1000,
+             pay: 100,
              highestMultiplier : 0.5
          },
          {

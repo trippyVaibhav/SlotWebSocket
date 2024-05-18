@@ -45,7 +45,6 @@ export class bonusGame{
     // }
     
     generateData(totalPay:number ):string[] {
-        console.log("triggered12");
  
         this.result=[];
         let res: string[]=[];
@@ -86,15 +85,12 @@ export class bonusGame{
     }
 
     setRandomStopIndex(){
-        console.log("triggered23");
-        let amount: number;
+        let amount: number=0;
 
         if(gameSettings.bonus.start && gameSettings.currentGamedata.bonus.type=="spin"){
             gameSettings.bonus.stopIndex=Math.round(Math.random()*this.noOfItems);
             amount=this.result[gameSettings.bonus.stopIndex];
-        }
-
-        if(gameSettings.bonus.start && gameSettings.currentGamedata.bonus.type=="tap"){
+        }else if(gameSettings.bonus.start && gameSettings.currentGamedata.bonus.type=="tap"){
             gameSettings.bonus.stopIndex=-1;   
             this.result.forEach((element)=>{
                 if(element>=0){
@@ -105,7 +101,6 @@ export class bonusGame{
 
         if(!amount || amount<0)
             amount=0
-
         playerData.Balance += amount;
         playerData.haveWon += amount;
 

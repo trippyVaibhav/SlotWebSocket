@@ -37,7 +37,6 @@ var bonusGame = /** @class */ (function () {
     //     };
     // }
     bonusGame.prototype.generateData = function (totalPay) {
-        console.log("triggered12");
         this.result = [];
         var res = [];
         var sum = 0;
@@ -69,13 +68,12 @@ var bonusGame = /** @class */ (function () {
         return res;
     };
     bonusGame.prototype.setRandomStopIndex = function () {
-        console.log("triggered23");
-        var amount;
+        var amount = 0;
         if (Global_1.gameSettings.bonus.start && Global_1.gameSettings.currentGamedata.bonus.type == "spin") {
             Global_1.gameSettings.bonus.stopIndex = Math.round(Math.random() * this.noOfItems);
             amount = this.result[Global_1.gameSettings.bonus.stopIndex];
         }
-        if (Global_1.gameSettings.bonus.start && Global_1.gameSettings.currentGamedata.bonus.type == "tap") {
+        else if (Global_1.gameSettings.bonus.start && Global_1.gameSettings.currentGamedata.bonus.type == "tap") {
             Global_1.gameSettings.bonus.stopIndex = -1;
             this.result.forEach(function (element) {
                 if (element >= 0) {
