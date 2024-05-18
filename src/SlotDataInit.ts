@@ -53,12 +53,12 @@ export class RandomResultGenerator {
                 matrix.push(row);
             }
 
-            matrix.pop();
-            matrix.pop();
-            matrix.pop();
-            matrix.push(['10','9','8','13','7'])
-            matrix.push(['8','10','9','8','8'])
-            matrix.push(['0','8','3','2','10'])
+            // matrix.pop();
+            // matrix.pop();
+            // matrix.pop();
+            // matrix.push(['10','9','8','13','7'])
+            // matrix.push(['8','10','9','8','8'])
+            // matrix.push(['0','8','3','2','10'])
 
             gameSettings.resultSymbolMatrix = matrix;
     }
