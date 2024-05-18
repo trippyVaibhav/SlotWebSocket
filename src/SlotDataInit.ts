@@ -1,14 +1,17 @@
 import { sendMessageToClient } from "./App";
 import { bonusGame } from "./BonusResults";
 import { UiInitData, gameSettings, makePayLines, playerData} from "./Global";
-import { linesApiData } from "./testData";
+import { currentGameData } from "./testData";
 import { generateMatrix } from "./utils";
 
 export function sendInitdata(clientID : string)
 {
-    makePayLines();
+    // makePayLines();
     const matrix = generateMatrix(gameSettings.matrix.x, 18);
-    const bonus= gameSettings.bonus.game;
+    let bonus=null;
+    if(gameSettings.currentGamedata.bonus.isEnabled && gameSettings.currentGamedata.bonus.type=="spin")
+    gameSettings.bonus.game= new bonusGame(8);
+
 
     for(let i = 0; i < 3; i++)
     {
@@ -19,13 +22,13 @@ export function sendInitdata(clientID : string)
     const dataToSend = {
        "GameData" : {
            "Reel" :matrix,
-           "Lines": linesApiData,
-           "Bets": [1, 5, 10, 15, 20],
+           "Lines": gameSettings.currentGamedata.linesApiData,
+           "Bets": gameSettings.currentGamedata.linesCount,
            "canSwitchLines": false,
-           "LinesCount": [1, 5, 10, 15, 20],
+           "LinesCount": gameSettings.currentGamedata.bets,
            "autoSpin": [1, 5, 10, 20],
         },
-        "BonusData": bonus.generateData(gameSettings.bonusPayTable[0].pay),
+        "BonusData": gameSettings.bonus.game!=null? gameSettings.bonus.game.generateData(gameSettings.bonusPayTable[0]?.pay):null,
         "UIData":  UiInitData,
         "PlayerData" : playerData,
         };
@@ -49,11 +52,12 @@ export class RandomResultGenerator {
                 }
                 matrix.push(row);
             }
+
             // matrix.pop();
             // matrix.pop();
             // matrix.pop();
-            // matrix.push(['10','13','9','13','7'])
-            // matrix.push(['13','10','13','9','8'])
+            // matrix.push(['10','9','9','13','7'])
+            // matrix.push(['9','10','9','9','8'])
             // matrix.push(['0','5','3','2','10'])
 
             gameSettings.resultSymbolMatrix = matrix;

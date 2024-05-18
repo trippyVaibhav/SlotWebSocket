@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendMessageToClient = void 0;
 var WebSocket = require("ws");
 var uuid_1 = require("uuid"); // Import UUID v4
-var SlotDataInit_1 = require("./SlotDataInit");
 var SlotResult_1 = require("./SlotResult");
 var Global_1 = require("./Global");
 // Map to store WebSocket connections with their associated client IDs
@@ -16,7 +15,6 @@ function handleConnection(ws) {
     // Store the WebSocket connection with its associated client ID
     clients.set(clientId, ws);
     console.log("Client connected: ".concat(clientId));
-    (0, SlotDataInit_1.sendInitdata)(clientId);
     // Function to handle pong messages
     function heartbeat() {
         isAlive = true;
@@ -42,7 +40,11 @@ function handleConnection(ws) {
     ws.on('message', function incoming(message) {
         console.log("Received message from ".concat(clientId, ": ").concat(message.id));
         var messageData = JSON.parse(message);
-        console.log(messageData);
+        console.log(messageData.Data.GameID);
+        console.log(messageData.Data);
+        if (messageData.id == "Auth") {
+            Global_1.gameSettings.initiate(messageData.Data.GameID, clientId);
+        }
         if (messageData.id == "Spin") {
             Global_1.gameWining.currentBet = messageData.Data.CurrentBet;
             var result = new SlotResult_1.CheckResult(clientId);

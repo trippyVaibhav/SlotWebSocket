@@ -1,19 +1,46 @@
 import { bonusGame } from "./BonusResults";
-import { Symbols, linesApiData, gameData } from "./testData";
+// import {  } from "./testData";
+import { sendInitdata } from './SlotDataInit';
+import { gameData } from "./testData";
 import { GameSettings, PlayerData, WildSymbol, addScatterPay, convertSymbols, setJackpotSettings, setWild, winning } from "./utils";
 
+// let gameSettings.currentGamedata={
+//     id: "",
+// linesApiData: [],
+// Symbols: [
+//     {
+//         Name: "",
+//         Id: null,
+//         weightedRandomness: 0,
+//         useWildSub: false,
+//         multiplier: []
+//     }]
+// };
+
 export const gameSettings: GameSettings = {
+    currentGamedata:{
+                id: "",
+    linesApiData: [],
+    Symbols: [
+        {
+            Name: "",
+            Id: null,
+            weightedRandomness: 0,
+            useWildSub: false,
+            multiplier: []
+        }]
+    },
     matrix: { x: 5, y: 3 },
     payLine: [],
     scatterPayTable: [],
     bonusPayTable: [],
-    useScatter: true,
+    useScatter: false,
     useWild: true,
     wildSymbol: {} as WildSymbol,
     // Symbols: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',"10","11","12"],
     // Weights: [0.1, 0.1, 0.05, 0.05, 0.01, 0.1, 0.1, 0.1, 0.01, 0.01, 0.1, 0.01, 0.01],
-    Symbols: initSymbols(),
-    Weights: initWeigts(),
+    Symbols: [],
+    Weights: [],
     resultSymbolMatrix: [],
     lineData: [],
     fullPayTable: [],
@@ -24,18 +51,34 @@ export const gameSettings: GameSettings = {
         increaseValue: 1
     },
     bonus: {
-        type: "spin",
         start: false,
         stopIndex: -1,
-        game: new bonusGame(5),
+        game: null,
+        // game: new bonusGame(5),
+    },
+    currentBet:5,
+    initiate: (GameID: any, clientID: any)=>{
+        const currentGameData=gameData.filter((element)=>element.id==GameID)
+        // console.log(currentGameData);
+        gameSettings.currentGamedata=currentGameData[0];
+        // setCurrentData(currentGameData[0]);
+        gameSettings.Symbols=initSymbols();
+        gameSettings.Weights=initWeigts();
+        UiInitData.paylines=convertSymbols(gameSettings.currentGamedata.Symbols);
+        makePayLines();
+        sendInitdata(clientID);
+
     }
 };
+
+
+
 
 function initSymbols(): string[] {
     let symbols: string[] = [];
 
-    for (let i = 0; i < gameData.Symbols.length; i++) {
-        symbols.push(gameData.Symbols[i].Id.toString());
+    for (let i = 0; i < gameSettings?.currentGamedata.Symbols.length; i++) {
+        symbols.push(gameSettings?.currentGamedata.Symbols[i].Id?.toString());
 
     }
     return symbols;
@@ -44,8 +87,8 @@ function initSymbols(): string[] {
 function initWeigts(): number[] {
     let weights: number[] = [];
 
-    for (let i = 0; i < gameData.Symbols.length; i++) {
-        weights.push(gameData.Symbols[i].weightedRandomness);
+    for (let i = 0; i < gameSettings?.currentGamedata.Symbols.length; i++) {
+        weights.push(gameSettings.currentGamedata.Symbols[i]?.weightedRandomness);
 
     }
 
@@ -55,11 +98,11 @@ function initWeigts(): number[] {
 export const playerData: PlayerData = {
     Balance: 1000,
     haveWon: 0,
-    haveUsed: 0
+    // haveUsed: 0
 }
 
 export const UiInitData = {
-    paylines: convertSymbols(gameData.Symbols),
+    paylines: convertSymbols(gameSettings.currentGamedata.Symbols),
     spclSymbolTxt: [],
     AbtLogo: {
         logoSprite: "https://iili.io/JrMCqPf.png",
@@ -94,22 +137,22 @@ export function addPayLineSymbols(symbol: string, repetition: number, pay: numbe
     });
 
     // if(!UiInitData.paylines[parseInt(symbol)]) UiInitData.paylines[parseInt(symbol)]= []
-    // UiInitData.paylines[parseInt(symbol)].push(pay.toString());
+    // UiInitData.paylines[parseInt(symbol)].push(pay?.toString());
     // console.log(gameSettings.payLine);
 }
 
 
 export function makePayLines() {
 
-    gameData.Symbols.forEach((element) => {
+    gameSettings.currentGamedata.Symbols.forEach((element) => {
         if (element.Id < 10 && element.multiplier?.length > 0) {
 
             element.multiplier?.forEach((item, index) => {
-                addPayLineSymbols(element.Id.toString(), 5 - index, item[0], item[1]);
+                addPayLineSymbols(element.Id?.toString(), 5 - index, item[0], item[1]);
             })
         } else {
             handleSpecialSymbols(element);
-            // addPayLineSymbols(element.Id.toString(),3, 0,0);
+            // addPayLineSymbols(element.Id?.toString(),3, 0,0);
         }
     })
     // addPayLineSymbols("0", 5, 0.1, 0);

@@ -1,21 +1,47 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.makePayLines = exports.addPayLineSymbols = exports.gameWining = exports.UiInitData = exports.playerData = exports.gameSettings = void 0;
-var BonusResults_1 = require("./BonusResults");
+// import {  } from "./testData";
+var SlotDataInit_1 = require("./SlotDataInit");
 var testData_1 = require("./testData");
 var utils_1 = require("./utils");
+// let gameSettings.currentGamedata={
+//     id: "",
+// linesApiData: [],
+// Symbols: [
+//     {
+//         Name: "",
+//         Id: null,
+//         weightedRandomness: 0,
+//         useWildSub: false,
+//         multiplier: []
+//     }]
+// };
 exports.gameSettings = {
+    currentGamedata: {
+        id: "",
+        linesApiData: [],
+        Symbols: [
+            {
+                Name: "",
+                Id: null,
+                weightedRandomness: 0,
+                useWildSub: false,
+                multiplier: []
+            }
+        ]
+    },
     matrix: { x: 5, y: 3 },
     payLine: [],
     scatterPayTable: [],
     bonusPayTable: [],
-    useScatter: true,
+    useScatter: false,
     useWild: true,
     wildSymbol: {},
     // Symbols: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',"10","11","12"],
     // Weights: [0.1, 0.1, 0.05, 0.05, 0.01, 0.1, 0.1, 0.1, 0.01, 0.01, 0.1, 0.01, 0.01],
-    Symbols: initSymbols(),
-    Weights: initWeigts(),
+    Symbols: [],
+    Weights: [],
     resultSymbolMatrix: [],
     lineData: [],
     fullPayTable: [],
@@ -26,33 +52,47 @@ exports.gameSettings = {
         increaseValue: 1
     },
     bonus: {
-        type: "spin",
         start: false,
         stopIndex: -1,
-        game: new BonusResults_1.bonusGame(5),
+        game: null,
+        // game: new bonusGame(5),
+    },
+    currentBet: 5,
+    initiate: function (GameID, clientID) {
+        var currentGameData = testData_1.gameData.filter(function (element) { return element.id == GameID; });
+        // console.log(currentGameData);
+        exports.gameSettings.currentGamedata = currentGameData[0];
+        // setCurrentData(currentGameData[0]);
+        exports.gameSettings.Symbols = initSymbols();
+        exports.gameSettings.Weights = initWeigts();
+        exports.UiInitData.paylines = (0, utils_1.convertSymbols)(exports.gameSettings.currentGamedata.Symbols);
+        makePayLines();
+        (0, SlotDataInit_1.sendInitdata)(clientID);
     }
 };
 function initSymbols() {
+    var _a;
     var symbols = [];
-    for (var i = 0; i < testData_1.gameData.Symbols.length; i++) {
-        symbols.push(testData_1.gameData.Symbols[i].Id.toString());
+    for (var i = 0; i < (exports.gameSettings === null || exports.gameSettings === void 0 ? void 0 : exports.gameSettings.currentGamedata.Symbols.length); i++) {
+        symbols.push((_a = exports.gameSettings === null || exports.gameSettings === void 0 ? void 0 : exports.gameSettings.currentGamedata.Symbols[i].Id) === null || _a === void 0 ? void 0 : _a.toString());
     }
     return symbols;
 }
 function initWeigts() {
+    var _a;
     var weights = [];
-    for (var i = 0; i < testData_1.gameData.Symbols.length; i++) {
-        weights.push(testData_1.gameData.Symbols[i].weightedRandomness);
+    for (var i = 0; i < (exports.gameSettings === null || exports.gameSettings === void 0 ? void 0 : exports.gameSettings.currentGamedata.Symbols.length); i++) {
+        weights.push((_a = exports.gameSettings.currentGamedata.Symbols[i]) === null || _a === void 0 ? void 0 : _a.weightedRandomness);
     }
     return weights;
 }
 exports.playerData = {
     Balance: 1000,
     haveWon: 0,
-    haveUsed: 0
+    // haveUsed: 0
 };
 exports.UiInitData = {
-    paylines: (0, utils_1.convertSymbols)(testData_1.gameData.Symbols),
+    paylines: (0, utils_1.convertSymbols)(exports.gameSettings.currentGamedata.Symbols),
     spclSymbolTxt: [],
     AbtLogo: {
         logoSprite: "https://iili.io/JrMCqPf.png",
@@ -82,21 +122,22 @@ function addPayLineSymbols(symbol, repetition, pay, freeSpins) {
         freeSpins: freeSpins
     });
     // if(!UiInitData.paylines[parseInt(symbol)]) UiInitData.paylines[parseInt(symbol)]= []
-    // UiInitData.paylines[parseInt(symbol)].push(pay.toString());
+    // UiInitData.paylines[parseInt(symbol)].push(pay?.toString());
     // console.log(gameSettings.payLine);
 }
 exports.addPayLineSymbols = addPayLineSymbols;
 function makePayLines() {
-    testData_1.gameData.Symbols.forEach(function (element) {
+    exports.gameSettings.currentGamedata.Symbols.forEach(function (element) {
         var _a, _b;
         if (element.Id < 10 && ((_a = element.multiplier) === null || _a === void 0 ? void 0 : _a.length) > 0) {
             (_b = element.multiplier) === null || _b === void 0 ? void 0 : _b.forEach(function (item, index) {
-                addPayLineSymbols(element.Id.toString(), 5 - index, item[0], item[1]);
+                var _a;
+                addPayLineSymbols((_a = element.Id) === null || _a === void 0 ? void 0 : _a.toString(), 5 - index, item[0], item[1]);
             });
         }
         else {
             handleSpecialSymbols(element);
-            // addPayLineSymbols(element.Id.toString(),3, 0,0);
+            // addPayLineSymbols(element.Id?.toString(),3, 0,0);
         }
     });
     // addPayLineSymbols("0", 5, 0.1, 0);

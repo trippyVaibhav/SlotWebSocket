@@ -37,6 +37,7 @@ var bonusGame = /** @class */ (function () {
     //     };
     // }
     bonusGame.prototype.generateData = function (totalPay) {
+        console.log("triggered12");
         this.result = [];
         var res = [];
         var sum = 0;
@@ -45,32 +46,44 @@ var bonusGame = /** @class */ (function () {
         var part = Math.floor((this.totalPay - this.maxPay) / (this.noOfItems - 2));
         this.noise = Math.floor(part / (this.noOfItems - 2));
         for (var i = 0; i < this.noOfItems - 2; i++) {
-            res.push(part);
+            this.result.push(part);
             sum += part;
         }
-        for (var i = 0; i < res.length; i++) {
+        for (var i = 0; i < this.result.length; i++) {
             var min = this.noise * i > 0 ? this.noise * i : this.noise;
             var max = this.noise * (i + 1);
-            var j = res.length - 1 - i;
+            var j = this.result.length - 1 - i;
             var deviation = Math.floor(Math.random() * (max - min) + min);
-            res[i] -= deviation;
-            res[j] += deviation;
+            this.result[i] -= deviation;
+            this.result[j] += deviation;
         }
         var diff = this.totalPay - this.maxPay - sum;
-        res[Math.floor(Math.random() * res.length)] += diff;
-        res.push("-1");
-        res.push(this.maxPay);
-        this.shuffle(res);
-        for (var i = 0; i < res.length; i++) {
-            this.result.push(res[i].toString());
+        this.result[Math.floor(Math.random() * res.length)] += diff;
+        this.result.push(-1);
+        this.result.push(this.maxPay);
+        this.shuffle(this.result);
+        for (var i = 0; i < this.result.length; i++) {
+            res.push(this.result[i].toString());
         }
-        return this.result;
+        console.log("result of bonus", res);
+        return res;
     };
     bonusGame.prototype.setRandomStopIndex = function () {
-        if (Global_1.gameSettings.bonus.type == "spin" && Global_1.gameSettings.bonus.start)
+        console.log("triggered23");
+        var amount;
+        if (Global_1.gameSettings.bonus.start && Global_1.gameSettings.currentGamedata.bonus.type == "spin") {
             Global_1.gameSettings.bonus.stopIndex = Math.round(Math.random() * this.noOfItems);
-        var amount = parseFloat(this.result[Global_1.gameSettings.bonus.stopIndex]);
-        if (amount < 0)
+            amount = this.result[Global_1.gameSettings.bonus.stopIndex];
+        }
+        if (Global_1.gameSettings.bonus.start && Global_1.gameSettings.currentGamedata.bonus.type == "tap") {
+            Global_1.gameSettings.bonus.stopIndex = -1;
+            this.result.forEach(function (element) {
+                if (element >= 0) {
+                    amount += element;
+                }
+            });
+        }
+        if (!amount || amount < 0)
             amount = 0;
         Global_1.playerData.Balance += amount;
         Global_1.playerData.haveWon += amount;

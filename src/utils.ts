@@ -11,15 +11,13 @@ export interface SymbolData {
 export interface PlayerData {
     Balance : number,
     haveWon : number,
-    haveUsed: number
+    // haveUsed: number
 }
-// Define interfaces for pay lines and scatter pay table entries
 export interface PayLine {
     line: string[];
     pay: number;
     freeSpins: number;
 }
-
 export interface ScatterPayEntry {
     symbolCount: number,
     symbolID: number,
@@ -27,7 +25,6 @@ export interface ScatterPayEntry {
     pay: number;
     freeSpins: number;
 }
-
 export interface BonusPayEntry {
     symbolCount: number,
     symbolID: number,
@@ -54,6 +51,7 @@ export interface winning {
 };
 
 export interface GameSettings {
+    currentGamedata: any;
     matrix: { x: number, y: number }
     payLine: PayLine[];
     scatterPayTable: ScatterPayEntry[];
@@ -74,11 +72,12 @@ export interface GameSettings {
     },
     bonus:{
         game: bonusGame,
-        type:string,
         start:boolean,
         stopIndex:number
         // maxPay: number
     },
+    currentBet: number;
+    initiate:(arg: any, arg2: any)=> void
 
 };
 

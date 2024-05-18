@@ -2,8 +2,8 @@ import * as WebSocket from 'ws';
 import { v4 as uuidv4 } from 'uuid'; // Import UUID v4
 import { sendInitdata } from './SlotDataInit';
 import { CheckResult } from './SlotResult';
-import { gameWining } from './Global';
-
+import { gameSettings, gameWining } from './Global';
+import { gameData, currentGameData, setCurrentData } from './testData';
 // Map to store WebSocket connections with their associated client IDs
 const clients: Map<string, WebSocket> = new Map();
 
@@ -18,7 +18,6 @@ function handleConnection(ws: WebSocket) {
   clients.set(clientId, ws);
 
   console.log(`Client connected: ${clientId}`);
-  sendInitdata(clientId);
 
   // Function to handle pong messages
   function heartbeat() {
@@ -47,7 +46,14 @@ function handleConnection(ws: WebSocket) {
   ws.on('message', function incoming(message: any) {
     console.log(`Received message from ${clientId}: ${message.id}`);
     const messageData = JSON.parse(message);
-    console.log(messageData);
+    console.log(messageData.Data.GameID);
+    console.log(messageData.Data);
+
+    
+    if(messageData.id=="Auth"){
+      gameSettings.initiate(messageData.Data.GameID,clientId)
+    }
+
 
     if (messageData.id == "Spin") {
       gameWining.currentBet = messageData.Data.CurrentBet;
@@ -65,7 +71,7 @@ function handleConnection(ws: WebSocket) {
 }
 
 // Assuming wss is your WebSocket server instance
-const wss = new WebSocket.Server({ port: 3035 });
+const wss = new WebSocket.Server({ port: 3035});
 
 // Event listener for server connection
 wss.on('connection', handleConnection);
