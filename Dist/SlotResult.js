@@ -8,6 +8,8 @@ var SlotDataInit_1 = require("./SlotDataInit");
 var BonusResults_1 = require("./BonusResults");
 var CheckResult = /** @class */ (function () {
     function CheckResult(clientID) {
+        var _this = this;
+        var _a;
         if (Global_1.gameSettings.currentGamedata.bonus.isEnabled && Global_1.gameSettings.currentGamedata.bonus.type == "tap")
             Global_1.gameSettings.bonus.game = new BonusResults_1.bonusGame(3);
         // if(playerData.Balance < gameWining.currentBet)
@@ -29,7 +31,11 @@ var CheckResult = /** @class */ (function () {
         var rng = new SlotDataInit_1.RandomResultGenerator();
         this.makeFullPayTable();
         this.scatter = 'scatter';
-        this.bonus = 'Bonus';
+        (_a = Global_1.gameSettings.currentGamedata.Symbols) === null || _a === void 0 ? void 0 : _a.forEach(function (element) {
+            if (element.Name == "Bonus")
+                _this.bonus = element.Id.toString();
+        });
+        console.log("bonus1", this.bonus);
         this.useScatter = (Global_1.gameSettings.useScatter && this.scatter !== null);
         this.jackpot = Global_1.gameSettings.jackpot;
         this.useJackpot = (this.jackpot !== null);
@@ -90,9 +96,29 @@ var CheckResult = /** @class */ (function () {
         if (!Global_1.gameSettings.currentGamedata.bonus.isEnabled)
             return;
         var bonusSymbols = [];
-        var temp = this.findSymbol(this.bonus);
-        if (temp.length > 0)
-            bonusSymbols.push.apply(bonusSymbols, temp);
+        // let temp = this.findSymbol(this.bonus);
+        // if (temp.length > 0) bonusSymbols.push(...temp);
+        for (var i = 0; i < Global_1.gameSettings.resultSymbolMatrix.length; i++) {
+            for (var j = 0; j < Global_1.gameSettings.resultSymbolMatrix[i].length; j++) {
+                if (Global_1.gameSettings.resultSymbolMatrix[i][j] == this.bonus) {
+                    bonusSymbols.push(j.toString() + ',' + i.toString());
+                }
+            }
+        }
+        // if (payLine == null) return null;
+        // let winSymbols = [];
+        // for (let i = 0; i < lineData.length; i++) {
+        //     const symbol = this.getSymbolOnMatrix(i);
+        //     const s = symbol[lineData[i]];
+        //     if (payLine.line[i] !== 'any' && s !== payLine.line[i]) {
+        //         return;
+        //     }
+        //     else if (payLine.line[i] !== 'any' && s === payLine.line[i]) {
+        //         const symbolIndex =  i.toString() + ',' + lineData[i].toString() ;
+        //         winSymbols.push(symbolIndex);
+        //     }
+        // }
+        this.winData.winningSymbols.push(bonusSymbols);
         this.bonusPaytable.forEach(function (element) {
             if (element.symbolCount > 0 && element.symbolCount == bonusSymbols.length) {
                 bonuswin = new WinData(bonusSymbols, 0, 0);

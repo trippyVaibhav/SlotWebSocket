@@ -54,7 +54,11 @@ export class CheckResult {
         this.makeFullPayTable();
 
         this.scatter = 'scatter';
-        this.bonus='Bonus';
+        gameSettings.currentGamedata.Symbols?.forEach(element => {
+            if(element.Name=="Bonus")
+            this.bonus=element.Id.toString()
+        });
+        console.log("bonus1",this.bonus);
         this.useScatter = (gameSettings.useScatter && this.scatter !== null);
         this.jackpot = gameSettings.jackpot;
         this.useJackpot = (this.jackpot !== null);
@@ -128,8 +132,35 @@ export class CheckResult {
             return;
 
         let bonusSymbols=[]
-        let temp = this.findSymbol(this.bonus);
-        if (temp.length > 0) bonusSymbols.push(...temp);
+        // let temp = this.findSymbol(this.bonus);
+        // if (temp.length > 0) bonusSymbols.push(...temp);
+
+        for (let i = 0; i < gameSettings.resultSymbolMatrix.length; i++) {
+            for (let j = 0; j < gameSettings.resultSymbolMatrix[i].length; j++) {
+                if(gameSettings.resultSymbolMatrix[i][j]==this.bonus){
+                    bonusSymbols.push(j.toString()+','+i.toString())
+                }
+            }
+            
+        }
+        // if (payLine == null) return null;
+        // let winSymbols = [];
+        // for (let i = 0; i < lineData.length; i++) {
+            
+        //     const symbol = this.getSymbolOnMatrix(i);
+
+        //     const s = symbol[lineData[i]];
+            
+        //     if (payLine.line[i] !== 'any' && s !== payLine.line[i]) {
+        //         return;
+        //     }
+        //     else if (payLine.line[i] !== 'any' && s === payLine.line[i]) {
+        //         const symbolIndex =  i.toString() + ',' + lineData[i].toString() ;
+        //         winSymbols.push(symbolIndex);
+        //     }
+        // }
+
+        this.winData.winningSymbols.push(bonusSymbols);
 
         this.bonusPaytable.forEach((element) => {
             if (element.symbolCount > 0 && element.symbolCount == bonusSymbols.length){
