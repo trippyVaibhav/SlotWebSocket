@@ -10,7 +10,9 @@ export const gameData=[{
      Bets:[1,5,15,20],
      bonus:{
         type: "tap",
-        isEnabled: false
+        isEnabled: false,
+        noOfItem: 8
+
      },
      gamble:{
         type: "card",
@@ -112,7 +114,8 @@ export const gameData=[{
   Bets:[1,5,15,20],
   bonus:{
     type: "spin",
-    isEnabled: true
+    isEnabled: true,
+    noOfItem: 8
  },
  gamble:{
     type: "card",
@@ -244,7 +247,8 @@ export const gameData=[{
      bets:[1,3,9,6],
      bonus:{
         type: "tap",
-        isEnabled: true
+        isEnabled: true,
+        noOfItem: 4
      },
      gamble:{
         type: "card",
@@ -360,7 +364,8 @@ export const gameData=[{
      bets:[1,2,3,4,5,6,7,8,9,10,11,12],
      bonus:{
         type: "tap",
-        isEnabled: true
+        isEnabled: true,
+        noOfItem: 3
      },
      gamble:{
         type: "card",
@@ -470,7 +475,8 @@ export const gameData=[{
      Bets:[1,5,15,20],
      bonus:{
        type: "spin",
-       isEnabled: false
+       isEnabled: false,
+       noOfItem: 8
     },
     gamble:{
        type: "card",
@@ -633,8 +639,9 @@ export const gameData=[{
      LinesCount:[1,5,15,20],
      Bets:[1,5,15,20],
      bonus:{
-       type: "spin",
-       isEnabled: false
+       type: "tap",
+       isEnabled: false,
+       noOfItem: 3
     },
     gamble:{
        type: "card",

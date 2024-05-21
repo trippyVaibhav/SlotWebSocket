@@ -7,8 +7,9 @@ export function sendInitdata(clientID : string)
 {
     const matrix = generateMatrix(gameSettings.matrix.x, 18);
     if(gameSettings.currentGamedata.bonus.isEnabled && gameSettings.currentGamedata.bonus.type==bonusGameType.spin)
-    gameSettings.bonus.game= new bonusGame(8);
-    let specialSymbols: number=gameSettings.currentGamedata.Symbols.filter((element)=>!element.useWildSub).length
+    gameSettings.bonus.game= new bonusGame(gameSettings.currentGamedata.bonus.noOfItem);
+
+    let specialSymbols: number=gameSettings.currentGamedata.Symbols.filter((element)=>(!element.useWildSub)).length
     
     console.log("specialSymbols",specialSymbols);
 
@@ -55,9 +56,9 @@ export class RandomResultGenerator {
             matrix.pop();
             matrix.pop();
             matrix.pop();
-            matrix.push(['7','7','7','7','7'])
-            matrix.push(['6','6','6','8','4'])
-            matrix.push(['0','0','0','0','0'])
+            matrix.push(['7','7','7','9','5'])
+            matrix.push(['6','10','10','8','4'])
+            matrix.push(['10','0','0','0','10'])
 
             gameSettings.resultSymbolMatrix = matrix;
     }

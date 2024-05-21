@@ -46,7 +46,7 @@ function handleConnection(ws) {
         if (messageData.id == utils_1.messageId.auth) {
             Global_1.gameSettings.initiate(messageData.Data.GameID, clientId);
         }
-        if (messageData.id == utils_1.messageId.spin) {
+        if (messageData.id == utils_1.messageId.spin && Global_1.gameSettings.startGame) {
             Global_1.gameSettings.currentBet = messageData.Data.CurrentBet;
             var result = new SlotResult_1.CheckResult(clientId);
         }

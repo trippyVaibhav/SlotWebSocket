@@ -40,7 +40,6 @@ export interface PayLine {
 export interface ScatterPayEntry {
     symbolCount: number,
     symbolID: number,
-
     pay: number;
     freeSpins: number;
 }
@@ -97,7 +96,8 @@ export interface GameSettings {
         // maxPay: number
     },
     currentBet: number;
-    initiate:(arg: any, arg2: any)=> void
+    startGame: boolean;
+    initiate:(arg: string, arg2: string)=> void
 
 };
 

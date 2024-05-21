@@ -1,7 +1,9 @@
 import { sendInitdata } from './SlotDataInit';
 import { gameData } from "./testData";
 import { GameSettings, PlayerData, WildSymbol, convertSymbols, specialIcons, winning } from "./utils";
-
+import { sendMessageToClient } from './App';
+import { start } from 'repl';
+import { Alerts } from './Alerts';
 
 export const gameSettings: GameSettings = {
     currentGamedata:{
@@ -20,7 +22,7 @@ export const gameSettings: GameSettings = {
     payLine: [],
     scatterPayTable: [],
     bonusPayTable: [],
-    useScatter: false,
+    useScatter: true,
     useWild: true,
     wildSymbol: {} as WildSymbol,
     // Symbols: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',"10","11","12"],
@@ -44,15 +46,26 @@ export const gameSettings: GameSettings = {
         // game: new bonusGame(5),
     },
     currentBet:5,
+    startGame: false,
     initiate: async(GameID: string, clientID: string)=>{
-        let data = await fetch('https://664c355635bbda10987f44ff.mockapi.io/api/gameId/'+GameID);
-        data = await data.json();
+        const resp = await fetch('https://664c355635bbda10987f44ff.mockapi.io/api/gameId/'+GameID);
+        const data = await resp.json();
         const currentGameData=gameData.filter((element)=>element.id==GameID)
         // gameSettings.currentGamedata=currentGameData[0];
+        console.log("data",data);
+        
+        if(data=="Not found"){
+            Alerts(clientID,"Invalid Game ID");
+            // sendMessageToClient(clientID, "Auth", "Invalid Game ID");
+            gameSettings.startGame=false;
+            return;
+        }
         gameSettings.currentGamedata=data;
         gameSettings.Symbols=initSymbols();
         gameSettings.Weights=initWeigts();
         UiInitData.paylines=convertSymbols(gameSettings.currentGamedata.Symbols);
+        gameSettings.startGame=true;
+
         makePayLines();
         sendInitdata(clientID);
 

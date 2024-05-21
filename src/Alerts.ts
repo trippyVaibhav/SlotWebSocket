@@ -2,5 +2,5 @@ import { sendMessageToClient } from "./App";
 
 export function Alerts(clientId : string,Alert: string)
 {
-    sendMessageToClient(clientId,"Alet",Alert);
+    sendMessageToClient(clientId,"Alert",Alert);
 }

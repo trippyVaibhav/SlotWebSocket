@@ -9,8 +9,8 @@ function sendInitdata(clientID) {
     var _a;
     var matrix = (0, utils_1.generateMatrix)(Global_1.gameSettings.matrix.x, 18);
     if (Global_1.gameSettings.currentGamedata.bonus.isEnabled && Global_1.gameSettings.currentGamedata.bonus.type == utils_1.bonusGameType.spin)
-        Global_1.gameSettings.bonus.game = new BonusResults_1.bonusGame(8);
-    var specialSymbols = Global_1.gameSettings.currentGamedata.Symbols.filter(function (element) { return !element.useWildSub; }).length;
+        Global_1.gameSettings.bonus.game = new BonusResults_1.bonusGame(Global_1.gameSettings.currentGamedata.bonus.noOfItem);
+    var specialSymbols = Global_1.gameSettings.currentGamedata.Symbols.filter(function (element) { return (!element.useWildSub); }).length;
     console.log("specialSymbols", specialSymbols);
     for (var i = 0; i < specialSymbols; i++) {
         var strng = "Player has the right to start the slot machine without using their funds for a certain number of times. The size of the bet is determined by the";
@@ -47,9 +47,9 @@ var RandomResultGenerator = /** @class */ (function () {
         matrix.pop();
         matrix.pop();
         matrix.pop();
-        matrix.push(['7', '7', '7', '7', '7']);
-        matrix.push(['6', '6', '6', '8', '4']);
-        matrix.push(['0', '0', '0', '0', '0']);
+        matrix.push(['7', '7', '7', '9', '5']);
+        matrix.push(['6', '10', '10', '8', '4']);
+        matrix.push(['10', '0', '0', '0', '10']);
         Global_1.gameSettings.resultSymbolMatrix = matrix;
     }
     // Function to generate a random number based on weights

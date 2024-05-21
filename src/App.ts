@@ -54,7 +54,7 @@ function handleConnection(ws: WebSocket) {
     }
 
 
-    if (messageData.id == messageId.spin) {
+    if (messageData.id == messageId.spin && gameSettings.startGame) {
       gameSettings.currentBet = messageData.Data.CurrentBet;
       const result = new CheckResult(clientId);
     }

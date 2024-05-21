@@ -40,6 +40,7 @@ exports.makePayLines = exports.addPayLineSymbols = exports.gameWining = exports.
 var SlotDataInit_1 = require("./SlotDataInit");
 var testData_1 = require("./testData");
 var utils_1 = require("./utils");
+var Alerts_1 = require("./Alerts");
 exports.gameSettings = {
     currentGamedata: {
         id: "",
@@ -58,7 +59,7 @@ exports.gameSettings = {
     payLine: [],
     scatterPayTable: [],
     bonusPayTable: [],
-    useScatter: false,
+    useScatter: true,
     useWild: true,
     wildSymbol: {},
     // Symbols: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',"10","11","12"],
@@ -82,22 +83,31 @@ exports.gameSettings = {
         // game: new bonusGame(5),
     },
     currentBet: 5,
+    startGame: false,
     initiate: function (GameID, clientID) { return __awaiter(void 0, void 0, void 0, function () {
-        var data, currentGameData;
+        var resp, data, currentGameData;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, fetch('https://664c355635bbda10987f44ff.mockapi.io/api/gameId/' + GameID)];
                 case 1:
-                    data = _a.sent();
-                    return [4 /*yield*/, data.json()];
+                    resp = _a.sent();
+                    return [4 /*yield*/, resp.json()];
                 case 2:
                     data = _a.sent();
                     currentGameData = testData_1.gameData.filter(function (element) { return element.id == GameID; });
                     // gameSettings.currentGamedata=currentGameData[0];
+                    console.log("data", data);
+                    if (data == "Not found") {
+                        (0, Alerts_1.Alerts)(clientID, "Invalid Game ID");
+                        // sendMessageToClient(clientID, "Auth", "Invalid Game ID");
+                        exports.gameSettings.startGame = false;
+                        return [2 /*return*/];
+                    }
                     exports.gameSettings.currentGamedata = data;
                     exports.gameSettings.Symbols = initSymbols();
                     exports.gameSettings.Weights = initWeigts();
                     exports.UiInitData.paylines = (0, utils_1.convertSymbols)(exports.gameSettings.currentGamedata.Symbols);
+                    exports.gameSettings.startGame = true;
                     makePayLines();
                     (0, SlotDataInit_1.sendInitdata)(clientID);
                     return [2 /*return*/];
