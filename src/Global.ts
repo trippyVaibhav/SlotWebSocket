@@ -1,21 +1,7 @@
-import { bonusGame } from "./BonusResults";
-// import {  } from "./testData";
 import { sendInitdata } from './SlotDataInit';
 import { gameData } from "./testData";
-import { GameSettings, PlayerData, WildSymbol, addScatterPay, convertSymbols, setJackpotSettings, setWild, winning } from "./utils";
+import { GameSettings, PlayerData, WildSymbol, convertSymbols, specialIcons, winning } from "./utils";
 
-// let gameSettings.currentGamedata={
-//     id: "",
-// linesApiData: [],
-// Symbols: [
-//     {
-//         Name: "",
-//         Id: null,
-//         weightedRandomness: 0,
-//         useWildSub: false,
-//         multiplier: []
-//     }]
-// };
 
 export const gameSettings: GameSettings = {
     currentGamedata:{
@@ -45,10 +31,11 @@ export const gameSettings: GameSettings = {
     lineData: [],
     fullPayTable: [],
     jackpot: {
-        symbolName: 'Jackpot',
-        symbolsCount: 6,
-        defaultAmount: 1000,
-        increaseValue: 1
+        symbolName: '',
+        symbolsCount: 0,
+        symbolId:0,
+        defaultAmount: 0,
+        increaseValue: 0
     },
     bonus: {
         start: false,
@@ -57,11 +44,12 @@ export const gameSettings: GameSettings = {
         // game: new bonusGame(5),
     },
     currentBet:5,
-    initiate: (GameID: any, clientID: any)=>{
+    initiate: async(GameID: string, clientID: string)=>{
+        let data = await fetch('https://664c355635bbda10987f44ff.mockapi.io/api/gameId/'+GameID);
+        data = await data.json();
         const currentGameData=gameData.filter((element)=>element.id==GameID)
-        // console.log(currentGameData);
-        gameSettings.currentGamedata=currentGameData[0];
-        // setCurrentData(currentGameData[0]);
+        // gameSettings.currentGamedata=currentGameData[0];
+        gameSettings.currentGamedata=data;
         gameSettings.Symbols=initSymbols();
         gameSettings.Weights=initWeigts();
         UiInitData.paylines=convertSymbols(gameSettings.currentGamedata.Symbols);
@@ -136,85 +124,38 @@ export function addPayLineSymbols(symbol: string, repetition: number, pay: numbe
         freeSpins: freeSpins
     });
 
-    // if(!UiInitData.paylines[parseInt(symbol)]) UiInitData.paylines[parseInt(symbol)]= []
-    // UiInitData.paylines[parseInt(symbol)].push(pay?.toString());
-    // console.log(gameSettings.payLine);
 }
 
 
 export function makePayLines() {
 
     gameSettings.currentGamedata.Symbols.forEach((element) => {
-        if (element.Id < 10 && element.multiplier?.length > 0) {
-
+        if (element.useWildSub || element.multiplier?.length>0) {
             element.multiplier?.forEach((item, index) => {
                 addPayLineSymbols(element.Id?.toString(), 5 - index, item[0], item[1]);
             })
         } else {
             handleSpecialSymbols(element);
-            // addPayLineSymbols(element.Id?.toString(),3, 0,0);
         }
     })
-    // addPayLineSymbols("0", 5, 0.1, 0);
-    // addPayLineSymbols("0", 4, 0.3, 0);
-    // addPayLineSymbols("0", 3, 0.5, 0);
-
-    // addPayLineSymbols("1", 5, 0.1, 0);
-    // addPayLineSymbols("1", 4, 0.3, 0);
-    // addPayLineSymbols("1", 3, 0.5, 0);
-
-    // addPayLineSymbols("2", 5, 0.1, 0);
-    // addPayLineSymbols("2", 4, 0.3, 0);
-    // addPayLineSymbols("2", 3, 0.5, 0);
-
-    // addPayLineSymbols("3", 5, 0.1, 0);
-    // addPayLineSymbols("3", 4, 0.3, 0);
-    // addPayLineSymbols("3", 3, 0.5, 0);
-
-    // addPayLineSymbols("4", 5, 0.1, 0);
-    // addPayLineSymbols("4", 4, 0.3, 0);
-    // addPayLineSymbols("4", 3, 0.5, 0);
-
-    // addPayLineSymbols("5", 5, 0.1, 0);
-    // addPayLineSymbols("5", 4, 0.3, 0);
-    // addPayLineSymbols("5", 3, 0.5, 0);
-
-    // addPayLineSymbols("6", 5, 0.1, 0);
-    // addPayLineSymbols("6", 4, 0.3, 0);
-    // addPayLineSymbols("6", 3, 0.5, 0);
-
-    // addPayLineSymbols("7", 5, 0.1, 0);
-    // addPayLineSymbols("7", 4, 0.3, 0);
-    // addPayLineSymbols("7", 3, 0.5, 0);
-
-    // addPayLineSymbols("8", 5, 0.1, 0);
-    // addPayLineSymbols("8", 4, 0.3, 0);
-    // addPayLineSymbols("8", 3, 0.5, 0);
-
-    // addPayLineSymbols("9", 5, 0.1, 10);
-    // addPayLineSymbols("9", 4, 0.3, 5);
-    // addPayLineSymbols("9", 3, 0.5, 3);
-
-    // setWild("Wild", 10);
-    // addScatterPay(5, 11, 5, 0);
-    // setJackpotSettings("Jackpot", 12, 50000, 5);
 }
 
 
 function handleSpecialSymbols(symbol) {
 
     switch (symbol.Name) {
-        case "Jackpot":
+        case specialIcons.jackpot:
             gameSettings.jackpot.symbolName = symbol.Name;
-            gameSettings.jackpot.symbolsCount = symbol.Id;
+            gameSettings.jackpot.symbolId=symbol.Id;
+            gameSettings.jackpot.symbolsCount = symbol.symbolsCount;
             gameSettings.jackpot.defaultAmount = symbol.defaultAmount;
             gameSettings.jackpot.increaseValue = symbol.increaseValue;
             break;
-        case "Wild":
+        case specialIcons.wild:
             gameSettings.wildSymbol.SymbolName = symbol.Name;
             gameSettings.wildSymbol.SymbolID = symbol.Id;
             break
-        case "Scatter":
+        case specialIcons.scatter:
             gameSettings.scatterPayTable.push({
                 symbolCount: symbol.count,
                 symbolID: symbol.Id,
@@ -222,7 +163,7 @@ function handleSpecialSymbols(symbol) {
                 freeSpins: symbol.freeSpin
             });
             break;
-        case "Bonus":
+        case specialIcons.bonus:
             gameSettings.bonusPayTable.push({
                     symbolCount: symbol.symbolCount,
                     symbolID: symbol.Id,
@@ -235,25 +176,3 @@ function handleSpecialSymbols(symbol) {
     }
 
 }
-
-// export function setJackpotSettings(symbolName: string, symbolID: number, defaultAmount: number, increaseValue: number): void {
-//     gameSettings.jackpot.symbolName = symbolName;
-//     gameSettings.jackpot.symbolsCount = symbolID;
-//     gameSettings.jackpot.defaultAmount = defaultAmount;
-//     gameSettings.jackpot.increaseValue = increaseValue;
-// }
-
-// // Function to set the Wild Symbol
-// export function setWild(symbolName: string, symbol: number) {
-//     gameSettings.wildSymbol.SymbolName = symbolName;
-//     gameSettings.wildSymbol.SymbolID = symbol;
-// }
-
-// export function addScatterPay(symbolName: number, symbolID: number, pay: number, freeSpins: number): void {
-//     gameSettings.scatterPayTable.push({
-//     symbolCount: symbolName,
-//     symbolID: symbolID,
-//     pay: pay,
-//     freeSpins: freeSpins
-//     });
-// }

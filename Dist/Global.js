@@ -1,22 +1,45 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.makePayLines = exports.addPayLineSymbols = exports.gameWining = exports.UiInitData = exports.playerData = exports.gameSettings = void 0;
-// import {  } from "./testData";
 var SlotDataInit_1 = require("./SlotDataInit");
 var testData_1 = require("./testData");
 var utils_1 = require("./utils");
-// let gameSettings.currentGamedata={
-//     id: "",
-// linesApiData: [],
-// Symbols: [
-//     {
-//         Name: "",
-//         Id: null,
-//         weightedRandomness: 0,
-//         useWildSub: false,
-//         multiplier: []
-//     }]
-// };
 exports.gameSettings = {
     currentGamedata: {
         id: "",
@@ -46,10 +69,11 @@ exports.gameSettings = {
     lineData: [],
     fullPayTable: [],
     jackpot: {
-        symbolName: 'Jackpot',
-        symbolsCount: 6,
-        defaultAmount: 1000,
-        increaseValue: 1
+        symbolName: '',
+        symbolsCount: 0,
+        symbolId: 0,
+        defaultAmount: 0,
+        increaseValue: 0
     },
     bonus: {
         start: false,
@@ -58,17 +82,28 @@ exports.gameSettings = {
         // game: new bonusGame(5),
     },
     currentBet: 5,
-    initiate: function (GameID, clientID) {
-        var currentGameData = testData_1.gameData.filter(function (element) { return element.id == GameID; });
-        // console.log(currentGameData);
-        exports.gameSettings.currentGamedata = currentGameData[0];
-        // setCurrentData(currentGameData[0]);
-        exports.gameSettings.Symbols = initSymbols();
-        exports.gameSettings.Weights = initWeigts();
-        exports.UiInitData.paylines = (0, utils_1.convertSymbols)(exports.gameSettings.currentGamedata.Symbols);
-        makePayLines();
-        (0, SlotDataInit_1.sendInitdata)(clientID);
-    }
+    initiate: function (GameID, clientID) { return __awaiter(void 0, void 0, void 0, function () {
+        var data, currentGameData;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, fetch('https://664c355635bbda10987f44ff.mockapi.io/api/gameId/' + GameID)];
+                case 1:
+                    data = _a.sent();
+                    return [4 /*yield*/, data.json()];
+                case 2:
+                    data = _a.sent();
+                    currentGameData = testData_1.gameData.filter(function (element) { return element.id == GameID; });
+                    // gameSettings.currentGamedata=currentGameData[0];
+                    exports.gameSettings.currentGamedata = data;
+                    exports.gameSettings.Symbols = initSymbols();
+                    exports.gameSettings.Weights = initWeigts();
+                    exports.UiInitData.paylines = (0, utils_1.convertSymbols)(exports.gameSettings.currentGamedata.Symbols);
+                    makePayLines();
+                    (0, SlotDataInit_1.sendInitdata)(clientID);
+                    return [2 /*return*/];
+            }
+        });
+    }); }
 };
 function initSymbols() {
     var _a;
@@ -121,15 +156,12 @@ function addPayLineSymbols(symbol, repetition, pay, freeSpins) {
         pay: pay,
         freeSpins: freeSpins
     });
-    // if(!UiInitData.paylines[parseInt(symbol)]) UiInitData.paylines[parseInt(symbol)]= []
-    // UiInitData.paylines[parseInt(symbol)].push(pay?.toString());
-    // console.log(gameSettings.payLine);
 }
 exports.addPayLineSymbols = addPayLineSymbols;
 function makePayLines() {
     exports.gameSettings.currentGamedata.Symbols.forEach(function (element) {
         var _a, _b;
-        if (element.Id < 10 && ((_a = element.multiplier) === null || _a === void 0 ? void 0 : _a.length) > 0) {
+        if (element.useWildSub || ((_a = element.multiplier) === null || _a === void 0 ? void 0 : _a.length) > 0) {
             (_b = element.multiplier) === null || _b === void 0 ? void 0 : _b.forEach(function (item, index) {
                 var _a;
                 addPayLineSymbols((_a = element.Id) === null || _a === void 0 ? void 0 : _a.toString(), 5 - index, item[0], item[1]);
@@ -137,57 +169,24 @@ function makePayLines() {
         }
         else {
             handleSpecialSymbols(element);
-            // addPayLineSymbols(element.Id?.toString(),3, 0,0);
         }
     });
-    // addPayLineSymbols("0", 5, 0.1, 0);
-    // addPayLineSymbols("0", 4, 0.3, 0);
-    // addPayLineSymbols("0", 3, 0.5, 0);
-    // addPayLineSymbols("1", 5, 0.1, 0);
-    // addPayLineSymbols("1", 4, 0.3, 0);
-    // addPayLineSymbols("1", 3, 0.5, 0);
-    // addPayLineSymbols("2", 5, 0.1, 0);
-    // addPayLineSymbols("2", 4, 0.3, 0);
-    // addPayLineSymbols("2", 3, 0.5, 0);
-    // addPayLineSymbols("3", 5, 0.1, 0);
-    // addPayLineSymbols("3", 4, 0.3, 0);
-    // addPayLineSymbols("3", 3, 0.5, 0);
-    // addPayLineSymbols("4", 5, 0.1, 0);
-    // addPayLineSymbols("4", 4, 0.3, 0);
-    // addPayLineSymbols("4", 3, 0.5, 0);
-    // addPayLineSymbols("5", 5, 0.1, 0);
-    // addPayLineSymbols("5", 4, 0.3, 0);
-    // addPayLineSymbols("5", 3, 0.5, 0);
-    // addPayLineSymbols("6", 5, 0.1, 0);
-    // addPayLineSymbols("6", 4, 0.3, 0);
-    // addPayLineSymbols("6", 3, 0.5, 0);
-    // addPayLineSymbols("7", 5, 0.1, 0);
-    // addPayLineSymbols("7", 4, 0.3, 0);
-    // addPayLineSymbols("7", 3, 0.5, 0);
-    // addPayLineSymbols("8", 5, 0.1, 0);
-    // addPayLineSymbols("8", 4, 0.3, 0);
-    // addPayLineSymbols("8", 3, 0.5, 0);
-    // addPayLineSymbols("9", 5, 0.1, 10);
-    // addPayLineSymbols("9", 4, 0.3, 5);
-    // addPayLineSymbols("9", 3, 0.5, 3);
-    // setWild("Wild", 10);
-    // addScatterPay(5, 11, 5, 0);
-    // setJackpotSettings("Jackpot", 12, 50000, 5);
 }
 exports.makePayLines = makePayLines;
 function handleSpecialSymbols(symbol) {
     switch (symbol.Name) {
-        case "Jackpot":
+        case utils_1.specialIcons.jackpot:
             exports.gameSettings.jackpot.symbolName = symbol.Name;
-            exports.gameSettings.jackpot.symbolsCount = symbol.Id;
+            exports.gameSettings.jackpot.symbolId = symbol.Id;
+            exports.gameSettings.jackpot.symbolsCount = symbol.symbolsCount;
             exports.gameSettings.jackpot.defaultAmount = symbol.defaultAmount;
             exports.gameSettings.jackpot.increaseValue = symbol.increaseValue;
             break;
-        case "Wild":
+        case utils_1.specialIcons.wild:
             exports.gameSettings.wildSymbol.SymbolName = symbol.Name;
             exports.gameSettings.wildSymbol.SymbolID = symbol.Id;
             break;
-        case "Scatter":
+        case utils_1.specialIcons.scatter:
             exports.gameSettings.scatterPayTable.push({
                 symbolCount: symbol.count,
                 symbolID: symbol.Id,
@@ -195,7 +194,7 @@ function handleSpecialSymbols(symbol) {
                 freeSpins: symbol.freeSpin
             });
             break;
-        case "Bonus":
+        case utils_1.specialIcons.bonus:
             exports.gameSettings.bonusPayTable.push({
                 symbolCount: symbol.symbolCount,
                 symbolID: symbol.Id,
@@ -207,22 +206,3 @@ function handleSpecialSymbols(symbol) {
             break;
     }
 }
-// export function setJackpotSettings(symbolName: string, symbolID: number, defaultAmount: number, increaseValue: number): void {
-//     gameSettings.jackpot.symbolName = symbolName;
-//     gameSettings.jackpot.symbolsCount = symbolID;
-//     gameSettings.jackpot.defaultAmount = defaultAmount;
-//     gameSettings.jackpot.increaseValue = increaseValue;
-// }
-// // Function to set the Wild Symbol
-// export function setWild(symbolName: string, symbol: number) {
-//     gameSettings.wildSymbol.SymbolName = symbolName;
-//     gameSettings.wildSymbol.SymbolID = symbol;
-// }
-// export function addScatterPay(symbolName: number, symbolID: number, pay: number, freeSpins: number): void {
-//     gameSettings.scatterPayTable.push({
-//     symbolCount: symbolName,
-//     symbolID: symbolID,
-//     pay: pay,
-//     freeSpins: freeSpins
-//     });
-// }

@@ -5,6 +5,7 @@ var WebSocket = require("ws");
 var uuid_1 = require("uuid"); // Import UUID v4
 var SlotResult_1 = require("./SlotResult");
 var Global_1 = require("./Global");
+var utils_1 = require("./utils");
 // Map to store WebSocket connections with their associated client IDs
 var clients = new Map();
 // Function to handle client connections
@@ -42,11 +43,11 @@ function handleConnection(ws) {
         var messageData = JSON.parse(message);
         console.log(messageData.Data.GameID);
         console.log(messageData.Data);
-        if (messageData.id == "Auth") {
+        if (messageData.id == utils_1.messageId.auth) {
             Global_1.gameSettings.initiate(messageData.Data.GameID, clientId);
         }
-        if (messageData.id == "Spin") {
-            Global_1.gameWining.currentBet = messageData.Data.CurrentBet;
+        if (messageData.id == utils_1.messageId.spin) {
+            Global_1.gameSettings.currentBet = messageData.Data.CurrentBet;
             var result = new SlotResult_1.CheckResult(clientId);
         }
     });

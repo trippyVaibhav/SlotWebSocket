@@ -1,9 +1,8 @@
 import * as WebSocket from 'ws';
 import { v4 as uuidv4 } from 'uuid'; // Import UUID v4
-import { sendInitdata } from './SlotDataInit';
 import { CheckResult } from './SlotResult';
-import { gameSettings, gameWining } from './Global';
-import { gameData, currentGameData, setCurrentData } from './testData';
+import { gameSettings } from './Global';
+import { messageId } from './utils';
 // Map to store WebSocket connections with their associated client IDs
 const clients: Map<string, WebSocket> = new Map();
 
@@ -50,13 +49,13 @@ function handleConnection(ws: WebSocket) {
     console.log(messageData.Data);
 
     
-    if(messageData.id=="Auth"){
+    if(messageData.id==messageId.auth){
       gameSettings.initiate(messageData.Data.GameID,clientId)
     }
 
 
-    if (messageData.id == "Spin") {
-      gameWining.currentBet = messageData.Data.CurrentBet;
+    if (messageData.id == messageId.spin) {
+      gameSettings.currentBet = messageData.Data.CurrentBet;
       const result = new CheckResult(clientId);
     }
   });

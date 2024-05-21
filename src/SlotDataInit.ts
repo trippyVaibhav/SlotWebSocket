@@ -1,19 +1,18 @@
 import { sendMessageToClient } from "./App";
 import { bonusGame } from "./BonusResults";
-import { UiInitData, gameSettings, makePayLines, playerData} from "./Global";
-import { currentGameData } from "./testData";
-import { generateMatrix } from "./utils";
+import { UiInitData, gameSettings, playerData} from "./Global";
+import { bonusGameType, generateMatrix } from "./utils";
 
 export function sendInitdata(clientID : string)
 {
-    // makePayLines();
     const matrix = generateMatrix(gameSettings.matrix.x, 18);
-    let bonus=null;
-    if(gameSettings.currentGamedata.bonus.isEnabled && gameSettings.currentGamedata.bonus.type=="spin")
+    if(gameSettings.currentGamedata.bonus.isEnabled && gameSettings.currentGamedata.bonus.type==bonusGameType.spin)
     gameSettings.bonus.game= new bonusGame(8);
+    let specialSymbols: number=gameSettings.currentGamedata.Symbols.filter((element)=>!element.useWildSub).length
+    
+    console.log("specialSymbols",specialSymbols);
 
-
-    for(let i = 0; i < 3; i++)
+    for(let i = 0; i < specialSymbols; i++)
     {
         const strng = "Player has the right to start the slot machine without using their funds for a certain number of times. The size of the bet is determined by the";
         UiInitData.spclSymbolTxt.push(strng)
@@ -23,9 +22,9 @@ export function sendInitdata(clientID : string)
        "GameData" : {
            "Reel" :matrix,
            "Lines": gameSettings.currentGamedata.linesApiData,
-           "Bets": gameSettings.currentGamedata.linesCount,
+           "Bets": gameSettings.currentGamedata.Bets,
            "canSwitchLines": false,
-           "LinesCount": gameSettings.currentGamedata.bets,
+           "LinesCount": gameSettings.currentGamedata.LinesCount,
            "autoSpin": [1, 5, 10, 20],
         },
         "BonusData": gameSettings.bonus.game!=null? gameSettings.bonus.game.generateData(gameSettings.bonusPayTable[0]?.pay):null,
@@ -53,12 +52,12 @@ export class RandomResultGenerator {
                 matrix.push(row);
             }
 
-            // matrix.pop();
-            // matrix.pop();
-            // matrix.pop();
-            // matrix.push(['10','9','8','13','7'])
-            // matrix.push(['8','10','9','8','8'])
-            // matrix.push(['0','8','3','2','10'])
+            matrix.pop();
+            matrix.pop();
+            matrix.pop();
+            matrix.push(['7','7','7','7','7'])
+            matrix.push(['6','6','6','8','4'])
+            matrix.push(['0','0','0','0','0'])
 
             gameSettings.resultSymbolMatrix = matrix;
     }

@@ -1,5 +1,5 @@
 import { gameSettings,playerData  } from "./Global";
-
+import { bonusGameType } from "./utils";
 export class bonusGame{
     type:String;
     noOfItems:number;
@@ -15,34 +15,7 @@ export class bonusGame{
         this.result=[];
         // this.noise=noise;
     }
-    // generateData(){
-    //     let tempSum=0;
 
-    //         this.multiplier=[];
-    //         for (let i = 0; i < this.noOfItems-2; i++) {
-    //             let pay=0
-    //             while(true){
-    //                 if(i==0)
-    //                 pay=Math.round((Math.random()/this.noOfItems)*(this.totalPay));
-    //                 else
-    //                 pay=Math.round((Math.random()/this.noOfItems)*(this.totalPay - this.result[i-1]));
-    //                 tempSum+=pay;
-    //                 if(!this.result.includes(pay) && (tempSum<this.totalPay) && pay>0){
-    //                     this.result.push(pay);
-    //                     console.log("pay",pay);
-    //                     break;
-    //                 }else{
-    //                     tempSum-=pay;
-    //                 }
-    //             }
-    //         }
-    //         this.result.push(this.totalPay-tempSum);
-    //         this.result.push(-1);
-    //         this.shuffle(this.result);
-    //     return {
-    //         "result":this.result
-    //     };
-    // }
     
     generateData(totalPay:number ):string[] {
  
@@ -80,17 +53,16 @@ export class bonusGame{
             res.push(this.result[i].toString());
         }
 
-        console.log("result of bonus", res);
         return res;
     }
 
     setRandomStopIndex(){
         let amount: number=0;
 
-        if(gameSettings.bonus.start && gameSettings.currentGamedata.bonus.type=="spin"){
+        if(gameSettings.bonus.start && gameSettings.currentGamedata.bonus.type==bonusGameType.spin){
             gameSettings.bonus.stopIndex=Math.round(Math.random()*this.noOfItems);
             amount=this.result[gameSettings.bonus.stopIndex];
-        }else if(gameSettings.bonus.start && gameSettings.currentGamedata.bonus.type=="tap"){
+        }else if(gameSettings.bonus.start && gameSettings.currentGamedata.bonus.type==bonusGameType.tap){
             gameSettings.bonus.stopIndex=-1;   
             this.result.forEach((element)=>{
                 if(element>=0){

@@ -1,7 +1,25 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.convertSymbols = exports.setWild = exports.setJackpotSettings = exports.addScatterPay = exports.convertData = exports.generateMatrix = exports.weightedRandom = void 0;
+exports.convertSymbols = exports.convertData = exports.generateMatrix = exports.weightedRandom = exports.bonusGameType = exports.specialIcons = exports.messageId = void 0;
 var Global_1 = require("./Global");
+var messageId;
+(function (messageId) {
+    messageId["auth"] = "Auth";
+    messageId["spin"] = "Spin";
+})(messageId || (exports.messageId = messageId = {}));
+var specialIcons;
+(function (specialIcons) {
+    specialIcons["bonus"] = "Bonus";
+    specialIcons["scatter"] = "Scatter";
+    specialIcons["jackpot"] = "Jackpot";
+    specialIcons["wild"] = "Wild";
+    specialIcons["any"] = "any";
+})(specialIcons || (exports.specialIcons = specialIcons = {}));
+var bonusGameType;
+(function (bonusGameType) {
+    bonusGameType["tap"] = "tap";
+    bonusGameType["spin"] = "spin";
+})(bonusGameType || (exports.bonusGameType = bonusGameType = {}));
 ;
 ;
 function weightedRandom(items, weights) {
@@ -61,47 +79,42 @@ function convertData(data) {
     return result;
 }
 exports.convertData = convertData;
-// Function to add a scatter pay table entry to the game settings
-function addScatterPay(symbolCount, symbolID, pay, freeSpins) {
-    Global_1.gameSettings.scatterPayTable.push({
-        symbolCount: symbolCount,
-        symbolID: symbolID,
-        pay: pay,
-        freeSpins: freeSpins
-    });
-}
-exports.addScatterPay = addScatterPay;
-// Function to set the jackpot settings
-function setJackpotSettings(symbolName, symbolID, defaultAmount, increaseValue) {
-    Global_1.gameSettings.jackpot.symbolName = symbolName;
-    Global_1.gameSettings.jackpot.symbolsCount = symbolID;
-    Global_1.gameSettings.jackpot.defaultAmount = defaultAmount;
-    Global_1.gameSettings.jackpot.increaseValue = increaseValue;
-}
-exports.setJackpotSettings = setJackpotSettings;
-// Function to set the Wild Symbol
-function setWild(symbolName, symbol) {
-    Global_1.gameSettings.wildSymbol.SymbolName = symbolName;
-    Global_1.gameSettings.wildSymbol.SymbolID = symbol;
-}
-exports.setWild = setWild;
 function convertSymbols(data) {
-    var convertedData = data.map(function (symbol) {
+    var uiData = {
+        symbols: []
+    };
+    data.forEach(function (element) {
         var _a;
-        if (((_a = symbol.multiplier) === null || _a === void 0 ? void 0 : _a.length) > 2) {
-            var multiplierObject = {};
-            multiplierObject['5x'] = symbol.multiplier[0][0];
-            multiplierObject['4x'] = symbol.multiplier[1][0];
-            multiplierObject['3x'] = symbol.multiplier[2][0];
-            return {
-                ID: symbol.ID,
-                multiplier: multiplierObject
+        if (((_a = element.multiplier) === null || _a === void 0 ? void 0 : _a.length) > 0 && element.useWildSub) {
+            var symbolData = {
+                ID: element.Id,
+                multiplier: {}
             };
+            var multiplierObject_1 = {};
+            element.multiplier.forEach(function (item, index) {
+                multiplierObject_1[(5 - index).toString() + 'x'] = item[0];
+            });
+            symbolData.multiplier = multiplierObject_1;
+            uiData.symbols.push(symbolData);
         }
-        else {
-            return null; // Exclude symbols without multipliers
-        }
-    }).filter(function (symbol) { return symbol !== null; }); // Remove null values
-    return { symbols: convertedData };
+    });
+    console.log("symbol data", uiData);
+    // const convertedData = data.map(symbol => {
+    //   if (symbol.multiplier?.length>0 && symbol.useWildSub) {
+    //     const multiplierObject = {};
+    //     multiplierObject['5x'] = symbol.multiplier[0][0];
+    //     multiplierObject['4x'] = symbol.multiplier[1][0];
+    //     multiplierObject['3x'] = symbol.multiplier[2][0];
+    //     return {
+    //       ID: symbol.Id,
+    //       multiplier: multiplierObject
+    //     };
+    //   } else {
+    //     return null; // Exclude symbols without multipliers
+    //   }
+    // }).filter(symbol => symbol !== null); // Remove null values
+    // console.log("converted data",{ symbols: convertedData });
+    // return { symbols: convertedData };
+    return uiData;
 }
 exports.convertSymbols = convertSymbols;

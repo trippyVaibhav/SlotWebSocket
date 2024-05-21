@@ -8,6 +8,25 @@ export interface SymbolData {
     multiplier : number[],
     freespins : number
 }
+
+export enum messageId{
+    auth="Auth",
+    spin="Spin"
+
+}
+
+export enum specialIcons{
+    bonus="Bonus",
+    scatter="Scatter",
+    jackpot="Jackpot",
+    wild="Wild",
+    any="any"
+}
+
+export enum bonusGameType{
+    tap="tap",
+    spin="spin"
+}
 export interface PlayerData {
     Balance : number,
     haveWon : number,
@@ -66,6 +85,7 @@ export interface GameSettings {
     fullPayTable: PayLine[],
     jackpot: {
         symbolName: string;
+        symbolId: number;
         symbolsCount: number;
         defaultAmount: number;
         increaseValue: number;
@@ -137,46 +157,52 @@ export function convertData(data: string[][]): string[] {
     return result;
 }
 
-// Function to add a scatter pay table entry to the game settings
-export function addScatterPay(symbolCount: number, symbolID: number, pay: number, freeSpins: number): void {
-    gameSettings.scatterPayTable.push({
-    symbolCount: symbolCount,
-    symbolID: symbolID,
-    pay: pay,
-    freeSpins: freeSpins
-    });
-}
-
-// Function to set the jackpot settings
-export function setJackpotSettings(symbolName: string, symbolID: number, defaultAmount: number, increaseValue: number): void {
-    gameSettings.jackpot.symbolName = symbolName;
-    gameSettings.jackpot.symbolsCount = symbolID;
-    gameSettings.jackpot.defaultAmount = defaultAmount;
-    gameSettings.jackpot.increaseValue = increaseValue;
-}
-
-// Function to set the Wild Symbol
-export function setWild(symbolName: string, symbol: number) {
-    gameSettings.wildSymbol.SymbolName = symbolName;
-    gameSettings.wildSymbol.SymbolID = symbol;
-}
 
 export function convertSymbols(data) {
-    const convertedData = data.map(symbol => {
-      if (symbol.multiplier?.length>2) {
-        const multiplierObject = {};
-        multiplierObject['5x'] = symbol.multiplier[0][0];
-        multiplierObject['4x'] = symbol.multiplier[1][0];
-        multiplierObject['3x'] = symbol.multiplier[2][0];
-        
-        return {
-          ID: symbol.ID,
-          multiplier: multiplierObject
-        };
-      } else {
-        return null; // Exclude symbols without multipliers
-      }
-    }).filter(symbol => symbol !== null); // Remove null values
+
+    let uiData={
+        symbols:[]
+    }
     
-    return { symbols: convertedData };
+    data.forEach((element) => {
+        if(element.multiplier?.length>0 && element.useWildSub){
+
+            let symbolData={
+                ID: element.Id,
+                multiplier: {}
+              }
+            const multiplierObject = {};
+            element.multiplier.forEach((item, index )=> {
+            multiplierObject[(5-index).toString()+'x'] = item[0];
+             });
+        symbolData.multiplier=multiplierObject;
+        uiData.symbols.push(symbolData);
+        }
+
+    });
+    console.log("symbol data",uiData);
+
+    // const convertedData = data.map(symbol => {
+    //   if (symbol.multiplier?.length>0 && symbol.useWildSub) {
+
+
+    //     const multiplierObject = {};
+    //     multiplierObject['5x'] = symbol.multiplier[0][0];
+    //     multiplierObject['4x'] = symbol.multiplier[1][0];
+    //     multiplierObject['3x'] = symbol.multiplier[2][0];
+        
+
+    //     return {
+    //       ID: symbol.Id,
+    //       multiplier: multiplierObject
+    //     };
+    //   } else {
+    //     return null; // Exclude symbols without multipliers
+    //   }
+    // }).filter(symbol => symbol !== null); // Remove null values
+
+    // console.log("converted data",{ symbols: convertedData });
+    
+    // return { symbols: convertedData };
+    return uiData;
   }

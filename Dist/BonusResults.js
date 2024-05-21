@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.bonusGame = void 0;
 var Global_1 = require("./Global");
+var utils_1 = require("./utils");
 var bonusGame = /** @class */ (function () {
     function bonusGame(nosOfItem) {
         this.noOfItems = nosOfItem;
@@ -9,33 +10,6 @@ var bonusGame = /** @class */ (function () {
         this.result = [];
         // this.noise=noise;
     }
-    // generateData(){
-    //     let tempSum=0;
-    //         this.multiplier=[];
-    //         for (let i = 0; i < this.noOfItems-2; i++) {
-    //             let pay=0
-    //             while(true){
-    //                 if(i==0)
-    //                 pay=Math.round((Math.random()/this.noOfItems)*(this.totalPay));
-    //                 else
-    //                 pay=Math.round((Math.random()/this.noOfItems)*(this.totalPay - this.result[i-1]));
-    //                 tempSum+=pay;
-    //                 if(!this.result.includes(pay) && (tempSum<this.totalPay) && pay>0){
-    //                     this.result.push(pay);
-    //                     console.log("pay",pay);
-    //                     break;
-    //                 }else{
-    //                     tempSum-=pay;
-    //                 }
-    //             }
-    //         }
-    //         this.result.push(this.totalPay-tempSum);
-    //         this.result.push(-1);
-    //         this.shuffle(this.result);
-    //     return {
-    //         "result":this.result
-    //     };
-    // }
     bonusGame.prototype.generateData = function (totalPay) {
         this.result = [];
         var res = [];
@@ -64,16 +38,15 @@ var bonusGame = /** @class */ (function () {
         for (var i = 0; i < this.result.length; i++) {
             res.push(this.result[i].toString());
         }
-        console.log("result of bonus", res);
         return res;
     };
     bonusGame.prototype.setRandomStopIndex = function () {
         var amount = 0;
-        if (Global_1.gameSettings.bonus.start && Global_1.gameSettings.currentGamedata.bonus.type == "spin") {
+        if (Global_1.gameSettings.bonus.start && Global_1.gameSettings.currentGamedata.bonus.type == utils_1.bonusGameType.spin) {
             Global_1.gameSettings.bonus.stopIndex = Math.round(Math.random() * this.noOfItems);
             amount = this.result[Global_1.gameSettings.bonus.stopIndex];
         }
-        else if (Global_1.gameSettings.bonus.start && Global_1.gameSettings.currentGamedata.bonus.type == "tap") {
+        else if (Global_1.gameSettings.bonus.start && Global_1.gameSettings.currentGamedata.bonus.type == utils_1.bonusGameType.tap) {
             Global_1.gameSettings.bonus.stopIndex = -1;
             this.result.forEach(function (element) {
                 if (element >= 0) {
