@@ -287,19 +287,27 @@ export const gameData=[{
              multiplier : [[0.5,0],[0.3,0],[0.1,0]]
          },
          {
+             Name : "5",
+             Id : 5,
+             weightedRandomness : 0.1,
+             useWildSub : true,
+             multiplier : [[0.5,0],[0.3,0],[0.1,0]]
+         },
+         {
              Name : "6",
              Id : 6,
              weightedRandomness : 0.1,
              useWildSub : true,
              multiplier : [[0.5,0],[0.3,0],[0.1,0]]
          },
+
          {
-             Name : "7",
-             Id : 7,
-             weightedRandomness : 0.1,
-             useWildSub : true,
-             multiplier : [[0.5,0],[0.3,0],[0.1,0]]
-         },
+            Name : "7",
+            Id : 7,
+            weightedRandomness : 0.1,
+            useWildSub : true,
+            multiplier : [[0.5,0],[0.3,0],[0.1,0]]
+        },  
          {
              Name : "Bonus",
              Id : 8,
