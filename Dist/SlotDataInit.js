@@ -25,7 +25,7 @@ function sendInitdata(clientID) {
             "LinesCount": Global_1.gameSettings.currentGamedata.LinesCount,
             "autoSpin": [1, 5, 10, 20],
         },
-        "BonusData": Global_1.gameSettings.bonus.game != null ? Global_1.gameSettings.bonus.game.generateData((_a = Global_1.gameSettings.bonusPayTable[0]) === null || _a === void 0 ? void 0 : _a.pay) : null,
+        "BonusData": Global_1.gameSettings.bonus.game != null ? Global_1.gameSettings.bonus.game.generateData((_a = Global_1.gameSettings.bonusPayTable[0]) === null || _a === void 0 ? void 0 : _a.pay) : [],
         "UIData": Global_1.UiInitData,
         "PlayerData": Global_1.playerData,
     };

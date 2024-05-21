@@ -53,7 +53,7 @@ export const gameSettings: GameSettings = {
         const currentGameData=gameData.filter((element)=>element.id==GameID)
         // gameSettings.currentGamedata=currentGameData[0];
         console.log("data",data);
-        
+
         if(data=="Not found"){
             Alerts(clientID,"Invalid Game ID");
             // sendMessageToClient(clientID, "Auth", "Invalid Game ID");
@@ -97,7 +97,7 @@ function initWeigts(): number[] {
 }
 
 export const playerData: PlayerData = {
-    Balance: 1000,
+    Balance: 100000,
     haveWon: 0,
     // haveUsed: 0
 }

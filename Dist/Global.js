@@ -132,7 +132,7 @@ function initWeigts() {
     return weights;
 }
 exports.playerData = {
-    Balance: 1000,
+    Balance: 100000,
     haveWon: 0,
     // haveUsed: 0
 };

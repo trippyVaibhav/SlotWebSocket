@@ -28,7 +28,7 @@ export function sendInitdata(clientID : string)
            "LinesCount": gameSettings.currentGamedata.LinesCount,
            "autoSpin": [1, 5, 10, 20],
         },
-        "BonusData": gameSettings.bonus.game!=null? gameSettings.bonus.game.generateData(gameSettings.bonusPayTable[0]?.pay):null,
+        "BonusData": gameSettings.bonus.game!=null? gameSettings.bonus.game.generateData(gameSettings.bonusPayTable[0]?.pay):[],
         "UIData":  UiInitData,
         "PlayerData" : playerData,
         };
