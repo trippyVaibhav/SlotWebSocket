@@ -38,7 +38,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.makePayLines = exports.addPayLineSymbols = exports.gameWining = exports.UiInitData = exports.playerData = exports.gameSettings = void 0;
 var SlotDataInit_1 = require("./SlotDataInit");
-var testData_1 = require("./testData");
 var utils_1 = require("./utils");
 var Alerts_1 = require("./Alerts");
 exports.gameSettings = {
@@ -59,8 +58,8 @@ exports.gameSettings = {
     payLine: [],
     scatterPayTable: [],
     bonusPayTable: [],
-    useScatter: true,
-    useWild: true,
+    useScatter: false,
+    useWild: false,
     wildSymbol: {},
     // Symbols: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',"10","11","12"],
     // Weights: [0.1, 0.1, 0.05, 0.05, 0.01, 0.1, 0.1, 0.1, 0.01, 0.01, 0.1, 0.01, 0.01],
@@ -85,25 +84,31 @@ exports.gameSettings = {
     currentBet: 5,
     startGame: false,
     initiate: function (GameID, clientID) { return __awaiter(void 0, void 0, void 0, function () {
-        var resp, data, currentGameData;
+        var resp, data, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, fetch('https://664c355635bbda10987f44ff.mockapi.io/api/gameId/' + GameID)];
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, fetch('https://664c355635bbda10987f44ff.mockapi.io/api/gameId/' + GameID)];
                 case 1:
                     resp = _a.sent();
                     return [4 /*yield*/, resp.json()];
                 case 2:
                     data = _a.sent();
-                    currentGameData = testData_1.gameData.filter(function (element) { return element.id == GameID; });
-                    // gameSettings.currentGamedata=currentGameData[0];
-                    console.log("data", data);
                     if (data == "Not found") {
                         (0, Alerts_1.Alerts)(clientID, "Invalid Game ID");
-                        // sendMessageToClient(clientID, "Auth", "Invalid Game ID");
                         exports.gameSettings.startGame = false;
                         return [2 /*return*/];
                     }
                     exports.gameSettings.currentGamedata = data;
+                    return [3 /*break*/, 4];
+                case 3:
+                    error_1 = _a.sent();
+                    (0, Alerts_1.Alerts)(clientID, "network error");
+                    return [2 /*return*/];
+                case 4:
+                    // const currentGameData=gameData.filter((element)=>element.id==GameID)
+                    // gameSettings.currentGamedata=currentGameData[0];
                     exports.gameSettings.Symbols = initSymbols();
                     exports.gameSettings.Weights = initWeigts();
                     exports.UiInitData.paylines = (0, utils_1.convertSymbols)(exports.gameSettings.currentGamedata.Symbols);
@@ -195,6 +200,7 @@ function handleSpecialSymbols(symbol) {
         case utils_1.specialIcons.wild:
             exports.gameSettings.wildSymbol.SymbolName = symbol.Name;
             exports.gameSettings.wildSymbol.SymbolID = symbol.Id;
+            exports.gameSettings.useWild = true;
             break;
         case utils_1.specialIcons.scatter:
             exports.gameSettings.scatterPayTable.push({
@@ -203,6 +209,7 @@ function handleSpecialSymbols(symbol) {
                 pay: symbol.pay,
                 freeSpins: symbol.freeSpin
             });
+            exports.gameSettings.useScatter = true;
             break;
         case utils_1.specialIcons.bonus:
             exports.gameSettings.bonusPayTable.push({

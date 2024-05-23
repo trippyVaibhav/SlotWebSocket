@@ -70,7 +70,8 @@ function handleConnection(ws: WebSocket) {
 }
 
 // Assuming wss is your WebSocket server instance
-const wss = new WebSocket.Server({ port: 3035});
+const wss = new WebSocket.Server({ port: 3035
+});
 
 // Event listener for server connection
 wss.on('connection', handleConnection);

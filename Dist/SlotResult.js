@@ -53,19 +53,36 @@ var CheckResult = /** @class */ (function () {
     CheckResult.prototype.makeFullPayTable = function () {
         var payTable = [];
         var payTableFull = [];
-        Global_1.gameSettings.payLine.forEach(function (pLine) {
-            payTable.push(new PayLines(pLine.line, pLine.pay, pLine.freeSpins, Global_1.gameSettings.wildSymbol.SymbolID.toString()));
-        });
+        if (Global_1.gameSettings.useWild) {
+            Global_1.gameSettings.payLine.forEach(function (pLine) {
+                payTable.push(new PayLines(pLine.line, pLine.pay, pLine.freeSpins, Global_1.gameSettings.wildSymbol.SymbolID.toString()));
+            });
+        }
+        else {
+            Global_1.gameSettings.currentGamedata.Symbols.forEach(function (element) {
+                var _a;
+                if (element.useWildSub || ((_a = element.multiplier) === null || _a === void 0 ? void 0 : _a.length) > 0) {
+                    Global_1.gameSettings.payLine.forEach(function (pLine) {
+                        payTable.push(new PayLines(pLine.line, pLine.pay, pLine.freeSpins, element.Id.toString()));
+                    });
+                }
+            });
+            // payTable = gameSettings.payLine;
+        }
         for (var j = 0; j < payTable.length; j++) {
             payTableFull.push(payTable[j]);
-            var wildLines = payTable[j].getWildLines();
-            if (Global_1.gameSettings.useWild)
-                wildLines.forEach(function (wl) { payTableFull.push(wl); });
+            var wildLines = void 0;
+            if (Global_1.gameSettings.useWild) {
+                wildLines = payTable[j].getWildLines();
+                Global_1.gameSettings.payLine.forEach(function (pLine) {
+                    payTable.push(new PayLines(pLine.line, pLine.pay, pLine.freeSpins, Global_1.gameSettings.wildSymbol.SymbolID.toString()));
+                });
+            }
         }
+        console.log("full paytable", payTableFull);
         Global_1.gameSettings.fullPayTable = payTableFull;
     };
     CheckResult.prototype.searchWinSymbols = function () {
-        var _this = this;
         console.log('search win symbols');
         // gameWining.freeSpins = 0;
         // gameWining.winningSymbols = [];
@@ -77,21 +94,17 @@ var CheckResult = /** @class */ (function () {
         this.checkForWin();
         this.checkForScatter();
         this.checkForJackpot();
-        var excludeindex = [];
-        for (var i = 0; i < this.winData.winningSymbols.length; i++) {
-            var _loop_1 = function (j) {
-                if (this_1.winData.winningSymbols[i].some(function (ai) { return _this.winData.winningSymbols[j].includes(ai); }))
-                    excludeindex.push(j);
-            };
-            var this_1 = this;
-            for (var j = i + 1; j < this.winData.winningSymbols.length; j++) {
-                _loop_1(j);
-            }
-        }
-        var excludeindexModified = excludeindex.filter(function (value, index, array) { return array.indexOf(value) === index; });
-        for (var i = excludeindexModified.length - 1; i >= 0; i--) {
-            this.winData.winningSymbols.splice(excludeindexModified[i], 1);
-        }
+        // let excludeindex: number[] = [];
+        // for (let i = 0; i < this.winData.winningSymbols.length; i++) {
+        //     for (let j = i + 1; j < this.winData.winningSymbols.length; j++) {
+        //         if (this.winData.winningSymbols[i].some(ai => this.winData.winningSymbols[j].includes(ai)))
+        //             excludeindex.push(j);
+        //     }
+        // }
+        // let excludeindexModified: number[] = excludeindex.filter((value, index, array) => array.indexOf(value) === index);
+        // for (let i = excludeindexModified.length - 1; i >= 0; i--) {
+        //     this.winData.winningSymbols.splice(excludeindexModified[i], 1);
+        // }
         this.winData.winningLines = this.winData.winningLines.filter(function (value, index, array) { return array.indexOf(value) === index; });
         this.winData.updateBalance();
         console.log("result :", Global_1.gameSettings.resultSymbolMatrix);
@@ -113,13 +126,6 @@ var CheckResult = /** @class */ (function () {
         var temp = this.findSymbol(this.bonus);
         if (temp.length > 0)
             bonusSymbols.push.apply(bonusSymbols, temp);
-        // for (let i = 0; i < gameSettings.resultSymbolMatrix.length; i++) {
-        //     for (let j = 0; j < gameSettings.resultSymbolMatrix[i].length; j++) {
-        //         if(gameSettings.resultSymbolMatrix[i][j]==this.bonus){
-        //             bonusSymbols.push(j.toString()+','+i.toString())
-        //         }
-        //     }
-        // }        
         this.bonusPaytable.forEach(function (element) {
             var _a;
             if (element.symbolCount > 0 && element.symbolCount == bonusSymbols.length) {
@@ -136,11 +142,12 @@ var CheckResult = /** @class */ (function () {
     };
     CheckResult.prototype.checkForWin = function () {
         var _this = this;
+        var allComboWin = [];
         Global_1.gameSettings.lineData.forEach(function (lb, index) {
             var win = null;
             Global_1.gameSettings.fullPayTable.forEach(function (Payline) {
                 //  find max win (or win with max symbols count)
-                var winTemp = _this.getPayLineWin(Payline, lb);
+                var winTemp = _this.getPayLineWin(Payline, lb, allComboWin);
                 if (winTemp != null) {
                     if (win == null)
                         win = winTemp;
@@ -154,6 +161,33 @@ var CheckResult = /** @class */ (function () {
                 }
             });
         });
+        var filteredArray = this.checkforDuplicate(allComboWin);
+        console.log("wining symbols", filteredArray);
+        filteredArray.forEach(function (element) {
+            _this.winData.winningSymbols.push(element.pos);
+            _this.winData.totalWinningAmount += element.pay;
+            _this.winData.freeSpins += element.freeSpin;
+        });
+    };
+    CheckResult.prototype.checkforDuplicate = function (allComboWin) {
+        var _this = this;
+        allComboWin.sort(function (a, b) { return b.pos.length - a.pos.length; });
+        var filteredArray = [];
+        var _loop_1 = function (currentItem) {
+            var isSubsetOfAny = filteredArray.some(function (item) { return item.symbol === currentItem.symbol && _this.isSubset(currentItem.pos, item.pos); });
+            if (!isSubsetOfAny) {
+                filteredArray.push(currentItem);
+            }
+        };
+        for (var _i = 0, allComboWin_1 = allComboWin; _i < allComboWin_1.length; _i++) {
+            var currentItem = allComboWin_1[_i];
+            _loop_1(currentItem);
+        }
+        return filteredArray;
+    };
+    CheckResult.prototype.isSubset = function (subset, superset) {
+        var supersetSet = new Set(superset);
+        return subset.every(function (elem) { return supersetSet.has(elem); });
     };
     CheckResult.prototype.checkForScatter = function () {
         var _a;
@@ -165,11 +199,8 @@ var CheckResult = /** @class */ (function () {
             var temp = this.findSymbol(this.scatter);
             if (temp.length > 0)
                 (_a = this.scatterWinSymbols).push.apply(_a, temp);
-            // this.reels.forEach((reel) => {
-            // });
             this.scatterPayTable.forEach(function (sPL) {
                 if (sPL.symbolCount > 0 && sPL.symbolCount == _this.scatterWinSymbols.length) {
-                    // this.scatterWin = new WinData(this.scatterWinSymbols, sPL.freeSpins, sPL.pay);
                     _this.winData.winningSymbols.push(_this.scatterWinSymbols);
                     _this.winData.freeSpins += sPL.freeSpins;
                     _this.winData.totalWinningAmount += sPL.pay;
@@ -186,38 +217,58 @@ var CheckResult = /** @class */ (function () {
             var temp = this.findSymbol(this.jackpot.symbolName);
             if (temp.length > 0)
                 (_a = this.jackpotWinSymbols).push.apply(_a, temp);
-            // this.reels.forEach((reel) => {
-            // });
             console.log('find Jackpot symbols: ' + this.jackpotWinSymbols);
             if (this.jackpot.symbolsCount > 0 && this.jackpot.symbolsCount == this.jackpotWinSymbols.length) {
-                // this.jackpotWin = new WinData(this.jackpotWinSymbols, 0, this.jackpot.defaultAmount);
-                // playerData.Balance += (this.jackpotWin.pay);
-                // playerData.haveWon += (this.jackpotWin.pay);
                 this.winData.winningSymbols.push(this.jackpotWinSymbols);
                 this.winData.totalWinningAmount += this.jackpot.defaultAmount;
             }
         }
     };
-    CheckResult.prototype.getPayLineWin = function (payLine, lineData) {
+    CheckResult.prototype.getPayLineWin = function (payLine, lineData, allComboWin) {
         if (payLine == null)
             return null;
+        var master = [];
         var winSymbols = [];
         for (var i = 0; i < lineData.length; i++) {
+            var winSymbols1 = {
+                pos: [],
+                symbol: '',
+                pay: 0,
+                freeSpin: 0
+            };
             var symbol = this.getSymbolOnMatrix(i);
             var s = symbol[lineData[i]];
+            winSymbols1.symbol = s;
             if (payLine.line[i] !== utils_1.specialIcons.any && s !== payLine.line[i]) {
                 return;
             }
             else if (payLine.line[i] !== utils_1.specialIcons.any && s === payLine.line[i]) {
                 var symbolIndex = i.toString() + ',' + lineData[i].toString();
                 winSymbols.push(symbolIndex);
+                winSymbols1.pos.push(symbolIndex);
+                winSymbols1.pay = payLine.pay;
+                winSymbols1.freeSpin = payLine.freeSpins;
             }
+            master.push(winSymbols1);
         }
+        console.log("master12", master);
+        var filteredArray = master.filter(function (item) { return item.pos.length > 0; });
+        // Step 2: Group objects by their symbol
+        var groupedBySymbol = filteredArray.reduce(function (acc, item) {
+            if (!acc[item.symbol]) {
+                acc[item.symbol] = { symbol: item.symbol, pos: [], pay: item.pay, freeSpin: item.freeSpin };
+            }
+            acc[item.symbol].pos = acc[item.symbol].pos.concat(item.pos);
+            return acc;
+        }, {});
+        // Step 3: Convert the grouped object back into an array of objects
+        var mergedArray = Object.values(groupedBySymbol);
+        console.log("merged array", mergedArray);
         if (!payLine.pay)
             payLine.pay = 0;
-        this.winData.winningSymbols.push(winSymbols);
-        this.winData.freeSpins += payLine.freeSpins;
-        this.winData.totalWinningAmount += payLine.pay;
+        allComboWin.push.apply(allComboWin, mergedArray);
+        // this.winData.freeSpins += payLine.freeSpins;
+        // this.winData.totalWinningAmount += payLine.pay
         // const winData=new WinData(winSymbols, payLine.freeSpins, payLine.pay);
         return { freeSpins: payLine.freeSpins, pay: payLine.pay };
     };
@@ -242,12 +293,6 @@ var CheckResult = /** @class */ (function () {
             if (SymbolName == element.Name)
                 symbolId = element.Id;
         });
-        // for (let i = 0; i < gameSettings.matrix.y; i++) {
-        //     for (let j = 0; j < gameSettings.matrix.x; j++) {
-        //         if (gameSettings.resultSymbolMatrix[i][j] == symbolId.toString())
-        //             foundArray.push(symbolId.toString());
-        //     }
-        // }
         for (var i = 0; i < Global_1.gameSettings.resultSymbolMatrix.length; i++) {
             for (var j = 0; j < Global_1.gameSettings.resultSymbolMatrix[i].length; j++) {
                 if (Global_1.gameSettings.resultSymbolMatrix[i][j] == symbolId.toString())
@@ -421,46 +466,12 @@ var PayLines = /** @class */ (function () {
     return PayLines;
 }());
 var WinData = /** @class */ (function () {
-    // shouldFreeSpin: boolean;
-    // currentBet: 0;
     function WinData() {
         this.totalWinningAmount = 0;
-        // this.symbols = symbols;
         this.freeSpins = 0;
-        // this.pay = pay;
-        // this.bonus=bonus;
-        // gameWining.winningSymbols.push(symbols);
-        // if (freeSpins > 0)
-        // this.shouldFreeSpin = true;
-        // else
-        // this.shouldFreeSpin = false;
         this.winningLines = [];
         this.winningSymbols = [];
     }
-    // constructor( freeSpins: number, pay: number) {
-    //     // this.symbols = symbols;
-    //     this.freeSpins = freeSpins;
-    //     // this.pay = pay;
-    //     // this.bonus=bonus;
-    //     // gameWining.winningSymbols.push(symbols);
-    //     if (freeSpins > 0)
-    //     this.shouldFreeSpin = true;
-    //     else
-    //     this.shouldFreeSpin = false;
-    //     this.winningLines=[];
-    //     this.winningSymbols=[];
-    // }
-    // symbolsToString(): string {
-    //     if (this.symbols == null) return "";
-    //     let ss = "";
-    //     this.symbols.forEach((item) => { ss += (item !== null && item !== null) ? item : "?"; });
-    //     return ss;
-    // }
-    // toString(): string {
-    //     console.log(`pay : ${this.pay}  current Bet : ${gameSettings.currentBet}`);
-    //     this.updateBalance();
-    //     return this.symbolsToString() + '\n' + 'Pay: ' + this.pay + '; FreeSpin: ' + this.freeSpins;
-    // }
     WinData.prototype.updateBalance = function () {
         // gameWining.TotalWinningAmount += this.pay;
         Global_1.playerData.Balance += this.totalWinningAmount;

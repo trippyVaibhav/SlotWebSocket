@@ -2,7 +2,6 @@ import { sendInitdata } from './SlotDataInit';
 import { gameData } from "./testData";
 import { GameSettings, PlayerData, WildSymbol, convertSymbols, specialIcons, winning } from "./utils";
 import { sendMessageToClient } from './App';
-import { start } from 'repl';
 import { Alerts } from './Alerts';
 
 export const gameSettings: GameSettings = {
@@ -22,8 +21,8 @@ export const gameSettings: GameSettings = {
     payLine: [],
     scatterPayTable: [],
     bonusPayTable: [],
-    useScatter: true,
-    useWild: true,
+    useScatter: false,
+    useWild: false,
     wildSymbol: {} as WildSymbol,
     // Symbols: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',"10","11","12"],
     // Weights: [0.1, 0.1, 0.05, 0.05, 0.01, 0.1, 0.1, 0.1, 0.01, 0.01, 0.1, 0.01, 0.01],
@@ -48,19 +47,25 @@ export const gameSettings: GameSettings = {
     currentBet:5,
     startGame: false,
     initiate: async(GameID: string, clientID: string)=>{
-        const resp = await fetch('https://664c355635bbda10987f44ff.mockapi.io/api/gameId/'+GameID);
-        const data = await resp.json();
-        const currentGameData=gameData.filter((element)=>element.id==GameID)
-        // gameSettings.currentGamedata=currentGameData[0];
-        console.log("data",data);
 
-        if(data=="Not found"){
-            Alerts(clientID,"Invalid Game ID");
-            // sendMessageToClient(clientID, "Auth", "Invalid Game ID");
-            gameSettings.startGame=false;
+        try {
+            const resp = await fetch('https://664c355635bbda10987f44ff.mockapi.io/api/gameId/'+GameID);
+            const data = await resp.json();
+            if(data=="Not found"){
+                Alerts(clientID,"Invalid Game ID");
+                gameSettings.startGame=false;
+                return;
+            }
+            gameSettings.currentGamedata=data;
+            // const currentGameData=gameData.filter((element)=>element.id==GameID)
+        } catch (error) {
+            Alerts(clientID,"network error");
             return;
         }
-        gameSettings.currentGamedata=data;
+
+        // const currentGameData=gameData.filter((element)=>element.id==GameID)
+        // gameSettings.currentGamedata=currentGameData[0];
+        
         gameSettings.Symbols=initSymbols();
         gameSettings.Weights=initWeigts();
         UiInitData.paylines=convertSymbols(gameSettings.currentGamedata.Symbols);
@@ -167,6 +172,7 @@ function handleSpecialSymbols(symbol) {
         case specialIcons.wild:
             gameSettings.wildSymbol.SymbolName = symbol.Name;
             gameSettings.wildSymbol.SymbolID = symbol.Id;
+            gameSettings.useWild=true;
             break
         case specialIcons.scatter:
             gameSettings.scatterPayTable.push({
@@ -175,6 +181,7 @@ function handleSpecialSymbols(symbol) {
                 pay: symbol.pay,
                 freeSpins: symbol.freeSpin
             });
+            gameSettings.useScatter=true;
             break;
         case specialIcons.bonus:
             gameSettings.bonusPayTable.push({

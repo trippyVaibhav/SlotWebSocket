@@ -7,22 +7,23 @@ var Global_1 = require("./Global");
 var utils_1 = require("./utils");
 function sendInitdata(clientID) {
     var _a;
+    var specialSymbols = [];
     var matrix = (0, utils_1.generateMatrix)(Global_1.gameSettings.matrix.x, 18);
     if (Global_1.gameSettings.currentGamedata.bonus.isEnabled && Global_1.gameSettings.currentGamedata.bonus.type == utils_1.bonusGameType.spin)
         Global_1.gameSettings.bonus.game = new BonusResults_1.bonusGame(Global_1.gameSettings.currentGamedata.bonus.noOfItem);
-    var specialSymbols = Global_1.gameSettings.currentGamedata.Symbols.filter(function (element) { return (!element.useWildSub); }).length;
-    console.log("specialSymbols", specialSymbols);
-    for (var i = 0; i < specialSymbols; i++) {
+    specialSymbols = Global_1.gameSettings.currentGamedata.Symbols.filter(function (element) { return (!element.useWildSub); });
+    for (var i = 0; i < 1; i++) {
         var strng = "Player has the right to start the slot machine without using their funds for a certain number of times. The size of the bet is determined by the";
         Global_1.UiInitData.spclSymbolTxt.push(strng);
     }
+    specialSymbols = [];
     var dataToSend = {
         "GameData": {
             "Reel": matrix,
             "Lines": Global_1.gameSettings.currentGamedata.linesApiData,
-            "Bets": Global_1.gameSettings.currentGamedata.Bets,
+            "Bets": Global_1.gameSettings.currentGamedata.bets,
             "canSwitchLines": false,
-            "LinesCount": Global_1.gameSettings.currentGamedata.LinesCount,
+            "LinesCount": Global_1.gameSettings.currentGamedata.linesCount,
             "autoSpin": [1, 5, 10, 20],
         },
         "BonusData": Global_1.gameSettings.bonus.game != null ? Global_1.gameSettings.bonus.game.generateData((_a = Global_1.gameSettings.bonusPayTable[0]) === null || _a === void 0 ? void 0 : _a.pay) : [],
@@ -47,9 +48,9 @@ var RandomResultGenerator = /** @class */ (function () {
         matrix.pop();
         matrix.pop();
         matrix.pop();
-        matrix.push(['7', '7', '7', '9', '5']);
-        matrix.push(['6', '10', '10', '8', '4']);
-        matrix.push(['10', '0', '0', '0', '10']);
+        matrix.push(['0', '2', '0', '3', '0']);
+        matrix.push(['5', '0', '1', '0', '5']);
+        matrix.push(['8', '8', '8', '8', '8']);
         Global_1.gameSettings.resultSymbolMatrix = matrix;
     }
     // Function to generate a random number based on weights
