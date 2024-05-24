@@ -1,0 +1,43 @@
+# Ignore all compiled JavaScript files
+/dist/*
+
+# Ignore TypeScript definition files
+/src/**/*.d.ts
+
+# Ignore log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore node modules
+/node_modules/
+
+# Ignore bower components
+/bower_components/
+
+# Ignore.env files
+.env
+.env.test
+
+# Ignore next.js build output
+.next
+
+# Ignore vuepress build output
+.vuepress/dist
+
+# Ignore serverless directories
+/serverless/
+
+# Ignore fusebox cache
+/fusebox/
+
+# Ignore dynamodb local files
+/dynamodb/
+
+# Ignore ternjs port file
+.tern-port
+
+# Ignore typescript npm packages
+@types/*
+types/
