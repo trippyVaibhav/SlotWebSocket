@@ -25,7 +25,8 @@ export enum specialIcons{
 
 export enum bonusGameType{
     tap="tap",
-    spin="spin"
+    spin="spin",
+    default = "default"
 }
 export interface PlayerData {
     Balance : number,

@@ -61,8 +61,6 @@ exports.gameSettings = {
     useScatter: false,
     useWild: false,
     wildSymbol: {},
-    // Symbols: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',"10","11","12"],
-    // Weights: [0.1, 0.1, 0.05, 0.05, 0.01, 0.1, 0.1, 0.1, 0.01, 0.01, 0.1, 0.01, 0.01],
     Symbols: [],
     Weights: [],
     resultSymbolMatrix: [],
@@ -109,8 +107,7 @@ exports.gameSettings = {
                 case 4:
                     // const currentGameData=gameData.filter((element)=>element.id==GameID)
                     // gameSettings.currentGamedata=currentGameData[0];
-                    exports.gameSettings.Symbols = initSymbols();
-                    exports.gameSettings.Weights = initWeigts();
+                    initSymbols();
                     exports.UiInitData.paylines = (0, utils_1.convertSymbols)(exports.gameSettings.currentGamedata.Symbols);
                     exports.gameSettings.startGame = true;
                     makePayLines();
@@ -121,20 +118,11 @@ exports.gameSettings = {
     }); }
 };
 function initSymbols() {
-    var _a;
-    var symbols = [];
+    var _a, _b;
     for (var i = 0; i < (exports.gameSettings === null || exports.gameSettings === void 0 ? void 0 : exports.gameSettings.currentGamedata.Symbols.length); i++) {
-        symbols.push((_a = exports.gameSettings === null || exports.gameSettings === void 0 ? void 0 : exports.gameSettings.currentGamedata.Symbols[i].Id) === null || _a === void 0 ? void 0 : _a.toString());
+        exports.gameSettings.Symbols.push((_a = exports.gameSettings === null || exports.gameSettings === void 0 ? void 0 : exports.gameSettings.currentGamedata.Symbols[i].Id) === null || _a === void 0 ? void 0 : _a.toString());
+        exports.gameSettings.Weights.push((_b = exports.gameSettings.currentGamedata.Symbols[i]) === null || _b === void 0 ? void 0 : _b.weightedRandomness);
     }
-    return symbols;
-}
-function initWeigts() {
-    var _a;
-    var weights = [];
-    for (var i = 0; i < (exports.gameSettings === null || exports.gameSettings === void 0 ? void 0 : exports.gameSettings.currentGamedata.Symbols.length); i++) {
-        weights.push((_a = exports.gameSettings.currentGamedata.Symbols[i]) === null || _a === void 0 ? void 0 : _a.weightedRandomness);
-    }
-    return weights;
 }
 exports.playerData = {
     Balance: 100000,

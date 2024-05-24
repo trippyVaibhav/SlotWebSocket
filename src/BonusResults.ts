@@ -11,7 +11,7 @@ export class bonusGame{
 
     constructor(nosOfItem:number) {
         this.noOfItems=nosOfItem;
-        this.type="default";
+        this.type= bonusGameType.default;
         this.result=[];
         // this.noise=noise;
     }
@@ -24,6 +24,7 @@ export class bonusGame{
         let sum = 0;
         this.totalPay=totalPay;
         this.maxPay=Math.floor(totalPay*0.5);
+        
         let part=Math.floor((this.totalPay-this.maxPay)/(this.noOfItems-2));
 
         this.noise=Math.floor(part/(this.noOfItems-2));
@@ -75,8 +76,8 @@ export class bonusGame{
             amount=0
         playerData.Balance += amount;
         playerData.haveWon += amount;
-
-
+        gameSettings.bonus.start = false;
+        gameSettings.bonus.stopIndex = -1;
     }
 
     shuffle(array:number[]) {

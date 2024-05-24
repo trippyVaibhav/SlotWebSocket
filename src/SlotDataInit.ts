@@ -1,24 +1,27 @@
+import { spec } from "node:test/reporters";
 import { sendMessageToClient } from "./App";
 import { bonusGame } from "./BonusResults";
 import { UiInitData, gameSettings, playerData} from "./Global";
 import { bonusGameType, generateMatrix } from "./utils";
+import { PayLines } from "./SlotResult";
 
 export function sendInitdata(clientID : string)
 {
-    let specialSymbols=[];
+    
     const matrix = generateMatrix(gameSettings.matrix.x, 18);
     if(gameSettings.currentGamedata.bonus.isEnabled && gameSettings.currentGamedata.bonus.type==bonusGameType.spin)
     gameSettings.bonus.game= new bonusGame(gameSettings.currentGamedata.bonus.noOfItem);
 
-    specialSymbols=gameSettings.currentGamedata.Symbols.filter((element)=>(!element.useWildSub))
+    let specialSymbols=gameSettings.currentGamedata.Symbols.filter((element)=>(!element.useWildSub))
     
 
-    for(let i = 0; i < 1; i++)
+    for(let i = 0; i < specialSymbols.length; i++)
     {
         const strng = "Player has the right to start the slot machine without using their funds for a certain number of times. The size of the bet is determined by the";
         UiInitData.spclSymbolTxt.push(strng)
     }
-    specialSymbols=[];
+  console.log(specialSymbols);
+  
     const dataToSend = {
        "GameData" : {
            "Reel" :matrix,
@@ -53,15 +56,16 @@ export class RandomResultGenerator {
                 matrix.push(row);
             }
 
-            matrix.pop();
-            matrix.pop();
-            matrix.pop();
-            matrix.push(['0','2','0','3','0'])
-            matrix.push(['5','0','1','0','5'])
-            matrix.push(['8','8','8','8','8'])
-
+            // matrix.pop();
+            // matrix.pop();
+            // matrix.pop();
+            // matrix.push(['8','8','8','8','8'])
+            // matrix.push(['6','5','6','8','6'])
+            // matrix.push(['5','5','5','5','5'])
+            
             gameSettings.resultSymbolMatrix = matrix;
-    }
+            gameDataInit();
+        }
     
     // Function to generate a random number based on weights
     randomWeightedIndex(weights: number[]): number {
@@ -79,3 +83,61 @@ export class RandomResultGenerator {
     }
 }
 
+function gameDataInit()
+{
+    gameSettings.lineData = gameSettings.currentGamedata.linesApiData;
+    // gameSettings.bonus.start = false;
+    makeFullPayTable();
+}
+function makeFullPayTable() {
+    let payTable: PayLines[] = [];
+    let payTableFull = [];
+
+    gameSettings.payLine.forEach((pLine) => {
+        payTable.push(new PayLines(pLine.line, pLine.pay, pLine.freeSpins, gameSettings.wildSymbol.SymbolName))
+    })
+    
+    for (let j = 0; j < payTable.length; j++) {
+        payTableFull.push(payTable[j]);
+        
+        if (gameSettings.useWild)
+            {
+                let wildLines = payTable[j].getWildLines();
+                wildLines.forEach((wl) => { payTableFull.push(wl); });
+            } 
+    }
+    gameSettings.fullPayTable = payTableFull;
+    // let payTable: any[] = [];
+    // let payTableFull = [];
+
+    // if (gameSettings.useWild) {
+    //     gameSettings.payLine.forEach((pLine) => {
+    //         payTable.push(new PayLines(pLine.line, pLine.pay, pLine.freeSpins, gameSettings.wildSymbol.SymbolID.toString()))
+    //     })
+    // } else {
+    //     gameSettings.currentGamedata.Symbols.forEach((element)=>{
+    //         if(element.useWildSub || element.multiplier?.length>0){
+    //             gameSettings.payLine.forEach((pLine) => {
+    //                 payTable.push(new PayLines(pLine.line, pLine.pay, pLine.freeSpins, element.Id.toString()))
+    //             })
+    //         }
+    //     })
+
+    //     // payTable = gameSettings.payLine;
+    // }
+
+
+    // for (let j = 0; j < payTable.length; j++) {
+    //     payTableFull.push(payTable[j]);
+    //     let wildLines;
+    //     if (gameSettings.useWild){
+    //         wildLines = payTable[j].getWildLines();
+    //         gameSettings.payLine.forEach((pLine) => {
+    //             payTable.push(new PayLines(pLine.line, pLine.pay, pLine.freeSpins, gameSettings.wildSymbol.SymbolID.toString()))
+    //         })
+    //     }
+    // }
+
+    // console.log("full paytable", payTableFull);
+    // gameSettings.fullPayTable = payTableFull;
+}

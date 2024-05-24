@@ -6,7 +6,7 @@ var utils_1 = require("./utils");
 var bonusGame = /** @class */ (function () {
     function bonusGame(nosOfItem) {
         this.noOfItems = nosOfItem;
-        this.type = "default";
+        this.type = utils_1.bonusGameType.default;
         this.result = [];
         // this.noise=noise;
     }
@@ -58,6 +58,8 @@ var bonusGame = /** @class */ (function () {
             amount = 0;
         Global_1.playerData.Balance += amount;
         Global_1.playerData.haveWon += amount;
+        Global_1.gameSettings.bonus.start = false;
+        Global_1.gameSettings.bonus.stopIndex = -1;
     };
     bonusGame.prototype.shuffle = function (array) {
         for (var i = array.length - 1; i > 0; i--) {

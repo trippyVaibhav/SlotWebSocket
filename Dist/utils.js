@@ -19,6 +19,7 @@ var bonusGameType;
 (function (bonusGameType) {
     bonusGameType["tap"] = "tap";
     bonusGameType["spin"] = "spin";
+    bonusGameType["default"] = "default";
 })(bonusGameType || (exports.bonusGameType = bonusGameType = {}));
 ;
 ;

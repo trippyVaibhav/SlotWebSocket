@@ -24,8 +24,6 @@ export const gameSettings: GameSettings = {
     useScatter: false,
     useWild: false,
     wildSymbol: {} as WildSymbol,
-    // Symbols: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9',"10","11","12"],
-    // Weights: [0.1, 0.1, 0.05, 0.05, 0.01, 0.1, 0.1, 0.1, 0.01, 0.01, 0.1, 0.01, 0.01],
     Symbols: [],
     Weights: [],
     resultSymbolMatrix: [],
@@ -66,8 +64,7 @@ export const gameSettings: GameSettings = {
         // const currentGameData=gameData.filter((element)=>element.id==GameID)
         // gameSettings.currentGamedata=currentGameData[0];
         
-        gameSettings.Symbols=initSymbols();
-        gameSettings.Weights=initWeigts();
+        initSymbols();
         UiInitData.paylines=convertSymbols(gameSettings.currentGamedata.Symbols);
         gameSettings.startGame=true;
 
@@ -80,25 +77,12 @@ export const gameSettings: GameSettings = {
 
 
 
-function initSymbols(): string[] {
-    let symbols: string[] = [];
+function initSymbols(){
 
     for (let i = 0; i < gameSettings?.currentGamedata.Symbols.length; i++) {
-        symbols.push(gameSettings?.currentGamedata.Symbols[i].Id?.toString());
-
+        gameSettings.Symbols.push(gameSettings?.currentGamedata.Symbols[i].Id?.toString());
+        gameSettings.Weights.push(gameSettings.currentGamedata.Symbols[i]?.weightedRandomness);
     }
-    return symbols;
-}
-
-function initWeigts(): number[] {
-    let weights: number[] = [];
-
-    for (let i = 0; i < gameSettings?.currentGamedata.Symbols.length; i++) {
-        weights.push(gameSettings.currentGamedata.Symbols[i]?.weightedRandomness);
-
-    }
-
-    return weights;
 }
 
 export const playerData: PlayerData = {
