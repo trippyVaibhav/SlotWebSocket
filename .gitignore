@@ -41,3 +41,6 @@ yarn-error.log*
 # Ignore typescript npm packages
 @types/*
 types/
+
+# Ignore package.json
+/package-lock.json
