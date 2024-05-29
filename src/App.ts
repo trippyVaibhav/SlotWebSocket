@@ -1,8 +1,10 @@
 import * as WebSocket from 'ws';
 import { v4 as uuidv4 } from 'uuid'; // Import UUID v4
 import { CheckResult } from './SlotResult';
-import { gameSettings } from './Global';
+import { gameSettings, playerData } from './Global';
 import { messageId } from './utils';
+import { GambleGame } from './GambleResults';
+import { log } from 'node:console';
 // Map to store WebSocket connections with their associated client IDs
 const clients: Map<string, WebSocket> = new Map();
 
@@ -45,7 +47,7 @@ function handleConnection(ws: WebSocket) {
   ws.on('message', function incoming(message: any) {
     console.log(`Received message from ${clientId}: ${message.id}`);
     const messageData = JSON.parse(message);
-    console.log(messageData.Data.GameID);
+    console.log(messageData?.Data?.GameID);
     console.log(messageData.Data);
 
     
@@ -56,8 +58,51 @@ function handleConnection(ws: WebSocket) {
 
     if (messageData.id == messageId.spin && gameSettings.startGame) {
       gameSettings.currentBet = messageData.Data.CurrentBet;
-      const result = new CheckResult(clientId);
+       const result=new CheckResult(clientId);
+      //  result.searchWinSymbols();
     }
+
+    if(messageData.id=="gamble"){
+      console.log("message data",messageData);
+      if(playerData.currentWining>1){
+        gameSettings.gamble.start=true;
+      }else{
+        gameSettings.gamble.start=false;
+        
+      }
+      
+      console.log("gamblestart", gameSettings.gamble.start);
+      
+      if(gameSettings.gamble.start){
+        
+        if(!gameSettings.gamble.game || !gameSettings.gamble.game.checkIfClientExist(clients))
+          gameSettings.gamble.game= new GambleGame(clientId);
+        
+        
+        if(messageData?.collect){
+          gameSettings.gamble.game.updateplayerBalance();
+          gameSettings.gamble.game.reset();
+          return;
+        }
+
+        
+        if(gameSettings.gamble.game.gambleCount<gameSettings.gamble.maxCount){
+          gameSettings.gamble.game.generateData(playerData.currentWining);
+
+        }else{
+            gameSettings.gamble.game.updateplayerBalance();
+            gameSettings.gamble.game.reset();
+        }
+        
+        // gameSettings.gamble.currentCount++;
+        console.log("player balance",playerData);
+        
+
+      }
+
+
+    }
+
   });
 
   // Event listener for closing connection
@@ -70,13 +115,14 @@ function handleConnection(ws: WebSocket) {
 }
 
 // Assuming wss is your WebSocket server instance
-const wss = new WebSocket.Server({ port: 3035
+const wss = new WebSocket.Server({ port: 3036
 });
 
 // Event listener for server connection
 wss.on('connection', handleConnection);
 
 export function sendMessageToClient(clientId: string, id: string, message: any) {
+
   const ws = clients.get(clientId);
   if (ws && ws.readyState === WebSocket.OPEN)
     ws.send(JSON.stringify({ id, message }));

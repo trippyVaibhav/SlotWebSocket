@@ -10,13 +10,12 @@ function sendInitdata(clientID) {
     var _a;
     var matrix = (0, utils_1.generateMatrix)(Global_1.gameSettings.matrix.x, 18);
     if (Global_1.gameSettings.currentGamedata.bonus.isEnabled && Global_1.gameSettings.currentGamedata.bonus.type == utils_1.bonusGameType.spin)
-        Global_1.gameSettings.bonus.game = new BonusResults_1.bonusGame(Global_1.gameSettings.currentGamedata.bonus.noOfItem);
+        Global_1.gameSettings.bonus.game = new BonusResults_1.bonusGame(Global_1.gameSettings.currentGamedata.bonus.noOfItem, clientID);
     var specialSymbols = Global_1.gameSettings.currentGamedata.Symbols.filter(function (element) { return (!element.useWildSub); });
     for (var i = 0; i < specialSymbols.length; i++) {
         var strng = "Player has the right to start the slot machine without using their funds for a certain number of times. The size of the bet is determined by the";
         Global_1.UiInitData.spclSymbolTxt.push(strng);
     }
-    console.log(specialSymbols);
     var dataToSend = {
         "GameData": {
             "Reel": matrix,
@@ -48,9 +47,9 @@ var RandomResultGenerator = /** @class */ (function () {
         // matrix.pop();
         // matrix.pop();
         // matrix.pop();
-        // matrix.push(['8','8','8','8','8'])
-        // matrix.push(['6','5','6','8','6'])
-        // matrix.push(['5','5','5','5','5'])
+        // matrix.push([ '4', '0', '0', '0', '4' ])
+        // matrix.push([ '6', '4', '8', '4', '2' ])
+        // matrix.push([ '1', '8', '4', '4', '8' ])
         Global_1.gameSettings.resultSymbolMatrix = matrix;
         gameDataInit();
     }

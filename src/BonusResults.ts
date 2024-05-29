@@ -1,5 +1,6 @@
 import { gameSettings,playerData  } from "./Global";
 import { bonusGameType } from "./utils";
+
 export class bonusGame{
     type:String;
     noOfItems:number;
@@ -8,11 +9,13 @@ export class bonusGame{
     noise:number;
     minPay:number;
     maxPay:number;
+    clientId: string;
 
-    constructor(nosOfItem:number) {
+    constructor(nosOfItem:number, clientId: string) {
         this.noOfItems=nosOfItem;
         this.type= bonusGameType.default;
         this.result=[];
+        this.clientId=clientId
         // this.noise=noise;
     }
 
@@ -76,7 +79,6 @@ export class bonusGame{
             amount=0
         playerData.Balance += amount;
         playerData.haveWon += amount;
-        gameSettings.bonus.start = false;
         gameSettings.bonus.stopIndex = -1;
     }
 

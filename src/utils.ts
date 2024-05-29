@@ -1,4 +1,5 @@
 import { bonusGame } from "./BonusResults";
+import { GambleGame } from "./GambleResults";
 import { gameSettings } from "./Global";
 
 export interface SymbolData {
@@ -31,6 +32,7 @@ export enum bonusGameType{
 export interface PlayerData {
     Balance : number,
     haveWon : number,
+    currentWining: number,
     // haveUsed: number
 }
 export interface PayLine {
@@ -98,7 +100,12 @@ export interface GameSettings {
     },
     currentBet: number;
     startGame: boolean;
-    initiate:(arg: string, arg2: string)=> void
+    initiate:(arg: string, arg2: string)=> void;
+    gamble: {
+        game: GambleGame,
+        maxCount: number,
+        start: boolean
+    };
 
 };
 
@@ -181,7 +188,6 @@ export function convertSymbols(data) {
         }
 
     });
-    console.log("symbol data",uiData);
 
     // const convertedData = data.map(symbol => {
     //   if (symbol.multiplier?.length>0 && symbol.useWildSub) {

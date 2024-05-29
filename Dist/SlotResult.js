@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PayLines = exports.CheckResult = void 0;
+exports.WinData = exports.PayLines = exports.CheckResult = void 0;
 var Alerts_1 = require("./Alerts");
 var App_1 = require("./App");
 var Global_1 = require("./Global");
@@ -11,7 +11,7 @@ var CheckResult = /** @class */ (function () {
     function CheckResult(clientID) {
         this.clientID = clientID;
         if (Global_1.gameSettings.currentGamedata.bonus.isEnabled && Global_1.gameSettings.currentGamedata.bonus.type == utils_1.bonusGameType.tap)
-            Global_1.gameSettings.bonus.game = new BonusResults_1.bonusGame(Global_1.gameSettings.currentGamedata.bonus.noOfItem);
+            Global_1.gameSettings.bonus.game = new BonusResults_1.bonusGame(Global_1.gameSettings.currentGamedata.bonus.noOfItem, clientID);
         // if(playerData.Balance < gameWining.currentBet)
         if (Global_1.playerData.Balance < Global_1.gameSettings.currentBet) {
             (0, Alerts_1.Alerts)(clientID, "Low Balance");
@@ -23,10 +23,7 @@ var CheckResult = /** @class */ (function () {
         console.log("player havewon:", Global_1.playerData.haveWon);
         var rng = new SlotDataInit_1.RandomResultGenerator();
         this.scatter = utils_1.specialIcons.scatter;
-        //     gameSettings.currentGamedata.Symbols?.forEach(element => {
-        //         if(element.Name==specialIcons.bonus)
-        //         this.bonus=element.Id.toString()
-        // });
+        Global_1.gameSettings.bonus.start = false;
         this.useScatter = (Global_1.gameSettings.useScatter && this.scatter !== null);
         this.jackpot = Global_1.gameSettings.jackpot;
         this.useJackpot = (this.jackpot !== null);
@@ -41,8 +38,8 @@ var CheckResult = /** @class */ (function () {
         this.scatterWinSymbols = [];
         this.jackpotWinSymbols = [];
         this.winSeq = null;
-        this.winData = new WinData();
         this.bonusResult = [];
+        this.winData = new WinData(clientID);
         this.searchWinSymbols();
     }
     CheckResult.prototype.searchWinSymbols = function () {
@@ -70,6 +67,7 @@ var CheckResult = /** @class */ (function () {
         this.winData.updateBalance();
         console.log("result :", Global_1.gameSettings.resultSymbolMatrix);
         console.log("win data", this.winData);
+        console.log("Bonus start", Global_1.gameSettings.bonus.start);
         this.makeResultJson();
         // Math.round(num * 100) / 100).toFixed(2)
         console.log("TOTAL WINING : " + this.winData.totalWinningAmount);
@@ -85,10 +83,11 @@ var CheckResult = /** @class */ (function () {
         var temp = this.findSymbol(utils_1.specialIcons.bonus);
         if (temp.length > 0)
             bonusSymbols.push.apply(bonusSymbols, temp);
+        // console.log("paytable length",this.bonusPaytable.length);
         this.bonusPaytable.forEach(function (element) {
             var _a;
             if (element.symbolCount > 0 && element.symbolCount == bonusSymbols.length) {
-                // bonuswin = new WinData(bonusSymbols, 0, 0);
+                // bonuswin = new WinData(bonusSymbols, 0, 0);            
                 _this.winData.winningSymbols.push(bonusSymbols);
                 // this.winData.bonus=true;
                 Global_1.gameSettings.bonus.start = true;
@@ -120,10 +119,9 @@ var CheckResult = /** @class */ (function () {
             });
         });
         var filteredArray = this.checkforDuplicate(allComboWin);
-        console.log("wining symbols", filteredArray);
         filteredArray.forEach(function (element) {
             _this.winData.winningSymbols.push(element.pos);
-            _this.winData.totalWinningAmount += element.pay;
+            _this.winData.totalWinningAmount += element.pay * Global_1.gameSettings.currentBet;
             _this.winData.freeSpins += element.freeSpin;
         });
     };
@@ -153,7 +151,7 @@ var CheckResult = /** @class */ (function () {
         this.scatterWinSymbols = [];
         // this.scatterWin = null;
         if (this.useScatter) {
-            console.log("scattersds", this.scatter);
+            // console.log("scattersds", this.scatter);
             var temp = this.findSymbol(this.scatter);
             if (temp.length > 0)
                 (_a = this.scatterWinSymbols).push.apply(_a, temp);
@@ -175,7 +173,7 @@ var CheckResult = /** @class */ (function () {
             var temp = this.findSymbol(this.jackpot.symbolName);
             if (temp.length > 0)
                 (_a = this.jackpotWinSymbols).push.apply(_a, temp);
-            console.log('find Jackpot symbols: ' + this.jackpotWinSymbols);
+            // console.log('find Jackpot symbols: ' + this.jackpotWinSymbols);
             if (this.jackpot.symbolsCount > 0 && this.jackpot.symbolsCount == this.jackpotWinSymbols.length) {
                 this.winData.winningSymbols.push(this.jackpotWinSymbols);
                 this.winData.totalWinningAmount += this.jackpot.defaultAmount;
@@ -190,7 +188,7 @@ var CheckResult = /** @class */ (function () {
         var master = [];
         var winSymbols = [];
         for (var i = 0; i < lineData.length; i++) {
-            var winSymbols1 = {
+            var tempWinSymbols = {
                 pos: [],
                 symbol: '',
                 pay: 0,
@@ -198,20 +196,21 @@ var CheckResult = /** @class */ (function () {
             };
             var symbol = this.getSymbolOnMatrix(i);
             var s = symbol[lineData[i]];
-            winSymbols1.symbol = s;
+            tempWinSymbols.symbol = s;
             if (payLine.line[i] !== utils_1.specialIcons.any && s !== payLine.line[i]) {
                 return;
             }
             else if (payLine.line[i] !== utils_1.specialIcons.any && s === payLine.line[i]) {
                 var symbolIndex = i.toString() + ',' + lineData[i].toString();
-                // winSymbols.push(symbolIndex);
-                winSymbols1.pos.push(symbolIndex);
-                winSymbols1.pay = payLine.pay;
-                winSymbols1.freeSpin = payLine.freeSpins;
+                winSymbols.push(symbolIndex);
+                // this.winData.winningSymbols.push(symbolIndex);
+                tempWinSymbols.pos.push(symbolIndex);
+                tempWinSymbols.pay = payLine.pay;
+                tempWinSymbols.freeSpin = payLine.freeSpins;
             }
-            master.push(winSymbols1);
+            master.push(tempWinSymbols);
         }
-        console.log("master12", master);
+        // this.winData.winningSymbols.push(winSymbols);
         var filteredArray = master.filter(function (item) { return item.pos.length > 0; });
         var groupedBySymbol = filteredArray.reduce(function (acc, item) {
             if (!acc[item.symbol]) {
@@ -222,7 +221,6 @@ var CheckResult = /** @class */ (function () {
         }, {});
         // Step 3: Convert the grouped object back into an array of objects
         var mergedArray = Object.values(groupedBySymbol);
-        console.log("merged array", mergedArray);
         if (!payLine.pay)
             payLine.pay = 0;
         allComboWin.push.apply(allComboWin, mergedArray);
@@ -373,6 +371,7 @@ var PayLines = /** @class */ (function () {
         return res;
     };
     PayLines.prototype.getPositionsForWild = function () {
+        var _a;
         var wPoss = [];
         var counter = 0;
         var symbolsDict = [];
@@ -388,7 +387,7 @@ var PayLines = /** @class */ (function () {
                     counter++;
                 }
                 else {
-                    if (symbolsDict[sName].useWildSub)
+                    if ((_a = symbolsDict[sName]) === null || _a === void 0 ? void 0 : _a.useWildSub)
                         wPoss.push(i);
                     counter++;
                 }
@@ -426,18 +425,21 @@ var PayLines = /** @class */ (function () {
 }());
 exports.PayLines = PayLines;
 var WinData = /** @class */ (function () {
-    function WinData() {
-        this.totalWinningAmount = 0;
-        this.jackpotwin = 0;
+    function WinData(clientId) {
         this.freeSpins = 0;
         this.winningLines = [];
         this.winningSymbols = [];
+        this.totalWinningAmount = 0;
+        this.jackpotwin = 0;
+        this.clientId = clientId;
     }
     WinData.prototype.updateBalance = function () {
         // gameWining.TotalWinningAmount += this.pay;
         Global_1.playerData.Balance += this.totalWinningAmount;
         Global_1.playerData.haveWon += this.totalWinningAmount;
+        Global_1.playerData.currentWining = this.totalWinningAmount;
         // gameWining.freeSpins = gameWining.freeSpins+this.freeSpins;
     };
     return WinData;
 }());
+exports.WinData = WinData;

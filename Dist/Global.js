@@ -81,17 +81,28 @@ exports.gameSettings = {
     },
     currentBet: 5,
     startGame: false,
+    gamble: {
+        game: null,
+        maxCount: 1,
+        start: false,
+    },
     initiate: function (GameID, clientID) { return __awaiter(void 0, void 0, void 0, function () {
         var resp, data, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 3, , 4]);
-                    return [4 /*yield*/, fetch('https://664c355635bbda10987f44ff.mockapi.io/api/gameId/' + GameID)];
+                    exports.gameSettings.bonusPayTable = [];
+                    exports.gameSettings.scatterPayTable = [];
+                    exports.gameSettings.Symbols = [];
+                    exports.gameSettings.Weights = [];
+                    _a.label = 1;
                 case 1:
+                    _a.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, fetch('https://664c355635bbda10987f44ff.mockapi.io/api/gameId/' + GameID)];
+                case 2:
                     resp = _a.sent();
                     return [4 /*yield*/, resp.json()];
-                case 2:
+                case 3:
                     data = _a.sent();
                     if (data == "Not found") {
                         (0, Alerts_1.Alerts)(clientID, "Invalid Game ID");
@@ -99,12 +110,12 @@ exports.gameSettings = {
                         return [2 /*return*/];
                     }
                     exports.gameSettings.currentGamedata = data;
-                    return [3 /*break*/, 4];
-                case 3:
+                    return [3 /*break*/, 5];
+                case 4:
                     error_1 = _a.sent();
                     (0, Alerts_1.Alerts)(clientID, "network error");
                     return [2 /*return*/];
-                case 4:
+                case 5:
                     // const currentGameData=gameData.filter((element)=>element.id==GameID)
                     // gameSettings.currentGamedata=currentGameData[0];
                     initSymbols();
@@ -127,6 +138,7 @@ function initSymbols() {
 exports.playerData = {
     Balance: 100000,
     haveWon: 0,
+    currentWining: 5
     // haveUsed: 0
 };
 exports.UiInitData = {
@@ -177,6 +189,8 @@ function makePayLines() {
 }
 exports.makePayLines = makePayLines;
 function handleSpecialSymbols(symbol) {
+    exports.gameSettings.bonusPayTable = [];
+    exports.gameSettings.scatterPayTable = [];
     switch (symbol.Name) {
         case utils_1.specialIcons.jackpot:
             exports.gameSettings.jackpot.symbolName = symbol.Name;

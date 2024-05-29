@@ -10,7 +10,7 @@ export function sendInitdata(clientID : string)
     
     const matrix = generateMatrix(gameSettings.matrix.x, 18);
     if(gameSettings.currentGamedata.bonus.isEnabled && gameSettings.currentGamedata.bonus.type==bonusGameType.spin)
-    gameSettings.bonus.game= new bonusGame(gameSettings.currentGamedata.bonus.noOfItem);
+    gameSettings.bonus.game= new bonusGame(gameSettings.currentGamedata.bonus.noOfItem,clientID);
 
     let specialSymbols=gameSettings.currentGamedata.Symbols.filter((element)=>(!element.useWildSub))
     
@@ -20,7 +20,6 @@ export function sendInitdata(clientID : string)
         const strng = "Player has the right to start the slot machine without using their funds for a certain number of times. The size of the bet is determined by the";
         UiInitData.spclSymbolTxt.push(strng)
     }
-  console.log(specialSymbols);
   
     const dataToSend = {
        "GameData" : {
@@ -59,10 +58,10 @@ export class RandomResultGenerator {
             // matrix.pop();
             // matrix.pop();
             // matrix.pop();
-            // matrix.push(['8','8','8','8','8'])
-            // matrix.push(['6','5','6','8','6'])
-            // matrix.push(['5','5','5','5','5'])
-            
+            // matrix.push([ '4', '0', '0', '0', '4' ])
+            // matrix.push([ '6', '4', '8', '4', '2' ])
+            // matrix.push([ '1', '8', '4', '4', '8' ])
+
             gameSettings.resultSymbolMatrix = matrix;
             gameDataInit();
         }

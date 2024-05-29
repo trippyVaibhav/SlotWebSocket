@@ -44,8 +44,16 @@ export const gameSettings: GameSettings = {
     },
     currentBet:5,
     startGame: false,
+    gamble: {
+        game: null,
+        maxCount: 1,
+        start: false,
+    },
     initiate: async(GameID: string, clientID: string)=>{
-
+        gameSettings.bonusPayTable=[];
+        gameSettings.scatterPayTable=[];
+        gameSettings.Symbols= [];
+        gameSettings.Weights= [];
         try {
             const resp = await fetch('https://664c355635bbda10987f44ff.mockapi.io/api/gameId/'+GameID);
             const data = await resp.json();
@@ -75,8 +83,6 @@ export const gameSettings: GameSettings = {
 };
 
 
-
-
 function initSymbols(){
 
     for (let i = 0; i < gameSettings?.currentGamedata.Symbols.length; i++) {
@@ -88,6 +94,7 @@ function initSymbols(){
 export const playerData: PlayerData = {
     Balance: 100000,
     haveWon: 0,
+    currentWining: 5
     // haveUsed: 0
 }
 
@@ -144,6 +151,8 @@ export function makePayLines() {
 
 
 function handleSpecialSymbols(symbol) {
+    gameSettings.bonusPayTable=[];
+    gameSettings.scatterPayTable=[];
 
     switch (symbol.Name) {
         case specialIcons.jackpot:

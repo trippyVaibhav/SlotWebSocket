@@ -99,7 +99,6 @@ function convertSymbols(data) {
             uiData.symbols.push(symbolData);
         }
     });
-    console.log("symbol data", uiData);
     // const convertedData = data.map(symbol => {
     //   if (symbol.multiplier?.length>0 && symbol.useWildSub) {
     //     const multiplierObject = {};

@@ -4,10 +4,11 @@ exports.bonusGame = void 0;
 var Global_1 = require("./Global");
 var utils_1 = require("./utils");
 var bonusGame = /** @class */ (function () {
-    function bonusGame(nosOfItem) {
+    function bonusGame(nosOfItem, clientId) {
         this.noOfItems = nosOfItem;
         this.type = utils_1.bonusGameType.default;
         this.result = [];
+        this.clientId = clientId;
         // this.noise=noise;
     }
     bonusGame.prototype.generateData = function (totalPay) {
@@ -58,7 +59,6 @@ var bonusGame = /** @class */ (function () {
             amount = 0;
         Global_1.playerData.Balance += amount;
         Global_1.playerData.haveWon += amount;
-        Global_1.gameSettings.bonus.start = false;
         Global_1.gameSettings.bonus.stopIndex = -1;
     };
     bonusGame.prototype.shuffle = function (array) {
