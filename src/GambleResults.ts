@@ -28,14 +28,14 @@ export class GambleGame{
 
         const num=Math.random();
 
-        // if(num>0.5){
-        //     gambleAmount*= this.multiplier;
-        // }else{
-        //     gambleAmount=0;
-        //     gameSettings.gamble.start=false;
-        //     // return;
-        // }
-        gambleAmount*= this.multiplier;
+        if(num>0.5){
+            gambleAmount*= this.multiplier;
+        }else{
+            gambleAmount=0;
+            gameSettings.gamble.start=false;
+            // return;
+        }
+        // gambleAmount*= this.multiplier;
         // gambleAmount*=0;
         this.currentWining=gambleAmount;
         this.totalWining+=gambleAmount;

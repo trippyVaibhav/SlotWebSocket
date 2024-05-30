@@ -1,8 +1,10 @@
 import { sendInitdata } from './SlotDataInit';
 import { gameData } from "./testData";
-import { GameSettings, PlayerData, WildSymbol, convertSymbols, specialIcons, winning } from "./utils";
+import { PlayerData, WildSymbol, convertSymbols, specialIcons, winning } from "./utils";
 import { sendMessageToClient } from './App';
 import { Alerts } from './Alerts';
+import { GameSettings } from './Types';
+
 
 export const gameSettings: GameSettings = {
     currentGamedata:{
@@ -17,7 +19,7 @@ export const gameSettings: GameSettings = {
             multiplier: []
         }]
     },
-    matrix: { x: 5, y: 3 },
+    matrix: { x: 5, y: 4 },
     payLine: [],
     scatterPayTable: [],
     bonusPayTable: [],

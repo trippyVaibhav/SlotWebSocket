@@ -54,7 +54,7 @@ exports.gameSettings = {
             }
         ]
     },
-    matrix: { x: 5, y: 3 },
+    matrix: { x: 5, y: 4 },
     payLine: [],
     scatterPayTable: [],
     bonusPayTable: [],

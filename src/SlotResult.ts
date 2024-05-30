@@ -93,25 +93,6 @@ export class CheckResult {
         this.checkForJackpot();
 
 
-
-
-        // let excludeindex: number[] = [];
-        // for (let i = 0; i < this.winData.winningSymbols.length; i++) {
-        //     for (let j = i + 1; j < this.winData.winningSymbols.length; j++) {
-        //         if (this.winData.winningSymbols[i].some(ai => this.winData.winningSymbols[j].includes(ai)))
-        //             excludeindex.push(j);
-
-        //     }
-
-        // }
-
-        // let excludeindexModified: number[] = excludeindex.filter((value, index, array) => array.indexOf(value) === index);
-        // for (let i = excludeindexModified.length - 1; i >= 0; i--) {
-
-        //     this.winData.winningSymbols.splice(excludeindexModified[i], 1);
-        // }
-
-
         this.winData.winningLines = this.winData.winningLines.filter((value, index, array) => array.indexOf(value) === index);
         this.winData.updateBalance();
         console.log("result :", gameSettings.resultSymbolMatrix);

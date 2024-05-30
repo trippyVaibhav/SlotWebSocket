@@ -54,7 +54,7 @@ export class RandomResultGenerator {
                 }
                 matrix.push(row);
             }
-
+            
             // matrix.pop();
             // matrix.pop();
             // matrix.pop();

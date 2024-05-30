@@ -2,7 +2,7 @@ import * as WebSocket from 'ws';
 import { v4 as uuidv4 } from 'uuid'; // Import UUID v4
 import { CheckResult } from './SlotResult';
 import { gameSettings, playerData } from './Global';
-import { messageId } from './utils';
+import { messageId } from './Types';
 import { GambleGame } from './GambleResults';
 import { log } from 'node:console';
 // Map to store WebSocket connections with their associated client IDs
@@ -62,7 +62,7 @@ function handleConnection(ws: WebSocket) {
       //  result.searchWinSymbols();
     }
 
-    if(messageData.id=="gamble"){
+    if(messageData.id==messageId.gamble){
       console.log("message data",messageData);
       if(playerData.currentWining>1){
         gameSettings.gamble.start=true;
