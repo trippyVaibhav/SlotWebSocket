@@ -86,7 +86,7 @@ function convertSymbols(data) {
     };
     data.forEach(function (element) {
         var _a;
-        if (((_a = element.multiplier) === null || _a === void 0 ? void 0 : _a.length) > 0 && element.useWildSub) {
+        if (element.useWildSub || (!element.useWildSub && ((_a = element.multiplier) === null || _a === void 0 ? void 0 : _a.length) > 0)) {
             var symbolData = {
                 ID: element.Id,
                 multiplier: {}

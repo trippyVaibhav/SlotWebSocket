@@ -55,6 +55,8 @@ function handleConnection(ws) {
         }
         if (messageData.id == Types_1.messageId.gamble) {
             console.log("message data", messageData);
+            if (!Global_1.gameSettings.currentGamedata.gamble.isEnabled)
+                return;
             if (Global_1.playerData.currentWining > 1) {
                 Global_1.gameSettings.gamble.start = true;
             }
@@ -63,20 +65,21 @@ function handleConnection(ws) {
             }
             console.log("gamblestart", Global_1.gameSettings.gamble.start);
             if (Global_1.gameSettings.gamble.start) {
-                if (!Global_1.gameSettings.gamble.game || !Global_1.gameSettings.gamble.game.checkIfClientExist(clients))
-                    Global_1.gameSettings.gamble.game = new GambleResults_1.GambleGame(clientId);
+                if (!Global_1.gameSettings.gamble.game)
+                    Global_1.gameSettings.gamble.game = new GambleResults_1.GambleGame(clientId, Global_1.playerData.currentWining);
+                if (!Global_1.gameSettings.gamble.game.checkIfClientExist(clients))
+                    Global_1.gameSettings.gamble.game = new GambleResults_1.GambleGame(clientId, Global_1.playerData.currentWining);
                 if (messageData === null || messageData === void 0 ? void 0 : messageData.collect) {
                     Global_1.gameSettings.gamble.game.updateplayerBalance();
                     Global_1.gameSettings.gamble.game.reset();
                     return;
                 }
-                if (Global_1.gameSettings.gamble.game.gambleCount < Global_1.gameSettings.gamble.maxCount) {
-                    Global_1.gameSettings.gamble.game.generateData(Global_1.playerData.currentWining);
-                }
-                else {
-                    Global_1.gameSettings.gamble.game.updateplayerBalance();
-                    Global_1.gameSettings.gamble.game.reset();
-                }
+                // if(gameSettings.gamble.game.gambleCount<gameSettings.gamble.maxCount){
+                Global_1.gameSettings.gamble.game.generateData(Global_1.playerData.currentWining);
+                // }else{
+                //     gameSettings.gamble.game.updateplayerBalance();
+                //     gameSettings.gamble.game.reset();
+                // }
                 // gameSettings.gamble.currentCount++;
                 console.log("player balance", Global_1.playerData);
             }

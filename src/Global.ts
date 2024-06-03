@@ -19,7 +19,7 @@ export const gameSettings: GameSettings = {
             multiplier: []
         }]
     },
-    matrix: { x: 5, y: 4 },
+    matrix: { x: 5, y: 3 },
     payLine: [],
     scatterPayTable: [],
     bonusPayTable: [],
@@ -96,7 +96,7 @@ function initSymbols(){
 export const playerData: PlayerData = {
     Balance: 100000,
     haveWon: 0,
-    currentWining: 5
+    currentWining: 0
     // haveUsed: 0
 }
 

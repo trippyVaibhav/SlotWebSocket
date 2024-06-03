@@ -173,7 +173,7 @@ export function convertSymbols(data) {
     }
     
     data.forEach((element) => {
-        if(element.multiplier?.length>0 && element.useWildSub){
+        if(  element.useWildSub || (!element.useWildSub && element.multiplier?.length>0)){
 
             let symbolData={
                 ID: element.Id,

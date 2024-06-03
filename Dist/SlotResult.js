@@ -70,6 +70,7 @@ var CheckResult = /** @class */ (function () {
             return;
         var bonusSymbols = [];
         var temp = this.findSymbol(utils_1.specialIcons.bonus);
+        console.log("temp", temp);
         if (temp.length > 0)
             bonusSymbols.push.apply(bonusSymbols, temp);
         // console.log("paytable length",this.bonusPaytable.length);

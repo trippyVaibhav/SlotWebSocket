@@ -58,9 +58,9 @@ export class RandomResultGenerator {
             // matrix.pop();
             // matrix.pop();
             // matrix.pop();
-            // matrix.push([ '4', '0', '0', '0', '4' ])
-            // matrix.push([ '6', '4', '8', '4', '2' ])
-            // matrix.push([ '1', '8', '4', '4', '8' ])
+            // matrix.push([ '0', '0', '0', '0', '0' ])
+            // matrix.push([ '6', '4', '0', '4', '2' ])
+            // matrix.push([ '1', '0', '4', '4', '0' ])
 
             gameSettings.resultSymbolMatrix = matrix;
             gameDataInit();

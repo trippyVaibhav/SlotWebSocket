@@ -12,13 +12,15 @@ export class GambleGame{
     gambleCount: number;
     maxgambleCount: number;
 
-    constructor(clientId: string, multiplier:number=2) {
+    constructor(clientId: string,initaialBet: number, multiplier:number=2) {
 
         this.clientId=clientId
         this.multiplier=multiplier;
         this.gambleCount=0;
         this.totalWining=0;
         this.maxgambleCount=5;
+        this.currentWining=initaialBet;
+        this.totalWining=0;
        
     }
 
@@ -27,20 +29,25 @@ export class GambleGame{
         console.log("triggered in gamble");
 
         const num=Math.random();
-
+        if(this.gambleCount>0){
+            gambleAmount=this.currentWining;
+            this.currentWining*= this.multiplier;
+        }
         if(num>0.5){
-            gambleAmount*= this.multiplier;
+            // gambleAmount*= this.multiplier;
+            this.currentWining*= this.multiplier;
         }else{
-            gambleAmount=0;
+            // gambleAmount=0;
+            this.currentWining=0;
             gameSettings.gamble.start=false;
             // return;
         }
-        // gambleAmount*= this.multiplier;
+        // this.currentWining*= this.multiplier;
         // gambleAmount*=0;
-        this.currentWining=gambleAmount;
-        this.totalWining+=gambleAmount;
+        // this.currentWining=gambleAmount;
+        this.totalWining=this.currentWining;
         this.makeResultJson(this.clientId);
-        this.gambleCount++;
+        // this.gambleCount++;
         console.log("gamble amount",this.gambleCount);
     }
 
@@ -51,7 +58,6 @@ export class GambleGame{
 
         const ResultData = {
             "GambleData": {
-                currentWining: this.currentWining,
                 totalWinningAmount: this.totalWining
 
             },

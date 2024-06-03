@@ -58,12 +58,15 @@ function handleConnection(ws: WebSocket) {
 
     if (messageData.id == messageId.spin && gameSettings.startGame) {
       gameSettings.currentBet = messageData.Data.CurrentBet;
-       const result=new CheckResult(clientId);
+      const result=new CheckResult(clientId);
       //  result.searchWinSymbols();
     }
 
     if(messageData.id==messageId.gamble){
       console.log("message data",messageData);
+      if(!gameSettings.currentGamedata.gamble.isEnabled)
+        return;
+      
       if(playerData.currentWining>1){
         gameSettings.gamble.start=true;
       }else{
@@ -75,8 +78,11 @@ function handleConnection(ws: WebSocket) {
       
       if(gameSettings.gamble.start){
         
-        if(!gameSettings.gamble.game || !gameSettings.gamble.game.checkIfClientExist(clients))
-          gameSettings.gamble.game= new GambleGame(clientId);
+        if(!gameSettings.gamble.game)
+        gameSettings.gamble.game= new GambleGame(clientId,playerData.currentWining);
+
+        if(!gameSettings.gamble.game.checkIfClientExist(clients))
+          gameSettings.gamble.game= new GambleGame(clientId,playerData.currentWining);
         
         
         if(messageData?.collect){
@@ -86,13 +92,13 @@ function handleConnection(ws: WebSocket) {
         }
 
         
-        if(gameSettings.gamble.game.gambleCount<gameSettings.gamble.maxCount){
+        // if(gameSettings.gamble.game.gambleCount<gameSettings.gamble.maxCount){
           gameSettings.gamble.game.generateData(playerData.currentWining);
 
-        }else{
-            gameSettings.gamble.game.updateplayerBalance();
-            gameSettings.gamble.game.reset();
-        }
+        // }else{
+        //     gameSettings.gamble.game.updateplayerBalance();
+        //     gameSettings.gamble.game.reset();
+        // }
         
         // gameSettings.gamble.currentCount++;
         console.log("player balance",playerData);

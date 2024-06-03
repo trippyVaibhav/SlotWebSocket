@@ -54,7 +54,7 @@ exports.gameSettings = {
             }
         ]
     },
-    matrix: { x: 5, y: 4 },
+    matrix: { x: 5, y: 3 },
     payLine: [],
     scatterPayTable: [],
     bonusPayTable: [],
@@ -138,7 +138,7 @@ function initSymbols() {
 exports.playerData = {
     Balance: 100000,
     haveWon: 0,
-    currentWining: 5
+    currentWining: 0
     // haveUsed: 0
 };
 exports.UiInitData = {
