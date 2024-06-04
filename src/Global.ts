@@ -141,7 +141,7 @@ export function addPayLineSymbols(symbol: string, repetition: number, pay: numbe
 export function makePayLines() {
 
     gameSettings.currentGamedata.Symbols.forEach((element) => {
-        if (element.useWildSub || element.multiplier?.length>0) {
+        if (element.useWildSub || (!element.useWildSub && element.multiplier?.length>0)) {
             element.multiplier?.forEach((item, index) => {
                 addPayLineSymbols(element.Id?.toString(), 5 - index, item[0], item[1]);
             })
@@ -153,9 +153,8 @@ export function makePayLines() {
 
 
 function handleSpecialSymbols(symbol) {
-    gameSettings.bonusPayTable=[];
-    gameSettings.scatterPayTable=[];
-
+   
+    console.log("symbol in global",symbol);
     switch (symbol.Name) {
         case specialIcons.jackpot:
             gameSettings.jackpot.symbolName = symbol.Name;
@@ -170,6 +169,7 @@ function handleSpecialSymbols(symbol) {
             gameSettings.useWild=true;
             break
         case specialIcons.scatter:
+            gameSettings.scatterPayTable=[];
             gameSettings.scatterPayTable.push({
                 symbolCount: symbol.count,
                 symbolID: symbol.Id,
@@ -179,6 +179,7 @@ function handleSpecialSymbols(symbol) {
             gameSettings.useScatter=true;
             break;
         case specialIcons.bonus:
+            gameSettings.bonusPayTable=[];
             gameSettings.bonusPayTable.push({
                     symbolCount: symbol.symbolCount,
                     symbolID: symbol.Id,

@@ -176,7 +176,7 @@ exports.addPayLineSymbols = addPayLineSymbols;
 function makePayLines() {
     exports.gameSettings.currentGamedata.Symbols.forEach(function (element) {
         var _a, _b;
-        if (element.useWildSub || ((_a = element.multiplier) === null || _a === void 0 ? void 0 : _a.length) > 0) {
+        if (element.useWildSub || (!element.useWildSub && ((_a = element.multiplier) === null || _a === void 0 ? void 0 : _a.length) > 0)) {
             (_b = element.multiplier) === null || _b === void 0 ? void 0 : _b.forEach(function (item, index) {
                 var _a;
                 addPayLineSymbols((_a = element.Id) === null || _a === void 0 ? void 0 : _a.toString(), 5 - index, item[0], item[1]);
@@ -189,8 +189,7 @@ function makePayLines() {
 }
 exports.makePayLines = makePayLines;
 function handleSpecialSymbols(symbol) {
-    exports.gameSettings.bonusPayTable = [];
-    exports.gameSettings.scatterPayTable = [];
+    console.log("symbol in global", symbol);
     switch (symbol.Name) {
         case utils_1.specialIcons.jackpot:
             exports.gameSettings.jackpot.symbolName = symbol.Name;
@@ -205,6 +204,7 @@ function handleSpecialSymbols(symbol) {
             exports.gameSettings.useWild = true;
             break;
         case utils_1.specialIcons.scatter:
+            exports.gameSettings.scatterPayTable = [];
             exports.gameSettings.scatterPayTable.push({
                 symbolCount: symbol.count,
                 symbolID: symbol.Id,
@@ -214,6 +214,7 @@ function handleSpecialSymbols(symbol) {
             exports.gameSettings.useScatter = true;
             break;
         case utils_1.specialIcons.bonus:
+            exports.gameSettings.bonusPayTable = [];
             exports.gameSettings.bonusPayTable.push({
                 symbolCount: symbol.symbolCount,
                 symbolID: symbol.Id,

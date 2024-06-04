@@ -116,12 +116,14 @@ export class CheckResult {
 
         let bonusSymbols = []
         let temp = this.findSymbol(specialIcons.bonus)
-        console.log("temp",temp);
         if (temp.length > 0) bonusSymbols.push(...temp);
         // console.log("paytable length",this.bonusPaytable.length);
+        console.log("bonusSymbols",bonusSymbols);
+        console.log("bonus paytable",gameSettings.bonusPayTable);
         this.bonusPaytable.forEach((element) => {
+            console.log("triggered in check bonus",bonusSymbols);          
             if (element.symbolCount > 0 && element.symbolCount == bonusSymbols.length) {
-                // bonuswin = new WinData(bonusSymbols, 0, 0);            
+                // bonuswin = new WinData(bonusSymbols, 0, 0);  
                 this.winData.winningSymbols.push(bonusSymbols);
                 // this.winData.bonus=true;
                 gameSettings.bonus.start = true;

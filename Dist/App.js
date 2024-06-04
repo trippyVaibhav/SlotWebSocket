@@ -40,11 +40,9 @@ function handleConnection(ws) {
     ws.on('pong', heartbeat);
     // Event listener for messages from the client
     ws.on('message', function incoming(message) {
-        var _a;
         console.log("Received message from ".concat(clientId, ": ").concat(message.id));
         var messageData = JSON.parse(message);
-        console.log((_a = messageData === null || messageData === void 0 ? void 0 : messageData.Data) === null || _a === void 0 ? void 0 : _a.GameID);
-        console.log(messageData.Data);
+        console.log(messageData);
         if (messageData.id == Types_1.messageId.auth) {
             Global_1.gameSettings.initiate(messageData.Data.GameID, clientId);
         }

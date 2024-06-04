@@ -70,14 +70,16 @@ var CheckResult = /** @class */ (function () {
             return;
         var bonusSymbols = [];
         var temp = this.findSymbol(utils_1.specialIcons.bonus);
-        console.log("temp", temp);
         if (temp.length > 0)
             bonusSymbols.push.apply(bonusSymbols, temp);
         // console.log("paytable length",this.bonusPaytable.length);
+        console.log("bonusSymbols", bonusSymbols);
+        console.log("bonus paytable", Global_1.gameSettings.bonusPayTable);
         this.bonusPaytable.forEach(function (element) {
             var _a;
+            console.log("triggered in check bonus", bonusSymbols);
             if (element.symbolCount > 0 && element.symbolCount == bonusSymbols.length) {
-                // bonuswin = new WinData(bonusSymbols, 0, 0);            
+                // bonuswin = new WinData(bonusSymbols, 0, 0);  
                 _this.winData.winningSymbols.push(bonusSymbols);
                 // this.winData.bonus=true;
                 Global_1.gameSettings.bonus.start = true;

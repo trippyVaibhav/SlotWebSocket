@@ -47,8 +47,7 @@ function handleConnection(ws: WebSocket) {
   ws.on('message', function incoming(message: any) {
     console.log(`Received message from ${clientId}: ${message.id}`);
     const messageData = JSON.parse(message);
-    console.log(messageData?.Data?.GameID);
-    console.log(messageData.Data);
+    console.log(messageData);
 
     
     if(messageData.id==messageId.auth){
