@@ -42,6 +42,7 @@ export const gameSettings: GameSettings = {
         start: false,
         stopIndex: -1,
         game: null,
+        payTable:[]
         // game: new bonusGame(5),
     },
     currentBet:5,
@@ -65,6 +66,7 @@ export const gameSettings: GameSettings = {
                 return;
             }
             gameSettings.currentGamedata=data;
+            gameSettings.matrix=data.matrix;
             // const currentGameData=gameData.filter((element)=>element.id==GameID)
         } catch (error) {
             Alerts(clientID,"network error");

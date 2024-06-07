@@ -12,6 +12,8 @@ var CheckResult = /** @class */ (function () {
         this.clientID = clientID;
         if (Global_1.gameSettings.currentGamedata.bonus.isEnabled && Global_1.gameSettings.currentGamedata.bonus.type == utils_1.bonusGameType.tap)
             Global_1.gameSettings.bonus.game = new BonusResults_1.bonusGame(Global_1.gameSettings.currentGamedata.bonus.noOfItem, clientID);
+        else if (Global_1.gameSettings.currentGamedata.bonus.isEnabled && Global_1.gameSettings.currentGamedata.bonus.type == "slot")
+            Global_1.gameSettings.bonus.game = new BonusResults_1.bonusGame(Global_1.gameSettings.currentGamedata.bonus.noOfItem, clientID);
         // if(playerData.Balance < gameWining.currentBet)
         if (Global_1.playerData.Balance < Global_1.gameSettings.currentBet) {
             (0, Alerts_1.Alerts)(clientID, "Low Balance");
@@ -72,12 +74,8 @@ var CheckResult = /** @class */ (function () {
         var temp = this.findSymbol(utils_1.specialIcons.bonus);
         if (temp.length > 0)
             bonusSymbols.push.apply(bonusSymbols, temp);
-        // console.log("paytable length",this.bonusPaytable.length);
-        console.log("bonusSymbols", bonusSymbols);
-        console.log("bonus paytable", Global_1.gameSettings.bonusPayTable);
         this.bonusPaytable.forEach(function (element) {
             var _a;
-            console.log("triggered in check bonus", bonusSymbols);
             if (element.symbolCount > 0 && element.symbolCount == bonusSymbols.length) {
                 // bonuswin = new WinData(bonusSymbols, 0, 0);  
                 _this.winData.winningSymbols.push(bonusSymbols);
@@ -85,9 +83,11 @@ var CheckResult = /** @class */ (function () {
                 Global_1.gameSettings.bonus.start = true;
                 if (Global_1.gameSettings.currentGamedata.bonus.type == utils_1.bonusGameType.tap)
                     _this.bonusResult = Global_1.gameSettings.bonus.game.generateData((_a = Global_1.gameSettings.bonusPayTable[0]) === null || _a === void 0 ? void 0 : _a.pay);
-                Global_1.gameSettings.bonus.game.setRandomStopIndex();
+                else if (Global_1.gameSettings.currentGamedata.bonus.type == "slot")
+                    _this.bonusResult = Global_1.gameSettings.bonus.game.generateSlotData();
             }
         });
+        this.winData.totalWinningAmount += Global_1.gameSettings.bonus.game.setRandomStopIndex();
     };
     CheckResult.prototype.checkForWin = function () {
         var _this = this;

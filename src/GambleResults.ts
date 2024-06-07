@@ -70,8 +70,10 @@ export class GambleGame{
     updateplayerBalance(){
         
         if(this.totalWining>0){
-            playerData.Balance+=(this.totalWining - this.initialBet);
-            playerData.haveWon+=(this.totalWining - this.initialBet);
+            // playerData.Balance+=(this.totalWining - this.initialBet);
+            // playerData.haveWon+=(this.totalWining - this.initialBet);
+            playerData.Balance+=(this.totalWining );
+            playerData.haveWon+=(this.totalWining );
             playerData.currentWining=this.totalWining;
 
         }

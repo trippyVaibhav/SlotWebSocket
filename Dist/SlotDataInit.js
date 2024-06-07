@@ -44,12 +44,12 @@ var RandomResultGenerator = /** @class */ (function () {
             }
             matrix.push(row);
         }
-        // matrix.pop();
-        // matrix.pop();
-        // matrix.pop();
-        // matrix.push([ '10', '10', '10', '10', '10' ])
-        // matrix.push([ '6', '4', '0', '4', '2' ])
-        // matrix.push([ '1', '0', '4', '4', '0' ])
+        matrix.pop();
+        matrix.pop();
+        matrix.pop();
+        matrix.push(['9', '9', '9', '9', '9']);
+        matrix.push(['1', '2', '0', '1', '5']);
+        matrix.push(['3', '0', '4', '4', '3']);
         Global_1.gameSettings.resultSymbolMatrix = matrix;
         gameDataInit();
     }

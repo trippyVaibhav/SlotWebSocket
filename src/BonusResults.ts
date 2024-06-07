@@ -60,6 +60,72 @@ export class bonusGame{
         return res;
     }
 
+    generateSlotData(reps:number =0){
+        let res: string[]=[];
+
+
+        let slot_array: number[]=[];
+        let multiplier_array: number[]=[];
+        // for (let index = 0; index < 3; index++) {
+        //     slot_array.push(Math.floor(Math.random()*12));
+            
+        // }
+
+        slot_array.push(1);
+        slot_array.push(2);
+        slot_array.push(1);
+
+    //    let reelNum: number=Math.floor(Math.random()*12);
+       let reelNum: number=1;
+
+
+       
+        if(!slot_array.includes(reelNum)){
+            reelNum=-1;
+        }
+
+       slot_array.forEach((element)=>{
+        if(element===reelNum)
+            multiplier_array.push(gameSettings.currentGamedata.bonus.payTable[element]);
+        else 
+            multiplier_array.push(0);
+       })
+
+      
+        this.result=[...slot_array,reelNum,...multiplier_array];
+
+        for (let i = 0; i < this.result.length; i++) {
+            res.push(this.result[i].toString());
+        }
+        return res;
+    }
+
+    // slotCalculation(){
+
+    //     let slot_array: number[]=[];
+    //     let multiplier_array: number[]=[];
+
+
+    //     slot_array.push(1);
+    //     slot_array.push(2);
+    //     slot_array.push(1);
+
+    //    let reelNum: number=5;
+
+    //     if(!slot_array.includes(reelNum)){
+    //         reelNum=-1;
+    //     }
+
+    //    slot_array.forEach((element)=>{
+    //     if(element===reelNum)
+    //         multiplier_array.push(gameSettings.currentGamedata.bonus.payTable[element]);
+    //     else 
+    //         multiplier_array.push(0);
+    //    })
+
+    //    return [...slot_array,reelNum,...multiplier_array]
+    // }
+
     setRandomStopIndex(){
         let amount: number=0;
 
@@ -73,13 +139,26 @@ export class bonusGame{
                     amount+=element;
                 }
             }) 
+        }else if(gameSettings.bonus.start && gameSettings.currentGamedata.bonus.type=="slot"){
+            gameSettings.bonus.stopIndex=-1;
+            for (let index = 1; index < 4; index++) {
+                amount+=gameSettings.currentBet*this.result[this.result.length-index];
+                
+            }   
+            // amount=gameSettings.currentBet*this.result[this.result.length-1];
+            console.log("amount",amount);
+            console.log("current bet",gameSettings.currentBet);
         }
 
         if(!amount || amount<0)
             amount=0
-        playerData.Balance += amount;
-        playerData.haveWon += amount;
         gameSettings.bonus.stopIndex = -1;
+        return amount;
+
+        
+        // playerData.Balance += amount;
+        // playerData.haveWon += amount;
+        // playerData.currentWining=amount;
     }
 
     shuffle(array:number[]) {

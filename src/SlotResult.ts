@@ -31,6 +31,8 @@ export class CheckResult {
 
         if (gameSettings.currentGamedata.bonus.isEnabled && gameSettings.currentGamedata.bonus.type == bonusGameType.tap)
             gameSettings.bonus.game = new bonusGame(gameSettings.currentGamedata.bonus.noOfItem,clientID);
+        else if(gameSettings.currentGamedata.bonus.isEnabled && gameSettings.currentGamedata.bonus.type == "slot")
+            gameSettings.bonus.game = new bonusGame(gameSettings.currentGamedata.bonus.noOfItem,clientID);
         // if(playerData.Balance < gameWining.currentBet)
         if (playerData.Balance < gameSettings.currentBet) {
             Alerts(clientID, "Low Balance");
@@ -117,11 +119,7 @@ export class CheckResult {
         let bonusSymbols = []
         let temp = this.findSymbol(specialIcons.bonus)
         if (temp.length > 0) bonusSymbols.push(...temp);
-        // console.log("paytable length",this.bonusPaytable.length);
-        console.log("bonusSymbols",bonusSymbols);
-        console.log("bonus paytable",gameSettings.bonusPayTable);
         this.bonusPaytable.forEach((element) => {
-            console.log("triggered in check bonus",bonusSymbols);          
             if (element.symbolCount > 0 && element.symbolCount == bonusSymbols.length) {
                 // bonuswin = new WinData(bonusSymbols, 0, 0);  
                 this.winData.winningSymbols.push(bonusSymbols);
@@ -130,10 +128,12 @@ export class CheckResult {
 
                 if (gameSettings.currentGamedata.bonus.type == bonusGameType.tap)
                     this.bonusResult = gameSettings.bonus.game.generateData(gameSettings.bonusPayTable[0]?.pay);
-
-                gameSettings.bonus.game.setRandomStopIndex();
+                else if(gameSettings.currentGamedata.bonus.type=="slot")
+                    this.bonusResult = gameSettings.bonus.game.generateSlotData();
+                
             }
         });
+        this.winData.totalWinningAmount+=gameSettings.bonus.game.setRandomStopIndex();
 
 
 

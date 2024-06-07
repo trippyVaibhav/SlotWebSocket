@@ -1,4 +1,13 @@
 "use strict";
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.bonusGame = void 0;
 var Global_1 = require("./Global");
@@ -41,6 +50,52 @@ var bonusGame = /** @class */ (function () {
         }
         return res;
     };
+    bonusGame.prototype.generateSlotData = function (reps) {
+        if (reps === void 0) { reps = 0; }
+        var res = [];
+        var slot_array = [];
+        var multiplier_array = [];
+        // for (let index = 0; index < 3; index++) {
+        //     slot_array.push(Math.floor(Math.random()*12));
+        // }
+        slot_array.push(1);
+        slot_array.push(2);
+        slot_array.push(1);
+        //    let reelNum: number=Math.floor(Math.random()*12);
+        var reelNum = 1;
+        if (!slot_array.includes(reelNum)) {
+            reelNum = -1;
+        }
+        slot_array.forEach(function (element) {
+            if (element === reelNum)
+                multiplier_array.push(Global_1.gameSettings.currentGamedata.bonus.payTable[element]);
+            else
+                multiplier_array.push(0);
+        });
+        this.result = __spreadArray(__spreadArray(__spreadArray([], slot_array, true), [reelNum], false), multiplier_array, true);
+        for (var i = 0; i < this.result.length; i++) {
+            res.push(this.result[i].toString());
+        }
+        return res;
+    };
+    // slotCalculation(){
+    //     let slot_array: number[]=[];
+    //     let multiplier_array: number[]=[];
+    //     slot_array.push(1);
+    //     slot_array.push(2);
+    //     slot_array.push(1);
+    //    let reelNum: number=5;
+    //     if(!slot_array.includes(reelNum)){
+    //         reelNum=-1;
+    //     }
+    //    slot_array.forEach((element)=>{
+    //     if(element===reelNum)
+    //         multiplier_array.push(gameSettings.currentGamedata.bonus.payTable[element]);
+    //     else 
+    //         multiplier_array.push(0);
+    //    })
+    //    return [...slot_array,reelNum,...multiplier_array]
+    // }
     bonusGame.prototype.setRandomStopIndex = function () {
         var amount = 0;
         if (Global_1.gameSettings.bonus.start && Global_1.gameSettings.currentGamedata.bonus.type == utils_1.bonusGameType.spin) {
@@ -55,11 +110,22 @@ var bonusGame = /** @class */ (function () {
                 }
             });
         }
+        else if (Global_1.gameSettings.bonus.start && Global_1.gameSettings.currentGamedata.bonus.type == "slot") {
+            Global_1.gameSettings.bonus.stopIndex = -1;
+            for (var index = 1; index < 4; index++) {
+                amount += Global_1.gameSettings.currentBet * this.result[this.result.length - index];
+            }
+            // amount=gameSettings.currentBet*this.result[this.result.length-1];
+            console.log("amount", amount);
+            console.log("current bet", Global_1.gameSettings.currentBet);
+        }
         if (!amount || amount < 0)
             amount = 0;
-        Global_1.playerData.Balance += amount;
-        Global_1.playerData.haveWon += amount;
         Global_1.gameSettings.bonus.stopIndex = -1;
+        return amount;
+        // playerData.Balance += amount;
+        // playerData.haveWon += amount;
+        // playerData.currentWining=amount;
     };
     bonusGame.prototype.shuffle = function (array) {
         for (var i = array.length - 1; i > 0; i--) {

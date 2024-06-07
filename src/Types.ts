@@ -27,6 +27,7 @@ export interface GameSettings {
         game: bonusGame,
         start:boolean,
         stopIndex:number
+        payTable:number[]
         // maxPay: number
     },
     currentBet: number;

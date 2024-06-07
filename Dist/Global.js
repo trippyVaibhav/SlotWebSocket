@@ -77,6 +77,7 @@ exports.gameSettings = {
         start: false,
         stopIndex: -1,
         game: null,
+        payTable: []
         // game: new bonusGame(5),
     },
     currentBet: 5,
@@ -110,6 +111,7 @@ exports.gameSettings = {
                         return [2 /*return*/];
                     }
                     exports.gameSettings.currentGamedata = data;
+                    exports.gameSettings.matrix = data.matrix;
                     return [3 /*break*/, 5];
                 case 4:
                     error_1 = _a.sent();
