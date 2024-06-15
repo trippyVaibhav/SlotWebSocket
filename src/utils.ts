@@ -165,6 +165,15 @@ export function convertData(data: string[][]): string[] {
     return result;
 }
 
+export function shuffleArray(array:any[]) {
+    for (let i = array.length -1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i+1));
+      let k = array[i];
+      array[i] = array[j];
+      array[j] = k;
+    }
+
+  }
 
 export function convertSymbols(data) {
 
@@ -188,6 +197,7 @@ export function convertSymbols(data) {
         }
 
     });
+
 
     // const convertedData = data.map(symbol => {
     //   if (symbol.multiplier?.length>0 && symbol.useWildSub) {

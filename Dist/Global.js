@@ -38,8 +38,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.makePayLines = exports.addPayLineSymbols = exports.gameWining = exports.UiInitData = exports.playerData = exports.gameSettings = void 0;
 var SlotDataInit_1 = require("./SlotDataInit");
+var testData_1 = require("./testData");
 var utils_1 = require("./utils");
-var Alerts_1 = require("./Alerts");
 exports.gameSettings = {
     currentGamedata: {
         id: "",
@@ -87,46 +87,22 @@ exports.gameSettings = {
         maxCount: 1,
         start: false,
     },
+    reels: [[]],
     initiate: function (GameID, clientID) { return __awaiter(void 0, void 0, void 0, function () {
-        var resp, data, error_1;
+        var currentGameData;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    exports.gameSettings.bonusPayTable = [];
-                    exports.gameSettings.scatterPayTable = [];
-                    exports.gameSettings.Symbols = [];
-                    exports.gameSettings.Weights = [];
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 4, , 5]);
-                    return [4 /*yield*/, fetch('https://664c355635bbda10987f44ff.mockapi.io/api/gameId/' + GameID)];
-                case 2:
-                    resp = _a.sent();
-                    return [4 /*yield*/, resp.json()];
-                case 3:
-                    data = _a.sent();
-                    if (data == "Not found") {
-                        (0, Alerts_1.Alerts)(clientID, "Invalid Game ID");
-                        exports.gameSettings.startGame = false;
-                        return [2 /*return*/];
-                    }
-                    exports.gameSettings.currentGamedata = data;
-                    exports.gameSettings.matrix = data.matrix;
-                    return [3 /*break*/, 5];
-                case 4:
-                    error_1 = _a.sent();
-                    (0, Alerts_1.Alerts)(clientID, "network error");
-                    return [2 /*return*/];
-                case 5:
-                    // const currentGameData=gameData.filter((element)=>element.id==GameID)
-                    // gameSettings.currentGamedata=currentGameData[0];
-                    initSymbols();
-                    exports.UiInitData.paylines = (0, utils_1.convertSymbols)(exports.gameSettings.currentGamedata.Symbols);
-                    exports.gameSettings.startGame = true;
-                    makePayLines();
-                    (0, SlotDataInit_1.sendInitdata)(clientID);
-                    return [2 /*return*/];
-            }
+            exports.gameSettings.bonusPayTable = [];
+            exports.gameSettings.scatterPayTable = [];
+            exports.gameSettings.Symbols = [];
+            exports.gameSettings.Weights = [];
+            currentGameData = testData_1.gameData.filter(function (element) { return element.id == GameID; });
+            exports.gameSettings.currentGamedata = currentGameData[0];
+            initSymbols();
+            exports.UiInitData.paylines = (0, utils_1.convertSymbols)(exports.gameSettings.currentGamedata.Symbols);
+            exports.gameSettings.startGame = true;
+            makePayLines();
+            (0, SlotDataInit_1.sendInitdata)(clientID);
+            return [2 /*return*/];
         });
     }); }
 };

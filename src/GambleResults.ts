@@ -6,21 +6,21 @@ import { sendMessageToClient } from "./App";
 export class GambleGame{
     type:String;
     clientId: string;
-    initialBet: number;
+    currentWinning: number;
     totalWining: number;
     multiplier: number;
     gambleCount: number;
     maxgambleCount: number;
 
-    constructor(clientId: string,initaialBet: number, multiplier:number=2) {
+    constructor(clientId: string,currentWinning: number, multiplier:number=2) {
 
         this.clientId=clientId
         this.multiplier=multiplier;
         this.gambleCount=0;
         this.totalWining=0;
         this.maxgambleCount=5;
-        this.initialBet=initaialBet;
-        this.totalWining=initaialBet;
+        this.currentWinning=currentWinning;
+        this.totalWining=currentWinning;
        
     }
 
@@ -30,19 +30,16 @@ export class GambleGame{
 
         const num=Math.random();
         if(this.gambleCount>0){
-            // gambleAmount=this.currentWining;
             this.totalWining*= this.multiplier;
         }
 
         if(num>0.5){
-            // gambleAmount*= this.multiplier;
             this.totalWining*= this.multiplier;
         }else{
-            // gambleAmount=0;
             this.totalWining=0;
             gameSettings.gamble.start=false;
-            // return;
         }
+
         // this.currentWining*= this.multiplier;
         // gambleAmount*=0;
         // this.currentWining=gambleAmount;
@@ -78,8 +75,8 @@ export class GambleGame{
 
         }
         else{
-            playerData.Balance-=this.initialBet;
-            playerData.haveWon-=this.initialBet;
+            playerData.Balance-=this.currentWinning;
+            playerData.haveWon-=this.currentWinning;
             playerData.currentWining=0;
         }
 
@@ -89,7 +86,7 @@ export class GambleGame{
     reset(){
         this.gambleCount=0;
         this.totalWining=0;
-        this.initialBet=0;
+        this.currentWinning=0;
         gameSettings.gamble.game=null;
         gameSettings.gamble.start=false;
     }

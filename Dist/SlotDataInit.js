@@ -8,7 +8,8 @@ var utils_1 = require("./utils");
 var SlotResult_1 = require("./SlotResult");
 function sendInitdata(clientID) {
     var _a;
-    var matrix = (0, utils_1.generateMatrix)(Global_1.gameSettings.matrix.x, 18);
+    // const matrix = generateMatrix(gameSettings.matrix.x, 18);
+    Global_1.gameSettings.reels = generateInitialreel();
     if (Global_1.gameSettings.currentGamedata.bonus.isEnabled && Global_1.gameSettings.currentGamedata.bonus.type == utils_1.bonusGameType.spin)
         Global_1.gameSettings.bonus.game = new BonusResults_1.bonusGame(Global_1.gameSettings.currentGamedata.bonus.noOfItem, clientID);
     var specialSymbols = Global_1.gameSettings.currentGamedata.Symbols.filter(function (element) { return (!element.useWildSub); });
@@ -18,7 +19,7 @@ function sendInitdata(clientID) {
     }
     var dataToSend = {
         "GameData": {
-            "Reel": matrix,
+            "Reel": Global_1.gameSettings.reels,
             "Lines": Global_1.gameSettings.currentGamedata.linesApiData,
             "Bets": Global_1.gameSettings.currentGamedata.bets,
             "canSwitchLines": false,
@@ -34,22 +35,36 @@ function sendInitdata(clientID) {
 exports.sendInitdata = sendInitdata;
 var RandomResultGenerator = /** @class */ (function () {
     function RandomResultGenerator() {
-        // Generating a 3x5 matrix of random numbers based on weights
         var matrix = [];
-        for (var i = 0; i < Global_1.gameSettings.matrix.y; i++) {
+        var randomIndexArray = [];
+        for (var j = 0; j < Global_1.gameSettings.matrix.y; j++) {
             var row = [];
-            for (var j = 0; j < Global_1.gameSettings.matrix.x; j++) {
-                var randomIndex = this.randomWeightedIndex(Global_1.gameSettings.Weights);
-                row.push(Global_1.gameSettings.Symbols[randomIndex]);
+            for (var i = 0; i < Global_1.gameSettings.matrix.x; i++) {
+                if (j == 0) {
+                    var rowrandomIndex = Math.floor(Math.random() * ((Global_1.gameSettings.reels[i].length - 1) - 0)) + 0;
+                    randomIndexArray.push(rowrandomIndex);
+                    row.push(Global_1.gameSettings.reels[i][rowrandomIndex].toString());
+                }
+                else {
+                    if (randomIndexArray[i] == 0)
+                        row.push(Global_1.gameSettings.reels[i][randomIndexArray[i] + j].toString());
+                    else if (randomIndexArray[i] == Global_1.gameSettings.reels[i].length - 1)
+                        row.push(Global_1.gameSettings.reels[i][randomIndexArray[i] - j].toString());
+                    else if (randomIndexArray[i] <= Global_1.gameSettings.matrix.y)
+                        row.push(Global_1.gameSettings.reels[i][randomIndexArray[i] + j].toString());
+                    else if (randomIndexArray[i] > Global_1.gameSettings.matrix.y)
+                        row.push(Global_1.gameSettings.reels[i][randomIndexArray[i] - j].toString());
+                }
             }
             matrix.push(row);
         }
-        matrix.pop();
-        matrix.pop();
-        matrix.pop();
-        matrix.push(['9', '9', '9', '9', '9']);
-        matrix.push(['1', '2', '0', '1', '5']);
-        matrix.push(['3', '0', '4', '4', '3']);
+        console.log("indexs", randomIndexArray);
+        // matrix.pop();
+        // matrix.pop();
+        // matrix.pop();
+        // matrix.push(['1', '1', '1', '1', '1'])
+        // matrix.push(['3', '2', '0', '1', '5'])
+        // matrix.push(['3', '0', '4', '4', '3'])
         Global_1.gameSettings.resultSymbolMatrix = matrix;
         gameDataInit();
     }
@@ -74,6 +89,23 @@ function gameDataInit() {
     Global_1.gameSettings.lineData = Global_1.gameSettings.currentGamedata.linesApiData;
     // gameSettings.bonus.start = false;
     makeFullPayTable();
+}
+function generateInitialreel() {
+    var matrix = [];
+    var _loop_1 = function (i) {
+        var reel = [];
+        Global_1.gameSettings.currentGamedata.Symbols.forEach(function (element) {
+            for (var j = 0; j < element.reelInstance[i]; j++) {
+                reel.push(element.Id.toString());
+            }
+        });
+        (0, utils_1.shuffleArray)(reel);
+        matrix.push(reel);
+    };
+    for (var i = 0; i < Global_1.gameSettings.matrix.x; i++) {
+        _loop_1(i);
+    }
+    return matrix;
 }
 function makeFullPayTable() {
     var payTable = [];

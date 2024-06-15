@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.convertSymbols = exports.convertData = exports.generateMatrix = exports.weightedRandom = exports.bonusGameType = exports.specialIcons = exports.messageId = void 0;
+exports.convertSymbols = exports.shuffleArray = exports.convertData = exports.generateMatrix = exports.weightedRandom = exports.bonusGameType = exports.specialIcons = exports.messageId = void 0;
 var Global_1 = require("./Global");
 var messageId;
 (function (messageId) {
@@ -80,6 +80,15 @@ function convertData(data) {
     return result;
 }
 exports.convertData = convertData;
+function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var k = array[i];
+        array[i] = array[j];
+        array[j] = k;
+    }
+}
+exports.shuffleArray = shuffleArray;
 function convertSymbols(data) {
     var uiData = {
         symbols: []

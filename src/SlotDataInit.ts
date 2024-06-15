@@ -1,71 +1,85 @@
 import { spec } from "node:test/reporters";
 import { sendMessageToClient } from "./App";
 import { bonusGame } from "./BonusResults";
-import { UiInitData, gameSettings, playerData} from "./Global";
-import { bonusGameType, generateMatrix } from "./utils";
+import { UiInitData, gameSettings, playerData } from "./Global";
+import { bonusGameType, generateMatrix, shuffleArray } from "./utils";
 import { PayLines } from "./SlotResult";
 
-export function sendInitdata(clientID : string)
-{
-    
-    const matrix = generateMatrix(gameSettings.matrix.x, 18);
-    if(gameSettings.currentGamedata.bonus.isEnabled && gameSettings.currentGamedata.bonus.type==bonusGameType.spin)
-    gameSettings.bonus.game= new bonusGame(gameSettings.currentGamedata.bonus.noOfItem,clientID);
+export function sendInitdata(clientID: string) {
 
-    let specialSymbols=gameSettings.currentGamedata.Symbols.filter((element)=>(!element.useWildSub))
-    
+    // const matrix = generateMatrix(gameSettings.matrix.x, 18);
+    gameSettings.reels=generateInitialreel();
 
-    for(let i = 0; i < specialSymbols.length; i++)
-    {
+    if (gameSettings.currentGamedata.bonus.isEnabled && gameSettings.currentGamedata.bonus.type == bonusGameType.spin)
+        gameSettings.bonus.game = new bonusGame(gameSettings.currentGamedata.bonus.noOfItem, clientID);
+
+    let specialSymbols = gameSettings.currentGamedata.Symbols.filter((element) => (!element.useWildSub))
+
+
+    for (let i = 0; i < specialSymbols.length; i++) {
         const strng = "Player has the right to start the slot machine without using their funds for a certain number of times. The size of the bet is determined by the";
         UiInitData.spclSymbolTxt.push(strng)
     }
-  
-    const dataToSend = {
-       "GameData" : {
-           "Reel" :matrix,
-           "Lines": gameSettings.currentGamedata.linesApiData,
-           "Bets": gameSettings.currentGamedata.bets,
-           "canSwitchLines": false,
-           "LinesCount": gameSettings.currentGamedata.linesCount,
-           "autoSpin": [1, 5, 10, 20],
-        },
-        "BonusData": gameSettings.bonus.game!=null? gameSettings.bonus.game.generateData(gameSettings.bonusPayTable[0]?.pay):[],
-        "UIData":  UiInitData,
-        "PlayerData" : playerData,
-        };
 
-    sendMessageToClient(clientID,"InitData",dataToSend)
+    const dataToSend = {
+        "GameData": {
+            "Reel": gameSettings.reels,
+            "Lines": gameSettings.currentGamedata.linesApiData,
+            "Bets": gameSettings.currentGamedata.bets,
+            "canSwitchLines": false,
+            "LinesCount": gameSettings.currentGamedata.linesCount,
+            "autoSpin": [1, 5, 10, 20],
+        },
+        "BonusData": gameSettings.bonus.game != null ? gameSettings.bonus.game.generateData(gameSettings.bonusPayTable[0]?.pay) : [],
+        "UIData": UiInitData,
+        "PlayerData": playerData,
+    };
+
+    sendMessageToClient(clientID, "InitData", dataToSend)
 }
 
 
 export class RandomResultGenerator {
-    constructor()
-    {
-        // Generating a 3x5 matrix of random numbers based on weights
-        const matrix: string[][] = [];
-        for (let i = 0; i < gameSettings.matrix.y; i++) 
-            {
-                const row: string[] = [];
-                for (let j = 0; j < gameSettings.matrix.x; j++) 
-                {
-                    const randomIndex: number = this.randomWeightedIndex(gameSettings.Weights);
-                    row.push(gameSettings.Symbols[randomIndex]);
+    constructor() {
+
+        let matrix: string[][] = [];
+        let randomIndexArray=[];
+            for (let j = 0; j < gameSettings.matrix.y; j++) {
+                let row:string[] = []
+                for (let i = 0; i < gameSettings.matrix.x; i++) {
+                    if(j==0){
+                        let rowrandomIndex=Math.floor(Math.random() * ((gameSettings.reels[i].length - 1) - 0)) + 0;
+                        randomIndexArray.push(rowrandomIndex) ;
+                        row.push(gameSettings.reels[i][rowrandomIndex].toString());
+                    }else{
+                        if(randomIndexArray[i]==0)
+                        row.push(gameSettings.reels[i][randomIndexArray[i]+j].toString());
+                        else if(randomIndexArray[i]==gameSettings.reels[i].length-1)
+                        row.push(gameSettings.reels[i][randomIndexArray[i]-j].toString());
+                        else if(randomIndexArray[i]<=gameSettings.matrix.y)
+                        row.push(gameSettings.reels[i][randomIndexArray[i]+j].toString());
+                        else if(randomIndexArray[i]>gameSettings.matrix.y)
+                        row.push(gameSettings.reels[i][randomIndexArray[i]-j].toString());
+                    }
+
                 }
                 matrix.push(row);
             }
-            
-            // matrix.pop();
-            // matrix.pop();
-            // matrix.pop();
-            // matrix.push([ '9', '9', '9', '9', '9' ])
-            // matrix.push([ '1', '2', '0', '1', '5' ])
-            // matrix.push([ '3', '0', '4', '4', '3' ])
+        console.log("indexs",randomIndexArray);
 
-            gameSettings.resultSymbolMatrix = matrix;
-            gameDataInit();
-        }
-    
+
+        // matrix.pop();
+        // matrix.pop();
+        // matrix.pop();
+        // matrix.push(['1', '1', '1', '1', '1'])
+        // matrix.push(['3', '2', '0', '1', '5'])
+        // matrix.push(['3', '0', '4', '4', '3'])
+
+        gameSettings.resultSymbolMatrix = matrix;
+        gameDataInit();
+    }
+
+
     // Function to generate a random number based on weights
     randomWeightedIndex(weights: number[]): number {
         const totalWeight: number = weights.reduce((acc, val) => acc + val, 0);
@@ -78,16 +92,36 @@ export class RandomResultGenerator {
             }
         }
         // Default to last index if not found
-        return weights.length - 1; 
+        return weights.length - 1;
     }
 }
 
-function gameDataInit()
-{
+function gameDataInit() {
     gameSettings.lineData = gameSettings.currentGamedata.linesApiData;
     // gameSettings.bonus.start = false;
     makeFullPayTable();
 }
+
+function generateInitialreel():string[][] {
+
+    let matrix:string[][]=[]
+    for (let i = 0; i < gameSettings.matrix.x; i++) {
+        let reel: string[] = [];
+
+        gameSettings.currentGamedata.Symbols.forEach(element => {
+
+            for (let j = 0; j < element.reelInstance[i]; j++) {
+                reel.push(element.Id.toString());
+            }
+        })
+
+        shuffleArray(reel); 
+        matrix.push(reel);
+    }
+    return matrix;
+}
+
+
 function makeFullPayTable() {
     let payTable: PayLines[] = [];
     let payTableFull = [];
@@ -95,15 +129,14 @@ function makeFullPayTable() {
     gameSettings.payLine.forEach((pLine) => {
         payTable.push(new PayLines(pLine.line, pLine.pay, pLine.freeSpins, gameSettings.wildSymbol.SymbolName))
     })
-    
+
     for (let j = 0; j < payTable.length; j++) {
         payTableFull.push(payTable[j]);
-        
-        if (gameSettings.useWild)
-            {
-                let wildLines = payTable[j].getWildLines();
-                wildLines.forEach((wl) => { payTableFull.push(wl); });
-            } 
+
+        if (gameSettings.useWild) {
+            let wildLines = payTable[j].getWildLines();
+            wildLines.forEach((wl) => { payTableFull.push(wl); });
+        }
     }
     gameSettings.fullPayTable = payTableFull;
     // let payTable: any[] = [];

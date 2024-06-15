@@ -17,11 +17,11 @@ export interface GameSettings {
     lineData: number[][],
     fullPayTable: PayLine[],
     jackpot: {
-        symbolName: string;
-        symbolId: number;
-        symbolsCount: number;
-        defaultAmount: number;
-        increaseValue: number;
+        symbolName: string,
+        symbolId: number,
+        symbolsCount: number,
+        defaultAmount: number,
+        increaseValue: number,
     },
     bonus:{
         game: bonusGame,
@@ -30,8 +30,9 @@ export interface GameSettings {
         payTable:number[]
         // maxPay: number
     },
-    currentBet: number;
-    startGame: boolean;
+    currentBet: number,
+    startGame: boolean,
+    reels:string[][],
     initiate:(arg: string, arg2: string)=> void;
     gamble: {
         game: GambleGame,

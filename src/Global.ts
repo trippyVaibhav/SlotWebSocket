@@ -52,29 +52,30 @@ export const gameSettings: GameSettings = {
         maxCount: 1,
         start: false,
     },
+    reels:[[]],
     initiate: async(GameID: string, clientID: string)=>{
         gameSettings.bonusPayTable=[];
         gameSettings.scatterPayTable=[];
         gameSettings.Symbols= [];
         gameSettings.Weights= [];
-        try {
-            const resp = await fetch('https://664c355635bbda10987f44ff.mockapi.io/api/gameId/'+GameID);
-            const data = await resp.json();
-            if(data=="Not found"){
-                Alerts(clientID,"Invalid Game ID");
-                gameSettings.startGame=false;
-                return;
-            }
-            gameSettings.currentGamedata=data;
-            gameSettings.matrix=data.matrix;
-            // const currentGameData=gameData.filter((element)=>element.id==GameID)
-        } catch (error) {
-            Alerts(clientID,"network error");
-            return;
-        }
+        // try {
+        //     const resp = await fetch('https://664c355635bbda10987f44ff.mockapi.io/api/id/'+GameID);
+        //     const data = await resp.json();
+        //     if(data=="Not found"){
+        //         Alerts(clientID,"Invalid Game ID");
+        //         gameSettings.startGame=false;
+        //         return;
+        //     }
+        //     gameSettings.currentGamedata=data;
+        //     gameSettings.matrix=data.matrix;
+        //     // const currentGameData=gameData.filter((element)=>element.id==GameID)
+        // } catch (error) {
+        //     Alerts(clientID,"network error");
+        //     return;
+        // }
 
-        // const currentGameData=gameData.filter((element)=>element.id==GameID)
-        // gameSettings.currentGamedata=currentGameData[0];
+        const currentGameData=gameData.filter((element)=>element.id==GameID)
+        gameSettings.currentGamedata=currentGameData[0];
         
         initSymbols();
         UiInitData.paylines=convertSymbols(gameSettings.currentGamedata.Symbols);
